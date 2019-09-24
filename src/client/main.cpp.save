@@ -1,5 +1,4 @@
-#include <iostream>
-#include <string> //pour utiliser string::compare
+Hello woerl#include <iostream>
 
 // Les lignes suivantes ne servent qu'à vérifier que la compilation avec SFML fonctionne
 #include <SFML/Graphics.hpp>
@@ -15,7 +14,7 @@ void testSFML() {
 using namespace std;
 using namespace state;
 
-int main(int argc,char* argv[1])
+int main(int argc,char* argv[])
 {
     Exemple exemple;
     exemple.setX(53);
