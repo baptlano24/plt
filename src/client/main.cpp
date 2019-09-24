@@ -20,7 +20,11 @@ int main(int argc,char* argv[1])
     Exemple exemple;
     exemple.setX(53);
 
-    cout << "It works !" << endl;
-
+    if(argc>=2 && std::string(argv[1])=="hello") {
+      cout << "Hello world !" << endl;
+    } else {
+      cout << "Veuillez dire hello !" << endl;
+    }
+    
     return 0;
 }
