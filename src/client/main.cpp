@@ -17,9 +17,6 @@ using namespace state;
 
 int main(int argc,char* argv[1])
 {
-    Exemple exemple;
-    exemple.setX(53);
-
     if(argc>=2 && std::string(argv[1])=="hello") {
       cout << "Hello world !" << endl;
     } else {
