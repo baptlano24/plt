@@ -1,26 +1,37 @@
-#ifndef STATE__SQUARE__H
-#define STATE__SQUARE__H
-#include <iostream>
-#include "AnimalStatus.h"
 #include "Animal.h"
+#include "AnimalStatus.h"
+#include <iostream>
 using namespace std;
+using namespace state;
 
-namespace state {  /// class Animal -
-class Animal{
-  private:
-    int x;
-    int y;
-    AnimalStatus status;
-    // Operations
-  public:
-    Animal(int x, int y): x(x),y(y),status(1) {cout << "Animal is created" << endl;};
-    AnimalStatus getStatus (){return status};
-    void setStatus (AnimalStatus status){ this->status=status;};
-    // Setters and Getters
+Animal::Animal(int x, int y, AnimalStatus status): x(x), y(y), status(status){}
 
+AnimalStatus Animal:: getStatus()
+{
+    return this->status;
+}
 
-  };
-};
+int Animal::getX()
+{
+    return this->x;
+}
 
+int Animal::getY()
+{
+    return this->y;
+}
 
-#endif
+void Animal::setStatus(AnimalStatus status)
+{
+    this->y = y;
+}
+
+void Animal::setX(int x)
+{
+    this->x = x;
+}
+
+void Animal::setY(int y)
+{
+    this->y = y;
+}
