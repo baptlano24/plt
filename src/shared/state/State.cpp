@@ -3,17 +3,12 @@
 using namespace std;
 using namespace state;
 
-State::State(Player player1, Player player2 ): player1(player1), player2(player2) {
-    // MAP CONSTRUCTION
-    //std::array<std::array<Square,13>,12> newGrid;
-    //newGrid[0][0] = Square(true, EARTH);
-    //this->grid = newGrid;
+State::State() {
+    //Player newPlayer1 = Player(nom1,0,true);
+    //Player newPlayer2 = Player(nom2,1,false);
+    //this->player1 = newPlayer1;
+    //this->player2 = newPlayer2;
 }
-
-/*std::array<std::array<Square,13>,12> State:: getGrid()
-{
-    return this->grid;
-}*/
 
 Player State:: getPlayer1()
 {

@@ -23,6 +23,12 @@ Player::Player(string name,
               this->animals = newAnimals;
               }
 
+/*Player::Player(Player p) {
+    this->name = p.name;
+    this->color = p.color;
+    this->playing = p.playing;
+}*/
+
 string Player:: getName()
 {
     return this->name;
