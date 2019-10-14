@@ -1,7 +1,7 @@
 #include "Square.h"
 #include "SquareID.h"
-#include namespace state;
-#include namespace std;
+using namespace state;
+using namespace std;
 
 Square::Square(bool empty, SquareID id): empty(empty), id(id) {}
 
@@ -10,7 +10,7 @@ bool Square:: isEmpty()
   return this->empty;
 };
 
-SquareId Square:: getID()
+SquareID Square:: getID()
 {
     return this->id;
 };
