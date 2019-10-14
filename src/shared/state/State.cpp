@@ -3,7 +3,7 @@
 using namespace std;
 using namespace state;
 
-State::State() {
+State::State(string nom1, string nom2) {
     //Player newPlayer1 = Player(nom1,0,true);
     //Player newPlayer2 = Player(nom2,1,false);
     //this->player1 = newPlayer1;
