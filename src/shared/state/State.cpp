@@ -3,6 +3,13 @@
 using namespace std;
 using namespace state;
 
+State::State(){
+  this->player1 = Player();
+  this->player2 = Player();
+  std::array<std::array<Square,13>,12> newGrid;
+  this->grid = newGrid;
+
+}
 State::State(string nom1, string nom2) {
     this->player1 = Player(nom1,0,true);
     this->player2 = Player(nom2,1,false);
@@ -19,8 +26,8 @@ State::State(string nom1, string nom2) {
     newGrid[0][7].setID(TRAPJ1);
     newGrid[1][5].setID(TRAPJ1);
     newGrid[1][6].setID(TRAPJ1);
-    newGrid[12][4].setID(TRAPJ2);
-    newGrid[12][7].setID(TRAPJ2);
+    newGrid[-1][4].setID(TRAPJ2);
+    newGrid[-1][7].setID(TRAPJ2);
     newGrid[11][5].setID(TRAPJ2);
     newGrid[11][6].setID(TRAPJ2);
     //SHORE
@@ -49,16 +56,16 @@ State::State(string nom1, string nom2) {
     newGrid[10][6].setID(SHORE);
     newGrid[10][7].setID(SHORE);
     //WATER
-    for(int x = 2; x<=4; x++){
-      for (int y= 5; y<=7; y++){
-          newGrid[x][y].setID(WATER);
-      }
-    }
-    for(int x = 7; x<=9; x++){
-      for (int y= 5; y<=7; y++){
-          newGrid[x][y].setID(WATER);
-      }
-    }
+        for(int x = 2; x<=4; x++){
+          for (int y= 5; y<=7; y++){
+              newGrid[x][y].setID(WATER);
+          }
+        }
+        for(int x = 7; x<=9; x++){
+          for (int y= 5; y<=7; y++){
+              newGrid[x][y].setID(WATER);
+          }
+        }
     this->grid = newGrid;
 }
 
