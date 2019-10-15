@@ -16,3 +16,13 @@ SquareID Square:: getID()
 {
     return this->id;
 };
+
+void Square:: setID(SquareID newID)
+{
+  this->id = newID;
+}
+
+void Square:: setEmpty(bool empty)
+{
+  this->empty = empty;
+}
