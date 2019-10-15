@@ -6,7 +6,7 @@ using namespace state;
 
 Animal::Animal(int x, int y, AnimalStatus status): x(x), y(y), status(status){}
 
-AnimalStatus Animal:: getStatus()
+AnimalStatus Animal::getStatus()
 {
     return this->status;
 }
@@ -23,7 +23,7 @@ int Animal::getY()
 
 void Animal::setStatus(AnimalStatus status)
 {
-    this->y = y;
+    this->status = status;
 }
 
 void Animal::setX(int x)
