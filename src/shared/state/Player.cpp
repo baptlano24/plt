@@ -5,6 +5,8 @@
 using namespace std;
 using namespace state;
 
+Player::Player()  : name("Joueur"), color(0),  playing(0){ }
+
 Player::Player(string name,
               int color,
               bool playing)

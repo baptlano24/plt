@@ -3,6 +3,8 @@
 using namespace state;
 using namespace std;
 
+Square::Square(): empty(1), id(EARTH) {}
+
 Square::Square(bool empty, SquareID id): empty(empty), id(id) {}
 
 bool Square:: isEmpty()
