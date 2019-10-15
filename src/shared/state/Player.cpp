@@ -5,25 +5,34 @@
 using namespace std;
 using namespace state;
 
-Player::Player()  : name("Joueur"), color(0),  playing(0){ }
+Player::Player()  : name("Joueur"), color(0),  playing(0){
+  std::unordered_map<int, Animal> newAnimals;
+  newAnimals.insert(make_pair(1,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(2,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(3,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(4,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(5,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(6,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(7,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(8,Animal(0,0,NORMAL)));
+  this->animals = newAnimals;
+}
 
-Player::Player(string name,
-              int color,
-              bool playing)
-              : name(name), color(color),  playing(playing){
+Player::Player(string name,int color,bool playing):
+name(name), color(color),  playing(playing)
+{
+  std::unordered_map<int, Animal> newAnimals;
+  newAnimals.insert(make_pair(1,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(2,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(3,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(4,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(5,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(6,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(7,Animal(0,0,NORMAL)));
+  newAnimals.insert(make_pair(8,Animal(0,0,NORMAL)));
 
-                std::unordered_map<int, Animal> newAnimals;
-                newAnimals.insert(make_pair(1,Animal(0,0,NORMAL)));
-                newAnimals.insert(make_pair(2,Animal(0,0,NORMAL)));
-                newAnimals.insert(make_pair(3,Animal(0,0,NORMAL)));
-                newAnimals.insert(make_pair(4,Animal(0,0,NORMAL)));
-                newAnimals.insert(make_pair(5,Animal(0,0,NORMAL)));
-                newAnimals.insert(make_pair(6,Animal(0,0,NORMAL)));
-                newAnimals.insert(make_pair(7,Animal(0,0,NORMAL)));
-                newAnimals.insert(make_pair(8,Animal(0,0,NORMAL)));
-
-              this->animals = newAnimals;
-              }
+  this->animals = newAnimals;
+}
 
 /*Player::Player(Player p) {
     this->name = p.name;
