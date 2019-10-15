@@ -11,11 +11,18 @@ BOOST_AUTO_TEST_CASE(TestStaticAssert)
 
 BOOST_AUTO_TEST_CASE(TestState)
 {
-
+  {
     State state1{};
     state1.getPlayer1().getName();
+    state1.getPlayer1().setName("Bibou");
     state1.getPlayer2().getName();
-    State state2{"booba","caca"};
+    //BOOST_CHECK_EQUAL(state1.getPlayer1().getName(), "Bibou");
+  }
+    {
+      State state2{"booba","baboo"};
+    //BOOST_CHECK_EQUAL(state1.getPlayer1().getName(),"Bibou");
     //state.getPlayer1().setName("Tony");
-    //BOOST_CHECK_EQUAL(state1.getPlayer1().getName(), "Robin");
+      BOOST_CHECK_EQUAL(state2.getPlayer1().getName(), "booba");
+
+  }
 }
