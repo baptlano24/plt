@@ -34,12 +34,6 @@ name(name), color(color),  playing(playing)
   this->animals = newAnimals;
 }
 
-/*Player::Player(Player p) {
-    this->name = p.name;
-    this->color = p.color;
-    this->playing = p.playing;
-}*/
-
 string Player:: getName()
 {
     return this->name;
