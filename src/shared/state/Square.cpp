@@ -3,14 +3,9 @@
 using namespace state;
 using namespace std;
 
-Square::Square(): empty(1), id(EARTH) {}
+Square::Square(): id(EARTH) {}
 
-Square::Square(bool empty, SquareID id): empty(empty), id(id) {}
-
-bool Square:: isEmpty()
-{
-  return this->empty;
-};
+Square::Square(SquareID id): id(id) {}
 
 SquareID Square:: getID()
 {
@@ -20,9 +15,4 @@ SquareID Square:: getID()
 void Square:: setID(SquareID newID)
 {
   this->id = newID;
-}
-
-void Square:: setEmpty(bool empty)
-{
-  this->empty = empty;
 }
