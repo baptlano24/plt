@@ -5,7 +5,8 @@
 using namespace std;
 using namespace state;
 
-Player::Player()  : name("Joueur"), color(0),  playing(0){
+Player::Player(): name("Joueur"), color(0),  playing(0)
+{
   std::unordered_map<int, Animal> newAnimals;
   newAnimals.insert(make_pair(1,Animal(0,0,NORMAL)));
   newAnimals.insert(make_pair(2,Animal(0,0,NORMAL)));
@@ -18,8 +19,7 @@ Player::Player()  : name("Joueur"), color(0),  playing(0){
   this->animals = newAnimals;
 }
 
-Player::Player(string name,int color,bool playing):
-name(name), color(color),  playing(playing)
+Player::Player(string name,int color,bool playing): name(name), color(color),  playing(playing)
 {
   std::unordered_map<int, Animal> newAnimals;
   newAnimals.insert(make_pair(1,Animal(0,0,NORMAL)));
@@ -34,12 +34,12 @@ name(name), color(color),  playing(playing)
   this->animals = newAnimals;
 }
 
-string Player:: getName()
+string Player::getName()
 {
     return this->name;
 }
 
-int Player:: getColor()
+int Player::getColor()
 {
     return this->color;
 }
