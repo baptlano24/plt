@@ -6,6 +6,7 @@ using namespace state;
 State::State(){
   this->player1 = Player();
   this->player2 = Player();
+  this->menu = 0;
   this->grid = std::array<std::array<Square,13>,12> {
     std::array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH}},
     std::array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,SHORE,SHORE,SHORE,EARTH,EARTH,EARTH,EARTH,EARTH}},
@@ -25,6 +26,7 @@ State::State(){
 State::State(string nom1, string nom2) {
     this->player1 = Player(nom1,0,true);
     this->player2 = Player(nom2,1,false);
+    this->menu = 0;
     this->grid = std::array<std::array<Square,13>,12> {
       std::array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH}},
       std::array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,SHORE,SHORE,SHORE,EARTH,EARTH,EARTH,EARTH,EARTH}},

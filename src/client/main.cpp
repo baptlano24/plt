@@ -32,7 +32,7 @@ int main(int argc,char* argv[1])
         Text text("This is our first render", font, 30);
 
         unordered_map<int, Animal> testAnimals;
-        testAnimals.insert(make_pair(1,Animal(1,1)));
+        testAnimals.insert(make_pair(1,Animal(11,0)));
         testAnimals.insert(make_pair(2,Animal(1,7)));
         testAnimals.insert(make_pair(3,Animal(3,3)));
         testAnimals.insert(make_pair(4,Animal(4,4)));
@@ -57,6 +57,7 @@ int main(int argc,char* argv[1])
         vector<Sprite> spriteAnimals { spriteRat, spriteCat, spriteDog, spriteWolf, spriteLeopard, spriteTiger, spriteLion, spriteElephant};
 
         for(int index = 0; index<8; index++) {
+            spriteAnimals.at(index).setColor(Color(100, 100, 255, 255));
             spriteAnimals.at(index).setScale(0.0792,0.0792);
         }
 
