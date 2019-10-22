@@ -1,60 +1,105 @@
 #include <iostream>
 #include <string> //pour utiliser string::compare
-
-// Les lignes suivantes ne servent qu'à vérifier que la compilation avec SFML fonctionne
+#include <unordered_map>
+#include <vector>
 #include <SFML/Graphics.hpp>
-
-using namespace sf;
-
-void testSFML() {
-    sf::Texture texture;
-}
-
-// Fin test SFML
-
 #include <state.h>
 
 using namespace std;
 using namespace state;
+using namespace sf;
+
+void testSFML() {
+    Texture texture;
+}
 
 int main(int argc,char* argv[1])
 {
-    if(argc>=2 && std::string(argv[1])=="hello") {
-      cout << "Hello world !" << endl;
+    if(argc>=2 && string(argv[1])=="hello") {
+        cout << "Hello world !" << endl;
+    } else if (argc>=2 && string(argv[1])=="render"){
+        // Create the main window
+        RenderWindow window(VideoMode(876,949), "Jungle War");
+        // Load a sprite to display
+        Texture texture;
+        if (!texture.loadFromFile("../rapport/res/images/map/map-jungle.png"))
+            return EXIT_FAILURE;
+        Sprite sprite(texture);
+        // Create a graphical text to display
+        Font font;
+        if (!font.loadFromFile("../rapport/res/fonts/sans-serif.ttf"))
+            return EXIT_FAILURE;
+        Text text("This is our first render", font, 30);
+
+        unordered_map<int, Animal> testAnimals;
+        testAnimals.insert(make_pair(1,Animal(1,1)));
+        testAnimals.insert(make_pair(2,Animal(1,7)));
+        testAnimals.insert(make_pair(3,Animal(3,3)));
+        testAnimals.insert(make_pair(4,Animal(4,4)));
+        testAnimals.insert(make_pair(5,Animal(5,5)));
+        testAnimals.insert(make_pair(6,Animal(6,6)));
+        testAnimals.insert(make_pair(7,Animal(7,7)));
+        testAnimals.insert(make_pair(8,Animal(8,8)));
+
+        Texture textureAnimal;
+        if (!textureAnimal.loadFromFile("../rapport/res/images/game/wood.png"))
+            return EXIT_FAILURE;
+
+        Sprite spriteRat(textureAnimal);
+        Sprite spriteCat(textureAnimal);
+        Sprite spriteDog(textureAnimal);
+        Sprite spriteWolf(textureAnimal);
+        Sprite spriteLeopard(textureAnimal);
+        Sprite spriteTiger(textureAnimal);
+        Sprite spriteLion(textureAnimal);
+        Sprite spriteElephant(textureAnimal);
+
+        vector<Sprite> spriteAnimals { spriteRat, spriteCat, spriteDog, spriteWolf, spriteLeopard, spriteTiger, spriteLion, spriteElephant};
+
+        for(int index = 0; index<8; index++) {
+            spriteAnimals.at(index).setScale(0.0792,0.0792);
+        }
+
+        for (pair<int, Animal> element : testAnimals) {
+            spriteAnimals.at(element.first-1).setPosition(73*element.second.getX(),73*element.second.getY());
+        }
+
+        //Center the jungle map
+        /*
+
+        FloatRect spriteSize=sprite.getGlobalBounds();
+        sprite.setPosition((app.getSize().x-spriteSize.width)/2., (app.getSize().y-spriteSize.height)/2.);
+        sprite.setScale(0.85,0.85);
+        */
+
+        // Start the game loop
+        while (window.isOpen())
+        {
+            // Process events
+            Event event;
+            while (window.pollEvent(event))
+            {
+                // Close window: exit
+                if (event.type == Event::Closed)
+                    window.close();
+            }
+            // Clear screen
+            window.clear();
+            // Draw the sprite
+            window.draw(sprite);
+            for(int index = 0; index<8; index++) {
+                window.draw(spriteAnimals.at(index));
+            }
+            //window.draw(spriteAnimals[1]);
+            // Draw the string
+            window.draw(text);
+            // Update the window
+            window.display();
+        }
+
     } else {
-      cout << "Veuillez dire hello !" << endl;
+        cout << "Veuillez dire une commande (hello, render, etc..) !" << endl;
     }
+    return 0;
 
-    if(argc>=2 && std::string(argv[1])=="render") {
-      cout << "render !" << endl;
-      RenderWindow app(VideoMode(1000, 1000, 32), "Jungle War ?! ");
-
-      // Boucle principale
-      while (app.isOpen())
-     {
-         // check all the window's events that were triggered since the last iteration of the loop
-         sf::Event event;
-         while (app.pollEvent(event))
-         {
-             // "close requested" event: we close the window
-             if (event.type == Event::Closed)
-                 app.close();
-         }
-         Texture map;
-         Sprite sprite;
-         map.loadFromFile("../rapport/res/images/map/map-jungle.png");
-         sprite.setTexture(map);
-         sprite.setScale(0.85,0.85);
-         FloatRect spriteSize=sprite.getGlobalBounds();
-         //sprite.setOrigin(spriteSize.width/2.,spriteSize.height/2.);
-         sprite.setPosition((app.getSize().x-spriteSize.width)/2., (app.getSize().y-spriteSize.height)/2.);
-         //sprite.setColor(Color(0,255,0));
-         // clear the window with black color
-         app.clear(Color::Black);
-         app.draw(sprite);
-         app.display();
-     }
-
-     return 0;
- }
 }
