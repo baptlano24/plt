@@ -4,10 +4,12 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <state.h>
-
+#include "state.h"
+#include "render.h"
 using namespace std;
 using namespace state;
 using namespace sf;
+using namespace render;
 
 void testSFML() {
     Texture texture;
@@ -17,7 +19,7 @@ int main(int argc,char* argv[1])
 {
     if(argc>=2 && string(argv[1])=="hello") {
         cout << "Hello world !" << endl;
-    } else if (argc>=2 && string(argv[1])=="render"){
+    } else if (argc>=2 && string(argv[1])=="renderTest"){
         // Create the main window
         RenderWindow window(VideoMode(876,949), "Jungle War");
         // Load a sprite to display
@@ -32,7 +34,7 @@ int main(int argc,char* argv[1])
         Text text("This is our first render", font, 30);
 
         unordered_map<int, Animal> testAnimals;
-        testAnimals.insert(make_pair(1,Animal(11,0)));
+        testAnimals.insert(make_pair(1,Animal(10,0)));
         testAnimals.insert(make_pair(2,Animal(1,7)));
         testAnimals.insert(make_pair(3,Animal(3,3)));
         testAnimals.insert(make_pair(4,Animal(4,4)));
@@ -97,9 +99,20 @@ int main(int argc,char* argv[1])
             // Update the window
             window.display();
         }
+    } else if (argc>=2 && string(argv[1])=="renderTest2"){
+          cout<<"--- Affichage d'un Etat ---"<<endl;
+
+    			// -- Initialisation d'un etat --
+    			State initialState;
+
+    			sf::RenderWindow window(sf::VideoMode(876,949), "Jungle War");
+    			// -- Affichage de cet Etat --
+    			RenderLayer stateLayer(initialState, window);
+
+          stateLayer.draw(window);
 
     } else {
-        cout << "Veuillez dire une commande (hello, render, etc..) !" << endl;
+        cout << "Veuillez dire une commande (hello, render, renderTest, etc..) !" << endl;
     }
     return 0;
 
