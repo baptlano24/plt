@@ -30,4 +30,3 @@ if(BUILD_CODE_COVERAGE)
 endif()
 
 # vim: set sw=2 sts=2 et:
-

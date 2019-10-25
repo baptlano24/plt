@@ -7,10 +7,18 @@ using namespace state;
 using namespace sf;
 using namespace render;
 
-//RenderLayer::RenderLayer(State& state, RenderWindow& window): window(window) {}
 
 RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(window){
   this->renderingState = state;
+
+  TileSet tileSetAnimals(ANIMALS);
+	std::unique_ptr<TileSet> ptr_tileSetAnimals (new TileSet(tileSetAnimals));
+	tileSets.push_back(move(ptr_tileSetAnimals));
+
+  TileSet tileSetGrid(GRID);
+  std::unique_ptr<TileSet> ptr_tileSetGrid (new TileSet(tileSetGrid));
+  tileSets.push_back(move(ptr_tileSetGrid));
+
   Texture textureGrid;
   if (!this->textureGrid.loadFromFile("../rapport/res/images/map/map-jungle.png")) {
       cout << "Erreur de chargement de la texture map";
@@ -41,22 +49,8 @@ RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(wind
   Sprite sprite_lio(this->textureAnimal);
   Sprite sprite_ele(this->textureAnimal);
 
-  vector<Sprite> spriteAnimalsJ1 {sprite_rat,
-                                                      sprite_cat,
-                                                      sprite_dog,
-                                                      sprite_wolf,
-                                                      sprite_leo,
-                                                      sprite_tig,
-                                                      sprite_lio,
-                                                      sprite_ele};
-vector<Sprite> spriteAnimalsJ2 {sprite_rat,
-                                            sprite_cat,
-                                            sprite_dog,
-                                            sprite_wolf,
-                                            sprite_leo,
-                                            sprite_tig,
-                                            sprite_lio,
-                                            sprite_ele};
+  vector<Sprite> spriteAnimalsJ1 {sprite_rat,sprite_cat, sprite_dog, sprite_wolf, sprite_leo, sprite_tig, sprite_lio, sprite_ele};
+  vector<Sprite> spriteAnimalsJ2 {sprite_rat, sprite_cat, sprite_dog, sprite_wolf, sprite_leo, sprite_tig, sprite_lio, sprite_ele};
 
   for(int index = 0; index<8; index++) {
       spriteAnimalsJ1.at(index).setColor(Color(100, 100, 255, 255));
