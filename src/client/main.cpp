@@ -103,7 +103,7 @@ int main(int argc,char* argv[1])
           cout<<"--- Affichage d'un Etat ---"<<endl;
 
     			// -- Initialisation d'un etat --
-    			State initialState;
+    			State initialState("Robin","Baptiste");
 
     			sf::RenderWindow window(sf::VideoMode(876,949), "Jungle War");
     			// -- Affichage de cet Etat --
