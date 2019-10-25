@@ -9,13 +9,13 @@ using namespace render;
 
 //RenderLayer::RenderLayer(State& state, RenderWindow& window): window(window) {}
 
-RenderLayer::RenderLayer(state::State& state, sf::RenderWindow& window): window(window){
+RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(window){
   Texture textureGrid;
-  if (!textureGrid.loadFromFile("../rapport/res/images/map/map-jungle.png")) {
+  if (!this->textureGrid.loadFromFile("../rapport/res/images/map/map-jungle.png")) {
       cout << "Erreur de chargement de la texture map";
   }
-  auto ptr_sprite_grid = std::make_shared<sf::Sprite>(textureGrid);
-  //std::shared_ptr<sf::Sprite> ptr_sprite_grid (new sf::Sprite(textureGrid));
+
+  //shared_ptr<Sprite> ptr_sprite_grid (new Sprite(textureGrid));
 
   unordered_map<int, Animal> testAnimals;
   testAnimals.insert(make_pair(1,Animal(10,0)));
@@ -29,61 +29,60 @@ RenderLayer::RenderLayer(state::State& state, sf::RenderWindow& window): window(
 
   if (!this->textureAnimal.loadFromFile("../rapport/res/images/game/wood.png"))
       cout << "Erreur de chargement de la texture animal";
+  Sprite sprite_rat(this->textureAnimal);
+  Sprite sprite_cat(this->textureAnimal);
+  Sprite sprite_dog(this->textureAnimal);
+  Sprite sprite_wolf(this->textureAnimal);
+  Sprite sprite_leo(this->textureAnimal);
+  Sprite sprite_tig(this->textureAnimal);
+  Sprite sprite_lio(this->textureAnimal);
+  Sprite sprite_ele(this->textureAnimal);
 
-  std::shared_ptr<sf::Sprite> ptr_sprite_rat (new sf::Sprite(this->textureAnimal));
-  std::shared_ptr<sf::Sprite> ptr_sprite_cat (new sf::Sprite(this->textureAnimal));
-  std::shared_ptr<sf::Sprite> ptr_sprite_dog (new sf::Sprite(this->textureAnimal));
-  std::shared_ptr<sf::Sprite> ptr_sprite_wolf (new sf::Sprite(this->textureAnimal));
-  std::shared_ptr<sf::Sprite> ptr_sprite_leo (new sf::Sprite(this->textureAnimal));
-  std::shared_ptr<sf::Sprite> ptr_sprite_tig (new sf::Sprite(this->textureAnimal));
-  std::shared_ptr<sf::Sprite> ptr_sprite_lio (new sf::Sprite(this->textureAnimal));
-  std::shared_ptr<sf::Sprite> ptr_sprite_ele (new sf::Sprite(this->textureAnimal));
-
-  vector<std::shared_ptr<sf::Sprite>> spriteAnimals { ptr_sprite_rat,
-                                                      ptr_sprite_cat,
-                                                      ptr_sprite_dog,
-                                                      ptr_sprite_wolf,
-                                                      ptr_sprite_leo,
-                                                      ptr_sprite_tig,
-                                                      ptr_sprite_lio,
-                                                      ptr_sprite_ele};
+  vector<Sprite> spriteAnimals {sprite_rat,
+                                                      sprite_cat,
+                                                      sprite_dog,
+                                                      sprite_wolf,
+                                                      sprite_leo,
+                                                      sprite_tig,
+                                                      sprite_lio,
+                                                      sprite_ele};
 
   for(int index = 0; index<8; index++) {
-      spriteAnimals.at(index)->setColor(Color(100, 100, 255, 255));
-      spriteAnimals.at(index)->setScale(0.0792,0.0792);
+      spriteAnimals.at(index).setColor(Color(100, 100, 255, 255));
+      spriteAnimals.at(index).setScale(0.0792,0.0792);
   }
 
   for (pair<int, Animal> element : testAnimals) {
-      spriteAnimals.at(element.first-1)->setPosition(73*element.second.getX(),73*element.second.getY());
+      spriteAnimals.at(element.first-1).setPosition(73*element.second.getX(),73*element.second.getY());
   }
 
-  this->grid = ptr_sprite_grid;
   this->animals = spriteAnimals;
+  this->spritegrid = Sprite(this->textureGrid);
 };
 
-vector<std::shared_ptr<sf::Sprite>> RenderLayer::getAnimals(){
+vector<Sprite> RenderLayer::getAnimals(){
   return this->animals;
 };
 
-std::shared_ptr<sf::Sprite> RenderLayer::getGrid() {
-  return this->grid;
+Sprite RenderLayer::getGrid() {
+   return (this->spritegrid);
 };
 
 
-void RenderLayer::draw(sf::RenderWindow &window) {
+void RenderLayer::draw(RenderWindow &window) {
   while (window.isOpen()){
     Event event;
     while (window.pollEvent(event)){
-      if (event.type == sf::Event::Closed){
+      if (event.type == Event::Closed){
         window.close();
       }
     }
 
     window.clear();
     //window.draw(*stateLayer.getAnimals());	// Dessin de la grille
-    window.draw(*this->getGrid());
+    window.draw(this->getGrid());
     for(int index = 0; index<8; index++) {
-        window.draw(*this->getAnimals()[index]);
+        window.draw(this->getAnimals()[index]);
     }
     //window.draw(*layer.getSurfaces()[1]);	// Dessin des personnages
     window.display();
