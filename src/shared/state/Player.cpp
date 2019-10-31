@@ -23,27 +23,27 @@ Player::Player(string name,int color,bool playing): name(name), color(color),  p
 {
   if (this->color == 0){
     std::unordered_map<int, Animal> newAnimals;
-    newAnimals.insert(make_pair(1,Animal(0,0,NORMAL))); //(x,y) en haut à gauche
-    newAnimals.insert(make_pair(2,Animal(1,1,NORMAL)));
-    newAnimals.insert(make_pair(3,Animal(2,2,NORMAL)));
-    newAnimals.insert(make_pair(4,Animal(5,2,NORMAL)));
-    newAnimals.insert(make_pair(5,Animal(6,2,NORMAL)));
-    newAnimals.insert(make_pair(6,Animal(11,0,NORMAL)));
-    newAnimals.insert(make_pair(7,Animal(11,3,NORMAL)));
-    newAnimals.insert(make_pair(8,Animal(9,3,NORMAL)));
+    newAnimals.insert(make_pair(1,Animal(1,1,NORMAL))); //(x,y) en haut à gauche
+    newAnimals.insert(make_pair(2,Animal(2,2,NORMAL)));
+    newAnimals.insert(make_pair(3,Animal(3,1,NORMAL)));
+    newAnimals.insert(make_pair(4,Animal(4,2,NORMAL)));
+    newAnimals.insert(make_pair(5,Animal(7,2,NORMAL)));
+    newAnimals.insert(make_pair(6,Animal(8,1,TRAPPED)));
+    newAnimals.insert(make_pair(7,Animal(9,2,DEAD)));
+    newAnimals.insert(make_pair(8,Animal(10,1,NORMAL)));
     this->animals = newAnimals;
   }
 
   else if (this->color == 1){
     std::unordered_map<int, Animal> newAnimals;
-    newAnimals.insert(make_pair(1,Animal(0,12,NORMAL))); //(x,y) en haut à gauche
-    newAnimals.insert(make_pair(2,Animal(1,11,NORMAL)));
-    newAnimals.insert(make_pair(3,Animal(2,10,NORMAL)));
-    newAnimals.insert(make_pair(4,Animal(5,10,NORMAL)));
-    newAnimals.insert(make_pair(5,Animal(6,10,NORMAL)));
-    newAnimals.insert(make_pair(6,Animal(11,12,NORMAL)));
-    newAnimals.insert(make_pair(7,Animal(11,9,NORMAL)));
-    newAnimals.insert(make_pair(8,Animal(9,9,NORMAL)));
+    newAnimals.insert(make_pair(1,Animal(10,11,NORMAL))); //(x,y) en haut à gauche
+    newAnimals.insert(make_pair(2,Animal(9,10,NORMAL)));
+    newAnimals.insert(make_pair(3,Animal(8,11,NORMAL)));
+    newAnimals.insert(make_pair(4,Animal(7,10,NORMAL)));
+    newAnimals.insert(make_pair(5,Animal(4,10,NORMAL)));
+    newAnimals.insert(make_pair(6,Animal(3,11,NORMAL)));
+    newAnimals.insert(make_pair(7,Animal(2,10,NORMAL)));
+    newAnimals.insert(make_pair(8,Animal(1,11,NORMAL)));
     this->animals = newAnimals;
   }
 

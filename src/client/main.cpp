@@ -19,17 +19,17 @@ int main(int argc,char* argv[1])
 {
     if(argc>=2 && string(argv[1])=="hello") {
         cout << "Hello world !" << endl;
-    } else if (argc>=2 && string(argv[1])=="renderTest"){
+    } else if (argc>=2 && string(argv[1])=="renderTest1"){
         // Create the main window
         RenderWindow window(VideoMode(876,949), "Jungle War");
         // Load a sprite to display
         Texture texture;
-        if (!texture.loadFromFile("../rapport/res/images/map/map-jungle.png"))
+        if (!texture.loadFromFile("../res/images/map/map-jungle.png"))
             return EXIT_FAILURE;
         Sprite sprite(texture);
         // Create a graphical text to display
         Font font;
-        if (!font.loadFromFile("../rapport/res/fonts/sans-serif.ttf"))
+        if (!font.loadFromFile("../res/fonts/sans-serif.ttf"))
             return EXIT_FAILURE;
         Text text("This is our first render", font, 30);
 
@@ -112,7 +112,7 @@ int main(int argc,char* argv[1])
           stateLayer.draw(window);
 
     } else {
-        cout << "Veuillez dire une commande (hello, render, renderTest, etc..) !" << endl;
+        cout << "Veuillez dire une commande (hello, renderTest1, renderTest2) !" << endl;
     }
     return 0;
 
