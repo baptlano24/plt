@@ -4,21 +4,16 @@
 using namespace std;
 using namespace state;
 
-Animal::Animal(int x, int y, AnimalStatus status): x(x), y(y), status(status){}
+Animal::Animal(Coord coord, AnimalStatus status): coord(coord), status(status){}
 
 AnimalStatus Animal::getStatus()
 {
     return this->status;
 }
 
-int Animal::getX()
+Coord Animal::getCoord()
 {
-    return this->x;
-}
-
-int Animal::getY()
-{
-    return this->y;
+    return this->coord;
 }
 
 void Animal::setStatus(AnimalStatus status)
@@ -26,12 +21,7 @@ void Animal::setStatus(AnimalStatus status)
     this->status = status;
 }
 
-void Animal::setX(int x)
+void Animal::setCoord(Coord coord)
 {
-    this->x = x;
-}
-
-void Animal::setY(int y)
-{
-    this->y = y;
+    this->coord = coord;
 }

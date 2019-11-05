@@ -47,7 +47,7 @@ Sprite RenderLayer::getGrid() {
    return (this->spriteGrid);
 };
 
-vector<Sprite> RenderLayer::mapToSprites(unordered_map<int,Animal> animalsMap, int color) {
+vector<Sprite> RenderLayer::mapToSprites(unordered_map<AnimalID,Animal> animalsMap, int color) {
   Sprite sprite_rat(this->textureAnimal);
   Sprite sprite_cat(this->textureAnimal);
   Sprite sprite_dog(this->textureAnimal);
@@ -63,19 +63,13 @@ vector<Sprite> RenderLayer::mapToSprites(unordered_map<int,Animal> animalsMap, i
       spriteAnimals.at(index).setScale(0.0792,0.0792);
   }
 
-  for (pair<int, Animal> element : animalsMap) {
-      spriteAnimals.at(element.first-1).setPosition(73*element.second.getX(),73*element.second.getY());
+  for (pair<AnimalID, Animal> element : animalsMap) {
+      spriteAnimals.at(element.first-1).setPosition(73*element.second.getCoord().getX(),73*element.second.getCoord().getY());
       if (element.second.getStatus() == NORMAL) {
         if (color ==0) {
             spriteAnimals.at(element.first-1).setColor(Color(100, 100, 255, 255));
         } else {
             spriteAnimals.at(element.first-1).setColor(Color(255, 100, 100, 255));
-        }
-      } else if (element.second.getStatus() == TRAPPED)  {
-        if (color ==0) {
-            spriteAnimals.at(element.first-1).setColor(Color(100, 150, 255, 240));
-        } else {
-            spriteAnimals.at(element.first-1).setColor(Color(255, 150, 100, 240));
         }
       } else if (element.second.getStatus() == DEAD) {
           spriteAnimals.at(element.first-1).setColor(Color(255, 100, 100, 0));
