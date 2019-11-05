@@ -10,19 +10,19 @@ TileSet::TileSet(TileSetID id){
 	if (id == INFOS){
 		width=73;
 		height=73;
-		imageFile="../rapport/res/images/game/animalsTile.png";
+		imageFile="../res/images/game/animalsTile.png";
 	}
 
 	else if (id==ANIMALS){
 		width=73;
 		height=73;
-		imageFile="../rapport/res/images/game/animalsTile.png";
+		imageFile="../res/images/game/animalsTile.png";
 	}
 
 	else if (id==GRID){
 		width=876;
 		height=949;
-		imageFile="../rapport/res/images/map/map-jungle.png";
+		imageFile="../res/images/map/map-jungle.png";
 	}
 
 	textureTileSet.loadFromFile(imageFile);

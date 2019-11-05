@@ -6,12 +6,12 @@ using namespace state;
 
 Animal::Animal(Coord coord, AnimalStatus status): coord(coord), status(status){}
 
-AnimalStatus Animal::getStatus()
+AnimalStatus Animal::getStatus() const
 {
     return this->status;
 }
 
-Coord Animal::getCoord()
+Coord Animal::getCoord() const
 {
     return this->coord;
 }
