@@ -43,8 +43,9 @@ BOOST_AUTO_TEST_CASE(TestPlayer)
     testAnimals.insert(make_pair(TIGER,Animal({7,6},NORMAL)));
     testAnimals.insert(make_pair(LION,Animal({8,6},NORMAL)));
     testAnimals.insert(make_pair(ELEPHANT,Animal({9,6},NORMAL)));
+    playerTest3.setColor(0);
     BOOST_CHECK_EQUAL(playerTest3.getName(),"Jean Pierre");
-    BOOST_CHECK_EQUAL(playerTest3.getColor(),10);
+    BOOST_CHECK_EQUAL(playerTest3.getColor(),0);
     BOOST_CHECK(testAnimals.size() == playerTest3.getAnimals().size());
   }
 }

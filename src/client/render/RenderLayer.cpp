@@ -11,13 +11,13 @@ using namespace render;
 RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(window){
     this->renderingState = state;
 
-    TileSet tileSetAnimals(ANIMALS);
+    /*TileSet tileSetAnimals(ANIMALS);
   	unique_ptr<TileSet> ptr_tileSetAnimals (new TileSet(tileSetAnimals));
   	tileSets.push_back(move(ptr_tileSetAnimals));
 
     TileSet tileSetGrid(GRID);
     unique_ptr<TileSet> ptr_tileSetGrid (new TileSet(tileSetGrid));
-    tileSets.push_back(move(ptr_tileSetGrid));
+    tileSets.push_back(move(ptr_tileSetGrid));*/
 
     this->animalsJ1 = this->renderingState.getPlayer1().getAnimals();
     this->animalsJ2 = this->renderingState.getPlayer2().getAnimals();

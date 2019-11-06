@@ -1,4 +1,4 @@
-#include <string>
+/*#include <string>
 #include "../render.h"
 
 using namespace render;
@@ -47,4 +47,4 @@ const std::string  TileSet::getImageFile (){
 sf::Texture& TileSet::getTexture(){
 	sf::Texture & refTexture = this->textureTileSet;
 	return refTexture ;
-}
+}*/

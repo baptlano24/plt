@@ -6,7 +6,7 @@ using namespace state;
 Coord::Coord(int x, int y): x(x),y(y){}
 
 Coord::Coord(){
-    Coord(0,0);
+    new (this) Coord(0,0);
 }
 
 int Coord::getX()
