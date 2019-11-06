@@ -8,7 +8,7 @@ void Observable::registerObserver (IObserver* observer){
 	observers.push_back(observer);
 }
 
-void Observable::notifyObservers (StateEvent& event, State& state){
+void Observable::notifyObservers ( StateEvent& event, State& state){
 	for(auto observer : observers){
 		observer->stateChanged(event, state);
 	}
