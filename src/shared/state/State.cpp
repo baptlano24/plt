@@ -4,8 +4,8 @@ using namespace std;
 using namespace state;
 
 State::State(string nom1, string nom2) {
-    this->player1 = Player(nom1,0,true);
-    this->player2 = Player(nom2,1,false);
+    this->player1 = Player(nom1,0);
+    this->player2 = Player(nom2,1);
     this->menu = GAME_MENU;
     this->grid = std::array<std::array<Square,13>,12> {
       std::array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH}},
