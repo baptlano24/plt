@@ -33,7 +33,7 @@ int main(int argc,char* argv[1])
 
     			// -- Affichage de cet Etat --
     			RenderLayer stateLayer(initialState, window);
-
+          
           stateLayer.draw(window);
 
 
