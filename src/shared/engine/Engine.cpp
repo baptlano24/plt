@@ -22,8 +22,11 @@ state::State& Engine::getState(){
 
 }
 
+bool Engine::getTurn(){
+  return this->switchTurn;
+}
 Engine::~Engine(){
-  
+
 }
 
 void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){

@@ -9,18 +9,7 @@ using namespace render;
 
 
 RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(window){
-    this->renderingState = state;
 
-    /*TileSet tileSetAnimals(ANIMALS);
-  	unique_ptr<TileSet> ptr_tileSetAnimals (new TileSet(tileSetAnimals));
-  	tileSets.push_back(move(ptr_tileSetAnimals));
-
-    TileSet tileSetGrid(GRID);
-    unique_ptr<TileSet> ptr_tileSetGrid (new TileSet(tileSetGrid));
-    tileSets.push_back(move(ptr_tileSetGrid));*/
-
-    this->animalsJ1 = this->renderingState.getPlayer1().getAnimals();
-    this->animalsJ2 = this->renderingState.getPlayer2().getAnimals();
 
     if (!this->textureGrid.loadFromFile("../res/images/map/map-jungle.png")) {
         cout << "Erreur de chargement de la texture à partir de map-jungle";
@@ -34,8 +23,7 @@ RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(wind
         this->texturesAnimals.push_back(animal);
     };
 
-    this->animalsSpriteJ1 = mapToSprites(this->animalsJ1, this->renderingState.getPlayer1().getColor());
-    this->animalsSpriteJ2 = mapToSprites(this->animalsJ2, this->renderingState.getPlayer2().getColor());
+    updateRender(state);
     this->spriteGrid = Sprite(this->textureGrid);
 };
 
@@ -50,6 +38,22 @@ vector<Sprite> RenderLayer::getAnimalsJ2(){
 Sprite RenderLayer::getGrid() {
     return (this->spriteGrid);
 };
+
+void RenderLayer::updateRender(const state::State& newState){
+
+  this->renderingState = newState;
+
+  this->animalsJ1 = this->renderingState.getPlayer1().getAnimals();
+  this->animalsJ2 = this->renderingState.getPlayer2().getAnimals();
+  this->animalsSpriteJ1 = mapToSprites(this->animalsJ1, this->renderingState.getPlayer1().getColor());
+  this->animalsSpriteJ2 = mapToSprites(this->animalsJ2, this->renderingState.getPlayer2().getColor());
+
+}
+void RenderLayer::stateChanged (const state::StateEvent& e, const state::State& newState){
+	updateRender(newState);
+	draw(window);
+}
+
 
 vector<Sprite> RenderLayer::mapToSprites(unordered_map<AnimalID,Animal> animalsMap, int color) {
     vector<Sprite> spriteAnimals;

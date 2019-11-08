@@ -41,13 +41,30 @@ int main(int argc,char* argv[1])
     } else if (argc>=2 && string(argv[1])=="Engine") {
       cout<<"Moteur"<<endl;
       Engine engine;
-      engine.getState();
       sf::RenderWindow window(sf::VideoMode(876,949), "Jungle War");
       RenderLayer stateLayer(engine.getState(), window);
+      RenderLayer* ptr_stateLayer=&stateLayer;
+      engine.getState().registerObserver(ptr_stateLayer);
+
+      bool demarrage = true;
+
+      while (window.isOpen()){
+        //sf::Event event;
+
+        if (demarrage){
+          stateLayer.draw(window);
+          cout << "(Appuyez sur une touche pour simuler un tour de jeu)" << endl;
+          cout << "(Cette simulation compte 3 tours)\n" << endl;
+          demarrage = false;
+        }
+      }
 
 
-    }
-    else {
+
+
+
+
+    } else {
         cout << "Veuillez dire une commande (hello, renderTest1, renderTest2) !" << endl;
     }
     return 0;

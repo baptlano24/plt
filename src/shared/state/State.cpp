@@ -24,7 +24,7 @@ State::State(string nom1, string nom2) {
 }
 
 State::State() {
-    State("Joueur1", "Joueur2");
+    new (this) State("Joueur1", "Joueur2");
 }
 
 Player State:: getPlayer1()
