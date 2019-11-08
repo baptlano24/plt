@@ -58,7 +58,7 @@ int Player::getColor()
     return this->color;
 }
 
-const unordered_map<AnimalID, Animal> Player::getAnimals()
+unordered_map<AnimalID, Animal>& Player::getAnimals()
 {
     return this->animals;
 }

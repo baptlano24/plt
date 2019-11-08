@@ -27,17 +27,20 @@ State::State() {
     new (this) State("Joueur1", "Joueur2");
 }
 
-Player State:: getPlayer1()
+Player& State:: getPlayer1()
 {
-    return this->player1;
+    Player& refPlay = this->player1;
+    return refPlay;
 }
 
-Player State:: getPlayer2()
+Player& State:: getPlayer2()
 {
-    return this->player2;
+
+  Player& refPlay = this->player2;
+  return refPlay;
 }
 
-Square& State:: returnSquare(Coord Coord)
+Square& State:: getSquare(Coord Coord)
 {
   Square& refSquare = this->grid[Coord.getX()][Coord.getY()];
   return refSquare;

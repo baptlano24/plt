@@ -79,19 +79,11 @@ return spriteAnimals;
 };
 
 void RenderLayer::draw(RenderWindow &window) {
-    while (window.isOpen()){
-        Event event;
-        while (window.pollEvent(event)){
-            if (event.type == Event::Closed){
-              window.close();
-            }
-        }
-        window.clear();
-        window.draw(this->getGrid());
-        for(int index = 0; index<8; index++) {
-            window.draw(this->getAnimalsJ1()[index]);
-            window.draw(this->getAnimalsJ2()[index]);
-        }
-        window.display();
+    window.clear();
+    window.draw(this->getGrid());
+    for(int index = 0; index<8; index++) {
+        window.draw(this->getAnimalsJ1()[index]);
+        window.draw(this->getAnimalsJ2()[index]);
     }
+    window.display();
 }

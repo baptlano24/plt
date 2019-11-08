@@ -49,7 +49,7 @@ int main(int argc,char* argv[1])
       bool demarrage = true;
 
       while (window.isOpen()){
-        //sf::Event event;
+        sf::Event event;
 
         if (demarrage){
           stateLayer.draw(window);
@@ -57,14 +57,37 @@ int main(int argc,char* argv[1])
           cout << "(Cette simulation compte 3 tours)\n" << endl;
           demarrage = false;
         }
+
+        while (window.pollEvent(event)){
+          if (event.type == sf::Event::Closed){
+            window.close();
+          }
+          else if(event.type == sf::Event::MouseButtonPressed ){
+            cout <<"touche!"<<endl;
+            Animal &rat = engine.getState().getPlayer1().getAnimals().at(RAT);
+            Move move1(rat,Coord(5,5));
+            move1.execute(engine.getState());
+            StateEvent stateEvent(ALL_CHANGED);
+            engine.getState().notifyObservers(stateEvent,engine.getState());
+            /*int ligne = 2;
+
+            while(rat.getCoord() != Coord(1,5)){
+              Move move(rat,Coord(1,ligne));
+              move.execute(engine.getState());
+              StateEvent stateEvent(ALL_CHANGED);
+              engine.getState().notifyObservers(stateEvent,engine.getState());
+              ligne = ligne + 1;
+              sleep(1);*/
+
+
       }
+    }
 
 
 
 
 
-
-    } else {
+    }} else {
         cout << "Veuillez dire une commande (hello, renderTest1, renderTest2) !" << endl;
     }
     return 0;

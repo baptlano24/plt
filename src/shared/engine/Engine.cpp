@@ -22,9 +22,7 @@ state::State& Engine::getState(){
 
 }
 
-bool Engine::getTurn(){
-  return this->switchTurn;
-}
+
 Engine::~Engine(){
 
 }
