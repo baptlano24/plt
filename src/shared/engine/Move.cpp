@@ -18,6 +18,10 @@ void Move::execute(state::State state)
 {
   if (this->target.getStatus()==NORMAL)
   {
-    this->target.setCoord(this->destination);
+    if(state.returnSquare(this->target.getCoord()).getID() == EARTH && state.returnSquare(this->destination).getID()==EARTH)
+    {
+
+      this->target.setCoord(this->destination);
+    }
   }
 }

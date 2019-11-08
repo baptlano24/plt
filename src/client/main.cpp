@@ -6,10 +6,12 @@
 #include <state.h>
 #include "state.h"
 #include "render.h"
+#include "engine.h"
 using namespace std;
 using namespace state;
 using namespace sf;
 using namespace render;
+using namespace engine;
 
 void testSFML() {
     Texture texture;
@@ -35,7 +37,17 @@ int main(int argc,char* argv[1])
           stateLayer.draw(window);
 
 
-    } else {
+
+    } else if (argc>=2 && string(argv[1])=="Engine") {
+      cout<<"Moteur"<<endl;
+      Engine engine;
+      engine.getState();
+      sf::RenderWindow window(sf::VideoMode(876,949), "Jungle War");
+      RenderLayer stateLayer(engine.getState(), window);
+
+
+    }
+    else {
         cout << "Veuillez dire une commande (hello, renderTest1, renderTest2) !" << endl;
     }
     return 0;

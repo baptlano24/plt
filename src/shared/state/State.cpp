@@ -36,3 +36,9 @@ Player State:: getPlayer2()
 {
     return this->player2;
 }
+
+Square& State:: returnSquare(Coord Coord)
+{
+  Square& refSquare = this->grid[Coord.getX()][Coord.getY()];
+  return refSquare;
+}
