@@ -42,6 +42,15 @@ Player& State:: getPlayer2()
 
 Square& State:: getSquare(Coord Coord)
 {
-  Square& refSquare = this->grid[Coord.getX()][Coord.getY()];
-  return refSquare;
+    if(Coord.getX()<=11 & Coord.getX()>=0 & Coord.getY()<= 12 & Coord.getY()<=0){
+    Square& refSquare = this->grid[Coord.getX()][Coord.getY()];
+    return refSquare;
+  }
+    else{
+      Square Nomap;
+      Nomap.setID(NOMAP);
+      Square& refSquare = Nomap;
+      return refSquare;
+    }
+
 }
