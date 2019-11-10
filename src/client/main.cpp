@@ -40,19 +40,26 @@ int main(int argc,char* argv[1]) {
     /*int renderWidth = VideoMode::getDesktopMode().width;
     int renderHeight = VideoMode::getDesktopMode().height;
     sf::RenderWindow window(sf::VideoMode(renderWidth,renderHeight), "Jungle War");*/
-    window.setFramerateLimit(60);
     RenderLayer stateLayer(engine.getState(), window);
     RenderLayer* ptr_stateLayer=&stateLayer;
     engine.getState().registerObserver(ptr_stateLayer);
-
+    int newX = 1;
+    int newY = 1;
+    int mouseX;
+    int mouseY;
+    int mouseGridX;
+    int mouseGridY;
+    bool animalSelected = false;
     bool demarrage = true;
+    Animal &rat = engine.getState().getPlayer1().getAnimals().at(RAT);
+
     while (window.isOpen()){
-      sf::Event event;
-      int mouseX = Mouse::getPosition(window).x;
-      int mouseY = Mouse::getPosition(window).y;
-      int mouseGridX = mouseX/73;
-      int mouseGridY = mouseY/73;
-      //cout << mouseX << " : "<< mouseY << endl;
+      Event event;
+      mouseX = Mouse::getPosition(window).x;
+      mouseY = Mouse::getPosition(window).y;
+      mouseGridX = mouseX/73;
+      mouseGridY = mouseY/73;
+
       if (demarrage){
         stateLayer.draw(window);
         cout << "(Cliquez pour simuler un tour de jeu)" << endl << endl;
@@ -63,13 +70,20 @@ int main(int argc,char* argv[1]) {
         if (event.type == Event::Closed){
           window.close();
         }
+
         else if(event.type == Event::MouseButtonPressed) {
           cout << "Mouse clic wind event : " << mouseX << " , "<< mouseY << endl;
-          cout << "Mouse clic grid event : " << mouseGridX << " , "<< mouseGridY << endl << endl;
-          Animal &rat = engine.getState().getPlayer1().getAnimals().at(RAT);
-          if (mouseGridX == rat.getCoord().getX()) {
+          cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl << endl;
+          if (animalSelected == false && mouseGridX == rat.getCoord().getX() && mouseGridY == rat.getCoord().getY()) {
+            cout << "-- Animal Selected --" << endl << endl;
+            animalSelected = true;
+
+          } else if (animalSelected == true) {
+            animalSelected = false;
+            newX = mouseGridX;
+            newY = mouseGridY;
             cout << "-- Beginning of the move --" << endl;
-            Move move1(rat,Coord(5,5));
+            Move move1(rat,Coord(newX,newY));
             move1.execute(engine.getState());
             StateEvent stateEvent(ALL_CHANGED);
             engine.getState().notifyObservers(stateEvent,engine.getState());
