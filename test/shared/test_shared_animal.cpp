@@ -12,5 +12,8 @@ BOOST_AUTO_TEST_CASE(Animal_test)
     BOOST_CHECK_EQUAL(animal.getStatus(),NORMAL);
 
     animal.setStatus(DEAD);
+    animal.setCoord({1,1});
     BOOST_CHECK_EQUAL(animal.getStatus(),DEAD);
+    BOOST_CHECK_EQUAL(animal.getCoord().getX(),1);
+    BOOST_CHECK_EQUAL(animal.getCoord().getY(),1);
 }

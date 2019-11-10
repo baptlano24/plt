@@ -23,7 +23,7 @@ void Move::execute(state::State state)
   cout<<"nouvelles coord:" << this->target.getCoord().getX() <<","<< this->target.getCoord().getY() <<endl;
   /*if (this->target.getStatus()==NORMAL)
   {
-    if(state.returnSquare(this->target.getCoord()).getID() == EARTH && state.returnSquare(this->destination).getID()==EARTH)
+    if(state.getSquare(this->target.getCoord()).getID() == EARTH && state.getSquare(this->destination).getID()==EARTH)
     {
 
       this->target.setCoord(this->destination);
