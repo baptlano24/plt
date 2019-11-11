@@ -1,10 +1,10 @@
-*** Project "Jungle War" ***
+# Project -Jungle War-
 ****************************
 
 <p>To start the game :
 
-* cd bin
+* cd plt/bin
 * make -C ../build
-* ./client renderTest2
+* ./client Engine
 
 </p>
