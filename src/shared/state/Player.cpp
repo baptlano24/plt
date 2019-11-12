@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Player.h"
 #include "Animal.h"
-#include "AnimalStatus.h"
 using namespace std;
 using namespace state;
 

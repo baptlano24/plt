@@ -25,3 +25,13 @@ void Animal::setCoord(Coord coord)
 {
     this->coord = coord;
 }
+
+void Animal::setID(AnimalID newID)
+{
+  this->id = newID;
+}
+
+AnimalID Animal::getID()
+{
+  return this->id;
+}

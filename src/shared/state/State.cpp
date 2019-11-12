@@ -75,8 +75,8 @@ pair<Animal&, bool> State::getSelection(Coord coord)
     }
   } else {
     Animal noAnimal(Coord(0,0),DEAD);
-    Animal& refNoAnimal = noAnimal;
-    pair<Animal&, bool> duo(refNoAnimal,false);
+    
+    pair<Animal&, bool> duo(noAnimal,false);
     return duo;
   }
 }
