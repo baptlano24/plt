@@ -49,6 +49,7 @@ int main(int argc,char* argv[1]) {
     int mouseY;
     int mouseGridX;
     int mouseGridY;
+    Coord mouseCoord;
     bool animalSelected = false;
     bool demarrage = true;
     Animal* selectedAnimal;
@@ -59,6 +60,8 @@ int main(int argc,char* argv[1]) {
       mouseY = Mouse::getPosition(window).y;
       mouseGridX = mouseX/73;
       mouseGridY = mouseY/73;
+      mouseCoord.setX(mouseGridX);
+      mouseCoord.setY(mouseGridY);
 
       if (demarrage){
         stateLayer.draw(window);
@@ -72,16 +75,20 @@ int main(int argc,char* argv[1]) {
         }
 
         else if(event.type == Event::MouseButtonPressed) {
-          cout << "Mouse clic wind event : " << mouseX << " , "<< mouseY << endl;
-          cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl << endl;
-
+          cout << "* Clic *" << endl;
           if (animalSelected == false ) {
-            pair<Animal&, bool> selection = engine.getState().getSelection(Coord(mouseGridX,mouseGridY));
-            selectedAnimal = &selection.first;
-            animalSelected = selection.second;
+            cout << "Selection :" << endl;
+            cout << "Mouse clic wind event : " << mouseX << " , "<< mouseY << endl;
+            cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl << endl;
+            pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
+            selectedAnimal = selection.first;
+            if (selection.first != 0){
+              animalSelected = true;
+            }
 
           } else if (animalSelected == true) {
             cout << "-- Beginning of the move --" << endl;
+            cout << "Animal selected: " << selectedAnimal->getID() << endl;
             newX = mouseGridX;
             newY = mouseGridY;
             Move move1(selectedAnimal, Coord(newX,newY));

@@ -30,29 +30,50 @@ void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 	currentOrder[priorite]=move(ptr_cmd);
 }
 
-std::vector<pair<state::Coord, engine::ActionID>> authorisedActions (state::State& state, state::AnimalID animalID){
+std::vector<pair<state::Coord, engine::ActionID>> authorisedActions (state::State& state, state::Coord current_square){
   std::vector<pair<state::Coord,engine::ActionID>> listAction;
-  Coord Case_actuel = state.getPlayer1().getAnimals().at(animalID).getCoord();
-  Coord Case_droite = {Case_actuel.getX()+1,Case_actuel.getY()};
-  Coord Case_gauche = {Case_actuel.getX()-1,Case_actuel.getY()};
-  Coord Case_devant = {Case_actuel.getX(),Case_actuel.getY()-1};
-  Coord Case_derriere = {Case_actuel.getX(),Case_actuel.getY()+1};
-  listAction.push_back(make_pair(Case_droite,NONE));
-  listAction.push_back(make_pair(Case_gauche,NONE));
-  listAction.push_back(make_pair(Case_devant,NONE));
-  listAction.push_back(make_pair(Case_derriere,NONE));
-  if (animalID == ELEPHANT || animalID ==  CAT || animalID == DOG || animalID == WOLF){
-    if(state.getPlayer1().getAnimals().at(animalID).getStatus() == NORMAL){
+  Coord right_square = {current_square.getX()+1,current_square.getY()};
+  Coord left_square = {current_square.getX()-1,current_square.getY()};
+  Coord front_square = {current_square.getX(),current_square.getY()-1};
+  Coord behind_square = {current_square.getX(),current_square.getY()+1};
+  listAction.push_back(make_pair(right_square,NONE));
+  listAction.push_back(make_pair(left_square,NONE));
+  listAction.push_back(make_pair(front_square,NONE));
+  listAction.push_back(make_pair(behind_square,NONE));
+  if ( state.getSelection(current_square).first->getID() == ELEPHANT || state.getSelection(current_square).first->getID() ==  CAT || state.getSelection(current_square).first->getID() == DOG || state.getSelection(current_square).first->getID() == WOLF){
+    if(state.getSelection(current_square).first->getStatus() == NORMAL){
       for (int i ; i<=4 ;i++) {
         if(state.getSquare(listAction[i].first).getID()!=WATER){
-          if(state.getSelection(listAction[i].first).second){
-              
-            //if(animalID>state.getSelection(listAction[i].first).first.getID()){
-              //listAction[i].second = ATTACK;
+          if(state.getSelection(listAction[i].first).first){
+            if(state.getSelection(listAction[i].first).second == state.getSelection(current_square).second){
+              listAction[i].second = NONE;
             }
-            //else{
-              //listAction[i].second = NONE;
-            //}
+            else{
+              if(state.getSelection(current_square).first->getID()>state.getSelection(listAction[i].first).first->getID()){
+                  listAction[i].second = ATTACK;
+                }
+                else{
+                  listAction[i].second = NONE;
+                }
+
+
+            }
+
+
+          }else{
+            if((state.getSquare(listAction[i].first).getID() == TRAPJ1 && state.getSelection(current_square).second == 0 )||(state.getSquare(listAction[i].first).getID() == TRAPJ2 && state.getSelection(current_square).second == 1)){
+              listAction[i].second = SHIFT;
+            }
+            else if((state.getSquare(listAction[i].first).getID() == TRAPJ1 && state.getSelection(current_square).second == 1 )||(state.getSquare(listAction[i].first).getID() == TRAPJ2 && state.getSelection(current_square).second == 0)){
+              listAction[i].second = SHIFT_TRAPPED;
+            }
+            else if((state.getSquare(listAction[i].first).getID() == THRONEJ1 && state.getSelection(current_square).second == 1 )||(state.getSquare(listAction[i].first).getID() == THRONEJ2 && state.getSelection(current_square).second == 0)){
+              listAction[i].second = SHIFT_VICTORY;
+            }
+
+
+
+
 
 
           }
@@ -63,3 +84,4 @@ std::vector<pair<state::Coord, engine::ActionID>> authorisedActions (state::Stat
 
 
   }
+}

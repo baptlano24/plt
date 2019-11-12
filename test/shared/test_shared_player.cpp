@@ -19,30 +19,30 @@ BOOST_AUTO_TEST_CASE(TestPlayer)
 
   {
     Player playerTest2{"Baba",1};
-    std::unordered_map<AnimalID,Animal> testAnimals;
-    testAnimals.insert(make_pair(RAT,Animal({10,11},NORMAL))); //(x,y) en haut à gauche
-    testAnimals.insert(make_pair(CAT,Animal({9,10},NORMAL)));
-    testAnimals.insert(make_pair(DOG,Animal({8,11},NORMAL)));
-    testAnimals.insert(make_pair(WOLF,Animal({7,10},NORMAL)));
-    testAnimals.insert(make_pair(LEOPARD,Animal({4,10},NORMAL)));
-    testAnimals.insert(make_pair(TIGER,Animal({3,11},NORMAL)));
-    testAnimals.insert(make_pair(LION,Animal({2,10},NORMAL)));
-    testAnimals.insert(make_pair(ELEPHANT,Animal({1,11},NORMAL)));
+    std::vector<Animal> testAnimals;
+    testAnimals.push_back(Animal({1,1},NORMAL,RAT)); //(x,y) en haut à gauche
+    testAnimals.push_back(Animal({2,2},NORMAL,CAT));
+    testAnimals.push_back(Animal({3,1},NORMAL,DOG));
+    testAnimals.push_back(Animal({4,2},NORMAL,WOLF));
+    testAnimals.push_back(Animal({7,2},NORMAL,LEOPARD));
+    testAnimals.push_back(Animal({8,1},NORMAL,TIGER));
+    testAnimals.push_back(Animal({9,2},NORMAL,LION));
+    testAnimals.push_back(Animal({10,1},NORMAL,ELEPHANT));
     BOOST_CHECK_EQUAL(playerTest2.getName(),"Baba");
     BOOST_CHECK_EQUAL(playerTest2.getColor(),1);
     BOOST_CHECK(testAnimals.size() == playerTest2.getAnimals().size());
   }
   {
     Player playerTest3{"Jean Pierre", 10};
-    std::unordered_map<AnimalID,Animal> testAnimals;
-    testAnimals.insert(make_pair(RAT,Animal({2,6},NORMAL))); //(x,y) en haut à gauche
-    testAnimals.insert(make_pair(CAT,Animal({3,6},NORMAL)));
-    testAnimals.insert(make_pair(DOG,Animal({4,6},NORMAL)));
-    testAnimals.insert(make_pair(WOLF,Animal({5,6},NORMAL)));
-    testAnimals.insert(make_pair(LEOPARD,Animal({6,6},NORMAL)));
-    testAnimals.insert(make_pair(TIGER,Animal({7,6},NORMAL)));
-    testAnimals.insert(make_pair(LION,Animal({8,6},NORMAL)));
-    testAnimals.insert(make_pair(ELEPHANT,Animal({9,6},NORMAL)));
+    std::vector<Animal> testAnimals;
+    testAnimals.push_back(Animal({1,1},NORMAL,RAT)); //(x,y) en haut à gauche
+    testAnimals.push_back(Animal({2,2},NORMAL,CAT));
+    testAnimals.push_back(Animal({3,1},NORMAL,DOG));
+    testAnimals.push_back(Animal({4,2},NORMAL,WOLF));
+    testAnimals.push_back(Animal({7,2},NORMAL,LEOPARD));
+    testAnimals.push_back(Animal({8,1},NORMAL,TIGER));
+    testAnimals.push_back(Animal({9,2},NORMAL,LION));
+    testAnimals.push_back(Animal({10,1},NORMAL,ELEPHANT));
     playerTest3.setColor(0);
     BOOST_CHECK_EQUAL(playerTest3.getName(),"Jean Pierre");
     BOOST_CHECK_EQUAL(playerTest3.getColor(),0);

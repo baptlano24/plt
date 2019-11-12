@@ -58,25 +58,24 @@ Square& State::getSquare(Coord Coord)
   }
 }
 
-pair<Animal&, bool> State::getSelection(Coord coord)
+pair<Animal*, int> State::getSelection(Coord coord)
 {
-  if (coord.getX()<=11 && coord.getX()>=0 && coord.getY()<= 12 && coord.getY()>=0) {
-    for (auto &animalPair : this->player1.getAnimals()) {
-      if (animalPair.second.getStatus() == NORMAL && animalPair.second.getCoord() == coord ) {
-        pair<Animal&, bool> duo(animalPair.second,true);
-        return duo;
-      }
+  pair<Animal*, int> selection;
+  selection.first = 0;
+  selection.second = 666;
+
+  for (int i = 0; i<=7 ;i++) {
+    if (this->player1.getAnimals()[i].getStatus() == NORMAL && this->player1.getAnimals()[i].getCoord() == coord ) {
+      selection.first = &this->player1.getAnimals()[i];
+      selection.second = this->player1.getColor();
     }
-    for (auto &animalPair : this->player2.getAnimals()) {
-      if (animalPair.second.getStatus() == NORMAL && animalPair.second.getCoord() == coord ) {
-        pair<Animal&, bool> duo(animalPair.second,true);
-        return duo;
-      }
-    }
-  } else {
-    Animal noAnimal(Coord(0,0),DEAD);
-    
-    pair<Animal&, bool> duo(noAnimal,false);
-    return duo;
   }
+  for (int i= 0; i<=7 ;i++) {
+    if (this->player2.getAnimals()[i].getStatus() == NORMAL && this->player2.getAnimals()[i].getCoord() == coord ) {
+      selection.first = &this->player1.getAnimals()[i];
+      selection.second = this->player1.getColor();
+    }
+  }
+
+  return selection;
 }

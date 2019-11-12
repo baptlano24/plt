@@ -4,7 +4,11 @@
 using namespace std;
 using namespace state;
 
-Animal::Animal(Coord coord, AnimalStatus status): coord(coord), status(status){}
+Animal :: Animal(Coord coord, AnimalStatus status, AnimalID id): coord(coord), status(status), id(id){}
+
+Animal :: Animal(){
+    new (this) Animal({0,0}, NORMAL, RAT);
+}
 
 AnimalStatus Animal::getStatus() const
 {
