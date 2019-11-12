@@ -91,11 +91,11 @@ int main(int argc,char* argv[1]) {
             animalSelected = false;
             cout << "-- End of the move --" << endl << endl;
           }
-          }
         }
       }
-    } else {
-      cout << "Veuillez dire une commande (hello, renderTest1, renderTest2, Engine) !" << endl;
     }
+  } else {
+    cout << "Veuillez dire une commande (hello, renderTest1, renderTest2, Engine) !" << endl;
+  }
   return 0;
 }
