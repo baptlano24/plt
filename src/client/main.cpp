@@ -95,7 +95,7 @@ int main(int argc,char* argv[1]) {
         }
       }
     } else {
-      cout << "Veuillez dire une commande (hello, renderTest1, renderTest2) !" << endl;
+      cout << "Veuillez dire une commande (hello, renderTest1, renderTest2, Engine) !" << endl;
     }
   return 0;
 }

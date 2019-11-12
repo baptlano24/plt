@@ -40,20 +40,17 @@ Sprite RenderLayer::getGrid() {
 };
 
 void RenderLayer::updateRender(const state::State& newState){
-
   this->renderingState = newState;
-
   this->animalsJ1 = this->renderingState.getPlayer1().getAnimals();
   this->animalsJ2 = this->renderingState.getPlayer2().getAnimals();
   this->animalsSpriteJ1 = mapToSprites(this->animalsJ1, this->renderingState.getPlayer1().getColor());
   this->animalsSpriteJ2 = mapToSprites(this->animalsJ2, this->renderingState.getPlayer2().getColor());
-
 }
+
 void RenderLayer::stateChanged (const state::StateEvent& e, const state::State& newState){
 	updateRender(newState);
 	draw(window);
 }
-
 
 vector<Sprite> RenderLayer::mapToSprites(unordered_map<AnimalID,Animal> animalsMap, int color) {
     vector<Sprite> spriteAnimals;
