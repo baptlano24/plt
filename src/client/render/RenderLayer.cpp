@@ -10,13 +10,13 @@ using namespace render;
 
 RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(window){
 
-
     if (!this->textureGrid.loadFromFile("../res/images/map/map-jungle.png")) {
         cout << "Erreur de chargement de la texture à partir de map-jungle";
     };
 
     for(int animal_index = 0; animal_index<8; ++animal_index) {
         Texture animal;
+        animal.setSmooth(true);
         if(!animal.loadFromFile("../res/images/game/animalsTile.png", sf::IntRect(animal_index*400, 0, 400, 400))) {
            cout << "Erreur de chargement de la texture à partir d'animalsTile" << animal_index;
         };

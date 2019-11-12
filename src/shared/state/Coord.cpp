@@ -28,3 +28,7 @@ void Coord::setX(int x)
 {
     this->x = x;
 }
+
+bool Coord::operator==(const Coord &otherCoord) {
+    return ( this->x == otherCoord.x && this->y == otherCoord.y );
+}

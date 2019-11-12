@@ -51,7 +51,7 @@ int main(int argc,char* argv[1]) {
     int mouseGridY;
     bool animalSelected = false;
     bool demarrage = true;
-    Animal &rat = engine.getState().getPlayer1().getAnimals().at(RAT);
+    Animal* selectedAnimal;
 
     while (window.isOpen()){
       Event event;
@@ -74,30 +74,23 @@ int main(int argc,char* argv[1]) {
         else if(event.type == Event::MouseButtonPressed) {
           cout << "Mouse clic wind event : " << mouseX << " , "<< mouseY << endl;
           cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl << endl;
-          if (animalSelected == false && mouseGridX == rat.getCoord().getX() && mouseGridY == rat.getCoord().getY()) {
-            cout << "-- Animal Selected --" << endl << endl;
-            animalSelected = true;
+
+          if (animalSelected == false ) {
+            pair<Animal&, bool> selection = engine.getState().getSelection(Coord(mouseGridX,mouseGridY));
+            selectedAnimal = &selection.first;
+            animalSelected = selection.second;
 
           } else if (animalSelected == true) {
-            animalSelected = false;
+            cout << "-- Beginning of the move --" << endl;
             newX = mouseGridX;
             newY = mouseGridY;
-            cout << "-- Beginning of the move --" << endl;
-            Move move1(rat,Coord(newX,newY));
+            Move move1(selectedAnimal, Coord(newX,newY));
             move1.execute(engine.getState());
             StateEvent stateEvent(ALL_CHANGED);
             engine.getState().notifyObservers(stateEvent,engine.getState());
+            animalSelected = false;
             cout << "-- End of the move --" << endl << endl;
           }
-          /*int ligne = 2;
-
-          while(rat.getCoord() != Coord(1,5)){
-            Move move(rat,Coord(1,ligne));
-            move.execute(engine.getState());
-            StateEvent stateEvent(ALL_CHANGED);
-            engine.getState().notifyObservers(stateEvent,engine.getState());
-            ligne = ligne + 1;
-            sleep(1);*/
           }
         }
       }

@@ -57,3 +57,26 @@ Square& State::getSquare(Coord Coord)
     return refSquare;
   }
 }
+
+pair<Animal&, bool> State::getSelection(Coord coord)
+{
+  if (coord.getX()<=11 && coord.getX()>=0 && coord.getY()<= 12 && coord.getY()>=0) {
+    for (auto &animalPair : this->player1.getAnimals()) {
+      if (animalPair.second.getStatus() == NORMAL && animalPair.second.getCoord() == coord ) {
+        pair<Animal&, bool> duo(animalPair.second,true);
+        return duo;
+      }
+    }
+    for (auto &animalPair : this->player2.getAnimals()) {
+      if (animalPair.second.getStatus() == NORMAL && animalPair.second.getCoord() == coord ) {
+        pair<Animal&, bool> duo(animalPair.second,true);
+        return duo;
+      }
+    }
+  } else {
+    Animal noAnimal(Coord(0,0),DEAD);
+    Animal& refNoAnimal = noAnimal;
+    pair<Animal&, bool> duo(refNoAnimal,false);
+    return duo;
+  }
+}

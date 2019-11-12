@@ -12,7 +12,7 @@ Player::Player() {
 Player::Player(string name,int color): name(name), color(color)
 {
   if (this->color == 0){
-    std::unordered_map<AnimalID, Animal> newAnimals;
+    unordered_map<AnimalID, Animal> newAnimals;
     newAnimals.insert(make_pair(RAT,Animal({1,1},NORMAL))); //(x,y) en haut à gauche
     newAnimals.insert(make_pair(CAT,Animal({2,2},NORMAL)));
     newAnimals.insert(make_pair(DOG,Animal({3,1},NORMAL)));
@@ -24,7 +24,7 @@ Player::Player(string name,int color): name(name), color(color)
     this->animals = newAnimals;
   }
   else if (this->color == 1){
-    std::unordered_map<AnimalID, Animal> newAnimals;
+    unordered_map<AnimalID, Animal> newAnimals;
     newAnimals.insert(make_pair(RAT,Animal({10,11},NORMAL))); //(x,y) en haut à gauche
     newAnimals.insert(make_pair(CAT,Animal({9,10},NORMAL)));
     newAnimals.insert(make_pair(DOG,Animal({8,11},NORMAL)));
@@ -35,7 +35,7 @@ Player::Player(string name,int color): name(name), color(color)
     newAnimals.insert(make_pair(ELEPHANT,Animal({1,11},NORMAL)));
     this->animals = newAnimals;
   } else {
-    std::unordered_map<AnimalID, Animal> newAnimals;
+    unordered_map<AnimalID, Animal> newAnimals;
     newAnimals.insert(make_pair(RAT,Animal({2,6},NORMAL))); //(x,y) en haut à gauche
     newAnimals.insert(make_pair(CAT,Animal({3,6},NORMAL)));
     newAnimals.insert(make_pair(DOG,Animal({4,6},NORMAL)));

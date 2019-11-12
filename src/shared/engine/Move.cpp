@@ -8,7 +8,7 @@ using namespace state;
 using namespace engine;
 
 
-Move::Move(state::Animal& target, state::Coord destination):target(target),destination(destination){
+Move::Move(state::Animal* target, state::Coord destination):target(target),destination(destination){
     this->ID = MOVE;
     this->player = 0;
 }
@@ -16,11 +16,11 @@ Move::Move(state::Animal& target, state::Coord destination):target(target),desti
 
 void Move::execute(state::State state)
 {
-  cout<<"anciennes coord:" << this->target.getCoord().getX() <<","<< this->target.getCoord().getY() <<endl;
+  cout<<"anciennes coord:" << this->target->getCoord().getX() <<","<< this->target->getCoord().getY() <<endl;
   cout<<"nouvelles coord demandees:" << this->destination.getX() <<","<< this->destination.getY() <<endl;
 
-  this->target.setCoord(this->destination);
-  cout<<"nouvelles coord:" << this->target.getCoord().getX() <<","<< this->target.getCoord().getY() <<endl;
+  this->target->setCoord(this->destination);
+  cout<<"nouvelles coord:" << this->target->getCoord().getX() <<","<< this->target->getCoord().getY() <<endl;
   /*if (this->target.getStatus()==NORMAL)
   {
     if(state.getSquare(this->target.getCoord()).getID() == EARTH && state.getSquare(this->destination).getID()==EARTH)

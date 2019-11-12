@@ -19,7 +19,6 @@ bool Engine::getactivePlayer(){
 state::State& Engine::getState(){
   	state::State& refEtat=currentState;
   	return refEtat;
-
 }
 
 
@@ -29,7 +28,6 @@ Engine::~Engine(){
 
 void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 	currentOrder[priorite]=move(ptr_cmd);
-
 }
 
 std::unordered_map<engine::ActionID,state::Coord>& authorisedActions (state::State& state, state::AnimalID AnimalID){
@@ -41,7 +39,7 @@ std::unordered_map<engine::ActionID,state::Coord>& authorisedActions (state::Sta
         Coord Case_devant = {Case_actuel.getX(),Case_actuel.getY()-1};
         Coord Case_derriere = {Case_actuel.getX(),Case_actuel.getY()+1};
         if(state.getSquare(Case_droite).getID()!=WATER || NOMAP){
-        
+
 
         }
       }
