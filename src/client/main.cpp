@@ -43,7 +43,6 @@ int main(int argc,char* argv[1]) {
     RenderLayer stateLayer(engine.getState(), window);
     RenderLayer* ptr_stateLayer=&stateLayer;
     engine.getState().registerObserver(ptr_stateLayer);
-    RenderLayer* ptr_stateLayer=&stateLayer;
     
     int newX = 1;
     int newY = 1;

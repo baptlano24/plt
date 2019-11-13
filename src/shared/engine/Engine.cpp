@@ -12,6 +12,10 @@ Engine::Engine(): currentState(){
   this->activePlayer = 0;
 }
 
+Engine::~Engine(){
+
+}
+
 bool Engine::getactivePlayer(){
   return this->activePlayer;
 }
@@ -21,10 +25,8 @@ state::State& Engine::getState(){
   	return refEtat;
 }
 
+void Engine::playerRequest(RenderEventID event){}
 
-Engine::~Engine(){
-
-}
 
 void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 	currentOrder[priorite]=move(ptr_cmd);
@@ -55,10 +57,7 @@ std::vector<pair<state::Coord, engine::ActionID>> authorisedActions (state::Stat
                 else{
                   listAction[i].second = NONE;
                 }
-
-
             }
-
 
           }else{
             if((state.getSquare(listAction[i].first).getID() == TRAPJ1 && state.getSelection(current_square).second == 0 )||(state.getSquare(listAction[i].first).getID() == TRAPJ2 && state.getSelection(current_square).second == 1)){
@@ -70,11 +69,6 @@ std::vector<pair<state::Coord, engine::ActionID>> authorisedActions (state::Stat
             else if((state.getSquare(listAction[i].first).getID() == THRONEJ1 && state.getSelection(current_square).second == 1 )||(state.getSquare(listAction[i].first).getID() == THRONEJ2 && state.getSelection(current_square).second == 0)){
               listAction[i].second = SHIFT_VICTORY;
             }
-
-
-
-
-
 
           }
         }
