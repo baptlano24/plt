@@ -43,7 +43,7 @@ int main(int argc,char* argv[1]) {
     RenderLayer stateLayer(engine.getState(), window);
     RenderLayer* ptr_stateLayer=&stateLayer;
     engine.getState().registerObserver(ptr_stateLayer);
-    
+
     int newX = 1;
     int newY = 1;
     int mouseX;
@@ -77,6 +77,7 @@ int main(int argc,char* argv[1]) {
 
         else if(event.type == Event::MouseButtonPressed) {
           cout << "* Clic *" << endl;
+
           if (animalSelected == false ) {
             cout << "Selection :" << endl;
             cout << "Mouse clic wind event : " << mouseX << " , "<< mouseY << endl;
@@ -89,13 +90,13 @@ int main(int argc,char* argv[1]) {
 
           } else if (animalSelected == true) {
             cout << "-- Beginning of the move --" << endl;
-            cout << "Animal selected: " << selectedAnimal->getID() << endl;
+            cout << "Animal selected id: " << selectedAnimal->getID() << endl;
             newX = mouseGridX;
             newY = mouseGridY;
             Move move1(selectedAnimal, Coord(newX,newY));
             move1.execute(engine.getState());
-            StateEvent stateEvent(ALL_CHANGED);
-            engine.getState().notifyObservers(stateEvent,engine.getState());
+            StateEvent allChangedEvent(ALL_CHANGED);
+            engine.getState().notifyObservers(allChangedEvent, engine.getState());
             animalSelected = false;
             cout << "-- End of the move --" << endl << endl;
           }

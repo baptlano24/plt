@@ -74,11 +74,13 @@ return spriteAnimals;
 };
 
 void RenderLayer::draw(RenderWindow &window) {
-    window.clear();
-    window.draw(this->getGrid());
+  window.clear();
+  if (this->renderingState.getMenu() == GAME_MENU){
+    window.draw(this->spriteGrid);
     for(int index = 0; index<=7; index++) {
-        window.draw(this->getAnimalsJ2()[index]);
-        window.draw(this->getAnimalsJ1()[index]);
+      window.draw(this->animalsSpriteJ1[index]);
+      window.draw(this->animalsSpriteJ2[index]);
     }
-    window.display();
+  }
+  window.display();
 }

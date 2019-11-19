@@ -39,6 +39,12 @@ Player& State::getPlayer2()
   return refPlay;
 }
 
+menuID& State::getMenu()
+{
+  menuID& refMenu = this->menu;
+  return refMenu;
+}
+
 const array<array<Square,13>,12>& State::getGrid()
 {
   array<array<Square,13>,12>& refGrid = this->grid;
@@ -72,8 +78,8 @@ pair<Animal*, int> State::getSelection(Coord coord)
   }
   for (int i= 0; i<=7 ;i++) {
     if (this->player2.getAnimals()[i].getStatus() == NORMAL && this->player2.getAnimals()[i].getCoord() == coord ) {
-      selection.first = &this->player1.getAnimals()[i];
-      selection.second = this->player1.getColor();
+      selection.first = &this->player2.getAnimals()[i];
+      selection.second = this->player2.getColor();
     }
   }
 
