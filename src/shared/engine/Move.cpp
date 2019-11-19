@@ -13,7 +13,6 @@ Move::Move(state::Animal* target, state::Coord destination):target(target),desti
     this->player = 0;
 }
 
-
 void Move::execute(state::State state)
 {
   cout<<"anciennes coord:" << this->target->getCoord().getX() <<","<< this->target->getCoord().getY() <<endl;
@@ -21,7 +20,4 @@ void Move::execute(state::State state)
 
   this->target->setCoord(this->destination);
   cout<<"nouvelles coord:" << this->target->getCoord().getX() <<","<< this->target->getCoord().getY() <<endl;
-
-  StateEvent allChangedEvent(ALL_CHANGED);
-  state.notifyObservers(allChangedEvent, state);
 }

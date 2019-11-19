@@ -10,21 +10,25 @@ using namespace render;
 
 RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(window){
 
-    if (!this->textureGrid.loadFromFile("../res/images/map/map-jungle.png")) {
-        cout << "Erreur de chargement de la texture à partir de map-jungle";
-    };
+  this->gridOrigin = Coord(73*3, 0);
 
-    for(int animal_index = 0; animal_index<8; ++animal_index) {
-        Texture animal;
-        animal.setSmooth(true);
-        if(!animal.loadFromFile("../res/images/game/animalsTile.png", sf::IntRect(animal_index*400, 0, 400, 400))) {
-           cout << "Erreur de chargement de la texture à partir d'animalsTile" << animal_index;
-        };
-        this->texturesAnimals.push_back(animal);
-    };
+  if (!this->textureGrid.loadFromFile("../res/images/map/map-jungle.png")) {
+      cout << "Erreur de chargement de la texture à partir de map-jungle";
+  };
 
-    updateRender(state);
-    this->spriteGrid = Sprite(this->textureGrid);
+  for(int animal_index = 0; animal_index<8; ++animal_index) {
+      Texture animal;
+      animal.setSmooth(true);
+      if(!animal.loadFromFile("../res/images/game/animalsTile.png", sf::IntRect(animal_index*400, 0, 400, 400))) {
+         cout << "Erreur de chargement de la texture à partir d'animalsTile" << animal_index;
+      };
+      this->texturesAnimals.push_back(animal);
+  };
+
+
+  updateAnimalSprites(state);
+  this->spriteGrid = Sprite(this->textureGrid);
+  this->spriteGrid.setPosition(this->gridOrigin.getX(),this->gridOrigin.getY());
 };
 
 vector<Sprite> RenderLayer::getAnimalsJ1(){
@@ -39,14 +43,14 @@ Sprite RenderLayer::getGrid() {
     return (this->spriteGrid);
 };
 
-void RenderLayer::updateRender(const state::State& newState){
+void RenderLayer::updateAnimalSprites(const state::State& newState){
   this->renderingState = newState;
   this->animalsSpriteJ1 = mapToSprites(this->renderingState.getPlayer1().getAnimals(), this->renderingState.getPlayer1().getColor());
   this->animalsSpriteJ2 = mapToSprites(this->renderingState.getPlayer2().getAnimals(), this->renderingState.getPlayer2().getColor());
 }
 
 void RenderLayer::stateChanged (const state::StateEvent& e, const state::State& newState){
-	updateRender(newState);
+	updateAnimalSprites(newState);
 	draw(window);
 }
 
@@ -59,7 +63,8 @@ vector<Sprite> RenderLayer::mapToSprites(vector<state::Animal>& animalsMap, int 
         sprite.setScale(0.1825,0.1825);
     }
     for (int i = 0; i <= 7; i++) {
-        spriteAnimals[i].setPosition(73*animalsMap[i].getCoord().getX(),73*animalsMap[i].getCoord().getY());
+        spriteAnimals[i].setPosition(this->gridOrigin.getX() + 73*animalsMap[i].getCoord().getX() ,
+                                     this->gridOrigin.getY() + 73*animalsMap[i].getCoord().getY() );
         if (animalsMap[i].getStatus() == NORMAL) {
             if (color == 0) {
                 spriteAnimals[i].setColor(Color(180, 180, 255, 255));

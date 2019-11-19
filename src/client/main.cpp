@@ -25,7 +25,7 @@ int main(int argc,char* argv[1]) {
   			// -- Initialisation de l'état intial de jeu --
   			State initialState("Robin","Baptiste");
 
-  			sf::RenderWindow window(sf::VideoMode(876,949), "Jungle War");
+  			sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
 
   			// -- Affichage de cet Etat --
   			RenderLayer stateLayer(initialState, window);
@@ -35,7 +35,7 @@ int main(int argc,char* argv[1]) {
   } else if (argc>=2 && string(argv[1])=="Engine") {
     cout<<"Lancement de la commande Engine."<<endl;
     Engine engine;
-    sf::RenderWindow window(sf::VideoMode(876,949), "Jungle War");
+    sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
     // FULL SCREEN
     /*int renderWidth = VideoMode::getDesktopMode().width;
     int renderHeight = VideoMode::getDesktopMode().height;
@@ -43,6 +43,8 @@ int main(int argc,char* argv[1]) {
     RenderLayer stateLayer(engine.getState(), window);
     RenderLayer* ptr_stateLayer=&stateLayer;
     engine.getState().registerObserver(ptr_stateLayer);
+
+    stateLayer.draw(window);
 
     int newX = 1;
     int newY = 1;
@@ -52,23 +54,16 @@ int main(int argc,char* argv[1]) {
     int mouseGridY;
     Coord mouseCoord;
     bool animalSelected = false;
-    bool demarrage = true;
     Animal* selectedAnimal;
 
     while (window.isOpen()){
       Event event;
       mouseX = Mouse::getPosition(window).x;
       mouseY = Mouse::getPosition(window).y;
-      mouseGridX = mouseX/73;
+      mouseGridX = (mouseX-73*3)/73;
       mouseGridY = mouseY/73;
       mouseCoord.setX(mouseGridX);
       mouseCoord.setY(mouseGridY);
-
-      if (demarrage){
-        stateLayer.draw(window);
-        cout << "(Cliquez pour simuler un tour de jeu)" << endl << endl;
-        demarrage = false;
-      }
 
       while (window.pollEvent(event)){
         if (event.type == Event::Closed){
