@@ -41,7 +41,7 @@ int main(int argc,char* argv[1]) {
     int renderHeight = VideoMode::getDesktopMode().height;
     sf::RenderWindow window(sf::VideoMode(renderWidth,renderHeight), "Jungle War");*/
     RenderLayer stateLayer(engine.getState(), window);
-    RenderLayer* ptr_stateLayer=&stateLayer;
+    RenderLayer* ptr_stateLayer = &stateLayer;
     engine.getState().registerObserver(ptr_stateLayer);
 
     stateLayer.draw(window);
@@ -60,7 +60,7 @@ int main(int argc,char* argv[1]) {
       Event event;
       mouseX = Mouse::getPosition(window).x;
       mouseY = Mouse::getPosition(window).y;
-      mouseGridX = (mouseX-73*3)/73;
+      mouseGridX = (mouseX-73*3)/73; //73*3 to change by gridOrigine.getX() when in the render
       mouseGridY = mouseY/73;
       mouseCoord.setX(mouseGridX);
       mouseCoord.setY(mouseGridY);

@@ -25,8 +25,9 @@ state::State& Engine::getState(){
   	return refEtat;
 }
 
-void Engine::playerRequest(RenderEventID event){}
+void Engine::playerRequest(RenderEvent& event){
 
+}
 
 void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 	currentOrder[priorite]=move(ptr_cmd);
@@ -74,8 +75,6 @@ std::vector<pair<state::Coord, engine::ActionID>> authorisedActions (state::Stat
         }
       }
     }
-
-
-
   }
+  return listAction;
 }

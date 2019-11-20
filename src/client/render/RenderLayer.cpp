@@ -25,10 +25,10 @@ RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(wind
       this->texturesAnimals.push_back(animal);
   };
 
-
-  updateAnimalSprites(state);
   this->spriteGrid = Sprite(this->textureGrid);
   this->spriteGrid.setPosition(this->gridOrigin.getX(),this->gridOrigin.getY());
+
+  this->updateAllRender();
 };
 
 vector<Sprite> RenderLayer::getAnimalsJ1(){
@@ -43,15 +43,38 @@ Sprite RenderLayer::getGrid() {
     return (this->spriteGrid);
 };
 
-void RenderLayer::updateAnimalSprites(const state::State& newState){
+void RenderLayer::stateChanged (state::StateEvent& event, const state::State& newState){
   this->renderingState = newState;
-  this->animalsSpriteJ1 = mapToSprites(this->renderingState.getPlayer1().getAnimals(), this->renderingState.getPlayer1().getColor());
-  this->animalsSpriteJ2 = mapToSprites(this->renderingState.getPlayer2().getAnimals(), this->renderingState.getPlayer2().getColor());
+  if (event.getID() == ALL_CHANGED){
+    updateAllRender();
+  } else if (event.getID() == ANIMALS_CHANGED){
+    updateAnimals();
+  }/* else if (event.getID() == INFOS_CHANGED){
+    updateInfos();
+  } else if (event.getID() == HIGHLIGHTS_CHANGED){
+    updateHighlights();
+  }*/
+	draw(window);
 }
 
-void RenderLayer::stateChanged (const state::StateEvent& e, const state::State& newState){
-	updateAnimalSprites(newState);
-	draw(window);
+void RenderLayer::updateAllRender() {
+    updateAnimals();
+    updateInfos();
+    updateHighlights();
+}
+
+void RenderLayer::updateInfos(){
+  cout << "{ Réaffichage des informations de jeu. }"<< endl;
+}
+
+void RenderLayer::updateHighlights(){
+  cout << "{ Réaffichage des cases en surbrillance. }"<< endl;
+}
+
+void RenderLayer::updateAnimals(){
+  cout << "{ Réaffichage des animaux. }"<< endl;
+  this->animalsSpriteJ1 = mapToSprites(this->renderingState.getPlayer1().getAnimals(), this->renderingState.getPlayer1().getColor());
+  this->animalsSpriteJ2 = mapToSprites(this->renderingState.getPlayer2().getAnimals(), this->renderingState.getPlayer2().getColor());
 }
 
 vector<Sprite> RenderLayer::mapToSprites(vector<state::Animal>& animalsMap, int color) {
