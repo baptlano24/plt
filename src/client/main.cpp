@@ -35,15 +35,13 @@ int main(int argc,char* argv[1]) {
   } else if (argc>=2 && string(argv[1])=="Engine") {
     cout<<"Lancement de la commande Engine."<<endl;
     Engine engine;
+    Engine* ptr_engine = &engine;
     sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-    // FULL SCREEN
-    /*int renderWidth = VideoMode::getDesktopMode().width;
-    int renderHeight = VideoMode::getDesktopMode().height;
-    sf::RenderWindow window(sf::VideoMode(renderWidth,renderHeight), "Jungle War");*/
     RenderLayer stateLayer(engine.getState(), window);
     RenderLayer* ptr_stateLayer = &stateLayer;
-    engine.getState().registerObserver(ptr_stateLayer);
 
+    stateLayer.registerObserver(ptr_engine);
+    engine.getState().registerObserver(ptr_stateLayer);
     stateLayer.draw(window);
 
     int newX = 1;

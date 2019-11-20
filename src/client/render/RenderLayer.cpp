@@ -49,11 +49,11 @@ void RenderLayer::stateChanged (state::StateEvent& event, const state::State& ne
     updateAllRender();
   } else if (event.getID() == ANIMALS_CHANGED){
     updateAnimals();
-  }/* else if (event.getID() == INFOS_CHANGED){
+  } else if (event.getID() == INFOS_CHANGED){
     updateInfos();
   } else if (event.getID() == HIGHLIGHTS_CHANGED){
     updateHighlights();
-  }*/
+  }
 	draw(window);
 }
 
