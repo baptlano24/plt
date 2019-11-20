@@ -8,16 +8,20 @@ using namespace state;
 using namespace engine;
 
 
-Move::Move(state::Animal* target, state::Coord destination):target(target),destination(destination){
+Move::Move(Animal* targetAnimal, Coord& targetCoord):targetAnimal(targetAnimal),targetCoord(targetCoord){
     this->ID = MOVE;
     this->player = 0;
 }
 
-void Move::execute(state::State state)
+void Move::execute(State& state)
 {
-  cout<<"anciennes coord:" << this->target->getCoord().getX() <<","<< this->target->getCoord().getY() <<endl;
-  cout<<"nouvelles coord demandees:" << this->destination.getX() <<","<< this->destination.getY() <<endl;
+  cout<<"Début du tour numéro : " << state.getTurn() << endl;
+  cout<<"Anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
+  cout<<"Nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
 
-  this->target->setCoord(this->destination);
-  cout<<"nouvelles coord:" << this->target->getCoord().getX() <<","<< this->target->getCoord().getY() <<endl;
+  this->targetAnimal->setCoord(this->targetCoord);
+  cout<<"Nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
+
+  state.setTurn(state.getTurn()+1);
+  cout<<"Passage au tour numéro : " << state.getTurn() << endl;
 }

@@ -45,6 +45,15 @@ menuID& State::getMenu()
   return refMenu;
 }
 
+int State::getTurn()
+{
+  return this->turn;
+}
+
+void State::setTurn(int newTurn){
+  this->turn = newTurn;
+}
+
 const array<array<Square,13>,12>& State::getGrid()
 {
   array<array<Square,13>,12>& refGrid = this->grid;

@@ -51,6 +51,7 @@ int main(int argc,char* argv[1]) {
     int mouseGridX;
     int mouseGridY;
     Coord mouseCoord;
+    Coord targetCoord;
     bool animalSelected = false;
     Animal* selectedAnimal;
 
@@ -71,13 +72,13 @@ int main(int argc,char* argv[1]) {
         else if(event.type == Event::MouseButtonPressed) {
           cout << "* Clic *" << endl;
 
-          if (animalSelected == false ) {
+          if (animalSelected == false) {
             cout << "Selection :" << endl;
             cout << "Mouse clic wind event : " << mouseX << " , "<< mouseY << endl;
             cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl << endl;
             pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
             selectedAnimal = selection.first;
-            if (selection.first != 0){
+            if (selection.first != 0 && engine.getState().getTurn()%2 == selection.second){
               animalSelected = true;
             }
 
@@ -86,10 +87,13 @@ int main(int argc,char* argv[1]) {
             cout << "Animal selected id: " << selectedAnimal->getID() << endl;
             newX = mouseGridX;
             newY = mouseGridY;
-            Move move1(selectedAnimal, Coord(newX,newY));
+            targetCoord.setX(newX);
+            targetCoord.setY(newY);
+            Move move1(selectedAnimal, targetCoord);
             move1.execute(engine.getState());
-            StateEvent allChangedEvent(ALL_CHANGED);
-            engine.getState().notifyObservers(allChangedEvent, engine.getState());
+            StateEvent animalChangedEvent(ANIMALS_CHANGED);
+            StateEvent& refAnimalChangedEvent = animalChangedEvent;
+            engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
             animalSelected = false;
             cout << "-- End of the move --" << endl << endl;
           }

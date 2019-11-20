@@ -9,15 +9,10 @@ using namespace engine;
 
 Engine::Engine(): currentState(){
   this->switchTurn = 0;
-  this->activePlayer = 0;
 }
 
 Engine::~Engine(){
 
-}
-
-bool Engine::getactivePlayer(){
-  return this->activePlayer;
 }
 
 state::State& Engine::getState(){
