@@ -52,6 +52,7 @@ int main(int argc,char* argv[1]) {
     int mouseGridY;
     Coord mouseCoord;
     Coord targetCoord;
+    Coord& refTargetCoord = targetCoord;
     bool animalSelected = false;
     Animal* selectedAnimal;
 
@@ -70,15 +71,20 @@ int main(int argc,char* argv[1]) {
         }
 
         else if(event.type == Event::MouseButtonPressed) {
-          cout << "* Clic *" << endl;
+          cout << endl << "         * Clic *" << endl;
 
           if (animalSelected == false) {
             cout << "Selection :" << endl;
-            cout << "Mouse clic wind event : " << mouseX << " , "<< mouseY << endl;
+            cout << "Mouse clic pixel event : " << mouseX << " , "<< mouseY << endl;
             cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl << endl;
             pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
             selectedAnimal = selection.first;
             if (selection.first != 0 && engine.getState().getTurn()%2 == selection.second){
+              Select select1(selectedAnimal, mouseCoord);
+              select1.execute(ptr_engine);
+              StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+              StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+              engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
               animalSelected = true;
             }
 
@@ -89,13 +95,13 @@ int main(int argc,char* argv[1]) {
             newY = mouseGridY;
             targetCoord.setX(newX);
             targetCoord.setY(newY);
-            Move move1(selectedAnimal, targetCoord);
-            move1.execute(engine.getState());
+            Move move1(selectedAnimal, refTargetCoord);
+            move1.execute(ptr_engine);
             StateEvent animalChangedEvent(ANIMALS_CHANGED);
             StateEvent& refAnimalChangedEvent = animalChangedEvent;
             engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
             animalSelected = false;
-            cout << "-- End of the move --" << endl << endl;
+            cout << "-- End of the move --" << endl;
           }
         }
       }

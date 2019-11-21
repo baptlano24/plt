@@ -15,9 +15,10 @@ AnimalStatus Animal::getStatus() const
     return this->status;
 }
 
-Coord Animal::getCoord() const
+Coord& Animal::getCoord()
 {
-    return this->coord;
+    Coord& refCoord = this->coord;
+    return refCoord;
 }
 
 void Animal::setStatus(AnimalStatus status)
