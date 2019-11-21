@@ -2,6 +2,7 @@
 #include "Order.h"
 #include "Move.h"
 #include <iostream>
+#include <utility>
 using namespace std;
 using namespace state;
 using namespace engine;
@@ -47,8 +48,10 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
       for (int i = 0; i<=3 ;i++) {
         if(state.getSquare(listAction[i].first)->getID() != WATER){
           //cout << "NOWATER!" << endl;
-          if(state.getSelection(listAction[i].first).first){
+          if(state.getSelection(listAction[i].first).first && state.getSelection(listAction[i].first).first->getStatus() != DEAD ){
             cout << "SOMEONE!" << endl;
+            cout << state.getSelection(current_square).second << endl;
+            cout << state.getSelection(listAction[i].first).second << endl;
             if(state.getSelection(listAction[i].first).second == state.getSelection(current_square).second){
               cout << "COPAIN!" << endl;
               listAction[i].second = NONE;
@@ -81,7 +84,9 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
             }
 
           }
-        } else {
+        }
+        else if (state.getSquare(listAction[i].first)->getID() != WATER) {
+          cout <<"WATER"<< endl;
           listAction[i].second = NONE;
         }
       }
@@ -97,8 +102,7 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
       if(state.getSelection(listAction[i].first).second == state.getSelection(current_square).second){
         cout << "COPAIN!" << endl;
         listAction[i].second = NONE;
-        }
-      if(state.getSquare(listAction[i].first)->getID() != WATER){
+      } else if(state.getSquare(listAction[i].first)->getID() != WATER){
           if(state.getSelection(listAction[i].first).first->getID() == ELEPHANT || state.getSelection(listAction[i].first).first->getID() == RAT){
             cout << "A L'ATTAQUE!" << endl;
             listAction[i].second = ATTACK;
@@ -134,13 +138,13 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
       //cout <<  "MOVE" << endl;
         listAction[i].second = SHIFT;
       }
-
+        return listAction;
         }
       }
       return listAction;//next RAT*/
     }
     return listAction;
-  } else {
+  } else if(state.getSelection(current_square).first->getID() == TIGER || state.getSelection(current_square).first->getID() == LEOPARD || state.getSelection(current_square).first->getID() == LION){
     cout<<"LION or TIGER or LEOPARD" << endl;
     if(state.getSelection(current_square).first->getStatus() == NORMAL){
       //cout << "NORMAL!" << endl;
@@ -192,6 +196,8 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
       return listAction;
     }
 
+  } else{
+    return listAction;
   }
   return listAction;
 }

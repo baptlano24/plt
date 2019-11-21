@@ -23,12 +23,12 @@ Player::Player(string name,int color): name(name), color(color)
   }
   else if (this->color == 1){
     this->animals.push_back(Animal({10,11},NORMAL,RAT)); //(x,y) en haut à gauche
-    this->animals.push_back(Animal({9,10},NORMAL,CAT));
-    this->animals.push_back(Animal({8,11},NORMAL,DOG));
+    this->animals.push_back(Animal({10,2},NORMAL,CAT)); //9,10
+    this->animals.push_back(Animal({11,2},NORMAL,DOG)); //8,11
     this->animals.push_back(Animal({7,10},NORMAL,WOLF));
     this->animals.push_back(Animal({4,10},NORMAL,LEOPARD));
     this->animals.push_back(Animal({3,11},NORMAL,TIGER));
-    this->animals.push_back(Animal({2,10},NORMAL,LION));
+    this->animals.push_back(Animal({2,10},NORMAL,LION)); //2,10
     this->animals.push_back(Animal({1,11},NORMAL,ELEPHANT));
   } else {
     this->animals.push_back(Animal({2,6},NORMAL,RAT)); //(x,y) en haut à gauche
