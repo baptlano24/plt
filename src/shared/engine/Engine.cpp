@@ -137,9 +137,7 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
 
         }
       }
-      return listAction;//next RAT*/
     }
-    return listAction;
   } else {
     cout<<"LION or TIGER or LEOPARD" << endl;
     if(state.getSelection(current_square).first->getStatus() == NORMAL){
@@ -187,9 +185,6 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
           //Jump
         }
       }
-      return listAction;
-    }else{
-      return listAction;
     }
 
   }
