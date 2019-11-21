@@ -60,17 +60,14 @@ const array<array<Square,13>,12>& State::getGrid()
   return refGrid;
 }
 
-Square& State::getSquare(Coord Coord)
+Square* State::getSquare(Coord Coord)
 {
+  Square* ptr_Square = NULL;
   if (Coord.getX()<=11 && Coord.getX()>=0 && Coord.getY()<= 12 && Coord.getY()>=0) {
-    Square& refSquare = this->grid[Coord.getX()][Coord.getY()];
-    return refSquare;
-  } else{
-    Square Nomap;
-    Nomap.setID(NOMAP);
-    Square& refSquare = Nomap;
-    return refSquare;
+    Square* ptr_Square = &this->grid[Coord.getX()][Coord.getY()];
+    return ptr_Square;
   }
+  return ptr_Square;
 }
 
 pair<Animal*, int> State::getSelection(Coord coord)

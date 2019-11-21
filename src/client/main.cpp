@@ -76,7 +76,7 @@ int main(int argc,char* argv[1]) {
           if (animalSelected == false) {
             cout << "Selection :" << endl;
             cout << "Mouse clic pixel event : " << mouseX << " , "<< mouseY << endl;
-            cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl << endl;
+            cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl;
             pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
             selectedAnimal = selection.first;
             if (selection.first != 0 && engine.getState().getTurn()%2 == selection.second){

@@ -25,12 +25,12 @@ BOOST_AUTO_TEST_CASE(TestState)
   {
     State state3{};
     Square squareTest = state3.getGrid()[0][0];
-    BOOST_CHECK_EQUAL(state3.getSquare(Coord{0,0}).getID(), squareTest.getID());
+    BOOST_CHECK_EQUAL(state3.getSquare(Coord{0,0})->getID(), squareTest.getID());
 
     Square squareTest2 = Square(NOMAP);
-    BOOST_CHECK_EQUAL(state3.getSquare(Coord{-1,2}).getID(), squareTest2.getID());
-    BOOST_CHECK_EQUAL(state3.getSquare(Coord{15,2}).getID(), squareTest2.getID());
-    BOOST_CHECK_EQUAL(state3.getSquare(Coord{5,-10}).getID(), squareTest2.getID());
-    BOOST_CHECK_EQUAL(state3.getSquare(Coord{5,100}).getID(), squareTest2.getID());
+    BOOST_CHECK_EQUAL(state3.getSquare(Coord{-1,2})->getID(), squareTest2.getID());
+    BOOST_CHECK_EQUAL(state3.getSquare(Coord{15,2})->getID(), squareTest2.getID());
+    BOOST_CHECK_EQUAL(state3.getSquare(Coord{5,-10})->getID(), squareTest2.getID());
+    BOOST_CHECK_EQUAL(state3.getSquare(Coord{5,100})->getID(), squareTest2.getID());
   }
 }

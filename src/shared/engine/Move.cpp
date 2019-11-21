@@ -23,15 +23,18 @@ void Move::execute(Engine* engine)
   //State& refTest1 = engine->getState();
   //Coord& refTest2 = this->targetAnimal->getCoord();
   //cout<<"test coord:" << engine->authorisedActions(refTest1,refTest2)[0].first.getX() << " x " << endl;
+  //this->targetAnimal->setCoord(this->targetCoord);
+
 
   for (int i =0 ;i<=3 ;i++){
     if (engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord())[i].first == this->targetCoord){
-
+      
       if (engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord())[i].second == SHIFT)//Higlight = 1 pour moove
       {
         cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
         cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
         this->targetAnimal->setCoord(this->targetCoord);
+        engine->getState().setTurn(engine->getState().getTurn()+1);
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
       }
 
@@ -42,6 +45,7 @@ void Move::execute(Engine* engine)
         cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
         cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
         this->targetAnimal->setCoord(this->targetCoord);
+        engine->getState().setTurn(engine->getState().getTurn()+1);
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
       }
 
@@ -50,6 +54,7 @@ void Move::execute(Engine* engine)
         cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
         cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
         this->targetAnimal->setCoord(this->targetCoord);
+        engine->getState().setTurn(engine->getState().getTurn()+1);
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
       }
 
@@ -60,6 +65,7 @@ void Move::execute(Engine* engine)
         cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
         cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
         this->targetAnimal->setCoord(this->targetCoord);
+        engine->getState().setTurn(engine->getState().getTurn()+1);
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
       }
 
@@ -69,14 +75,16 @@ void Move::execute(Engine* engine)
         cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
         cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
         this->targetAnimal->setCoord(this->targetCoord);
+        engine->getState().setTurn(engine->getState().getTurn()+1);
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
       }
     }
   }
 
+
   //cout<<"Nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
 
-  engine->getState().setTurn(engine->getState().getTurn()+1);
+  //engine->getState().setTurn(engine->getState().getTurn()+1);
   cout<<"Passage au tour numéro : " << engine->getState().getTurn() << endl;
 
 }
