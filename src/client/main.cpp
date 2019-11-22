@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string> //pour utiliser string::compare
+#include <utility>
 #include <unordered_map>
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <state.h>
 #include "state.h"
 #include "render.h"
+#include <engine.h>
 #include "engine.h"
 using namespace std;
 using namespace state;
@@ -15,7 +17,20 @@ using namespace engine;
 
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
-      cout << "Hello world !" << endl;
+      /*Engine engine1;
+      Coord coord1(9,2);
+      std::vector<pair<state::Coord,engine::ActionID>> listAction1;
+      listAction1 = engine1.authorisedActions(engine1.getState(),coord1);
+      Square* k = engine1.getState().getSquare(coord1);
+
+      for (int i =0; i<=3; i++){
+          if(engine1.getState().getSquare(listAction1[i].first)->getID() != WATER){
+            cout<<"NOWATER" << endl;
+            cout << engine1.getState().getSquare(listAction1[i].first)->getID() << endl;
+          }*/
+          cout << "Hello world !" << endl;
+
+
   } else if (argc>=2 && string(argv[1])=="renderTest1"){
       cout << "La commande renderTest1 est obsolète." << endl;
   } else if (argc>=2 && string(argv[1])=="renderTest2"){
@@ -88,7 +103,7 @@ int main(int argc,char* argv[1]) {
               animalSelected = true;
             }
 
-          } else if (animalSelected == true) {
+          } else if ((animalSelected == true)) {
             cout << "-- Beginning of the move --" << endl;
             cout << "Animal selected id: " << selectedAnimal->getID() << endl;
             newX = mouseGridX;
