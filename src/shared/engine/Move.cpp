@@ -24,11 +24,11 @@ void engine::Move::execute(engine::Engine* engine)
   //cout<<"test coord:" << engine->authorisedActions(refTest1,refTest2)[0].first.getX() << " x " << endl;
   //this->targetAnimal->setCoord(this->targetCoord);
 
-
+  std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord());
   for (int i =0 ;i<=3 ;i++){
-    if (engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord())[i].first == this->targetCoord){
+    if (authorisedActions[i].first == this->targetCoord){
 
-      if (engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord())[i].second == SHIFT)//Higlight = 1 pour moove
+      if (authorisedActions[i].second == SHIFT)//Higlight = 1 pour moove
       {
         cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
         cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
@@ -37,7 +37,7 @@ void engine::Move::execute(engine::Engine* engine)
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
       }
 
-      if (engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord())[i].second == ATTACK )//Higlight = 2 pour attack
+      if (authorisedActions[i].second == ATTACK )//Higlight = 2 pour attack
       {
         engine->getState().getSelection(this->targetCoord).first->setStatus(DEAD);
         cout<<"AnimalAdverseDEAD" <<endl;
@@ -48,7 +48,7 @@ void engine::Move::execute(engine::Engine* engine)
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
       }
 
-      if (engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord())[i].second == JUMP)//Higlight = 3 pour moove
+      if (authorisedActions[i].second == JUMP)//Higlight = 3 pour moove
       {
         cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
         cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
@@ -57,7 +57,7 @@ void engine::Move::execute(engine::Engine* engine)
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
       }
 
-      if (engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord())[i].second == SHIFT_TRAPPED)//Higlight = 4 pour moove
+      if (authorisedActions[i].second == SHIFT_TRAPPED)//Higlight = 4 pour moove
       {
 
         cout<<"Animal TRAPPED" <<endl;
@@ -68,7 +68,7 @@ void engine::Move::execute(engine::Engine* engine)
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
       }
 
-      if (engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord())[i].second == SHIFT_VICTORY)//Higlight = 4 pour moove
+      if (authorisedActions[i].second == SHIFT_VICTORY)//Higlight = 4 pour moove
       {
         cout<<"Animal VICTORY" <<endl;
         cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;

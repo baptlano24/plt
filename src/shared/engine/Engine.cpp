@@ -41,7 +41,16 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
   listAction.push_back(make_pair(behind_square,NONE));
 
   if (state.getSelection(current_square).first->getID() == ELEPHANT || state.getSelection(current_square).first->getID() ==  CAT || state.getSelection(current_square).first->getID() == DOG || state.getSelection(current_square).first->getID() == WOLF){
-    cout << "ELEPHANT or CAT or DOG or WOLF!" << endl;
+
+    if(state.getSelection(current_square).first->getID() == ELEPHANT) {
+      cout << "ELEPHANT !" << endl;
+    } else if (state.getSelection(current_square).first->getID() == CAT) {
+      cout << "CAT !" << endl;
+    } else if (state.getSelection(current_square).first->getID() == DOG) {
+      cout << "DOG !" << endl;
+    } else if (state.getSelection(current_square).first->getID() == WOLF) {
+      cout << "WOLF !" << endl;
+    }
     if(state.getSelection(current_square).first->getStatus() == NORMAL){
       //cout << "NORMAL!" << endl;
 
