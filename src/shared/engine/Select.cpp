@@ -16,5 +16,13 @@ Select::Select(Animal* targetAnimal, Coord& targetCoord):targetAnimal(targetAnim
 void Select::execute(Engine* engine)
 {
   cout<<"Début du tour numéro : " << engine->getState().getTurn() << endl;
-  cout<<"Case SELECT : (" << this->targetCoord.getX()<< "," << this->targetCoord.getX() << ")"<< endl;
+  cout<<"Case SELECT : (" << this->targetCoord.getX()<< "," << this->targetCoord.getY() << ")"<< endl;
+
+  cout<<"Les coups possibles sont :" << endl;
+  std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord());
+
+  for (int i =0 ;i<=3 ;i++) {
+    cout<<"Case voisine: (" << authorisedActions[i].first.getX()<< "," << authorisedActions[i].first.getY() << ")"<< endl;
+    cout<<"  Action possible : " << authorisedActions[i].second << endl;
+  }
 }

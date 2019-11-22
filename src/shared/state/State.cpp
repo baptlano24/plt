@@ -62,35 +62,29 @@ const array<array<Square,13>,12>& State::getGrid()
 
 Square* State::getSquare(Coord Coord)
 {
-  Square Nomap(NOMAP);
   Square* ptr_Square = NULL;
   if (Coord.getX()<=11 && Coord.getX()>=0 && Coord.getY()<= 12 && Coord.getY()>=0) {
-    Square* ptr_Square = &this->grid[Coord.getX()][Coord.getY()];
-    return ptr_Square;
+      ptr_Square = &this->grid[Coord.getX()][Coord.getY()];
   }
-  return ptr_Square = &Nomap;
+  return ptr_Square;
 }
 
 pair<Animal*, int> State::getSelection(Coord coord)
 {
-  Animal NoAnimal({0,0}, DEAD, RAT);
   pair<Animal*, int> selection;
-  selection.first = &NoAnimal;
+  selection.first = NULL;
   selection.second = 666;
 
   for (int i = 0; i<=7 ;i++) {
     if (this->player1.getAnimals()[i].getStatus() == NORMAL && this->player1.getAnimals()[i].getCoord() == coord ) {
       selection.first = &this->player1.getAnimals()[i];
       selection.second = this->player1.getColor();
-      return selection;
     }
   }
   for (int i= 0; i<=7 ;i++) {
     if (this->player2.getAnimals()[i].getStatus() == NORMAL && this->player2.getAnimals()[i].getCoord() == coord ) {
       selection.first = &this->player2.getAnimals()[i];
       selection.second = this->player2.getColor();
-        return selection;
-
     }
   }
 
