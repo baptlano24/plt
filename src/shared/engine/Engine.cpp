@@ -31,6 +31,7 @@ void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 
 std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(State& state, Coord& current_square){
   std::vector<pair<state::Coord, engine::ActionID>> listAction;
+
   Coord right_square(current_square.getX()+1,current_square.getY());
   Coord left_square(current_square.getX()-1,current_square.getY());
   Coord front_square(current_square.getX(),current_square.getY()-1);
@@ -211,11 +212,77 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
 
               }
             }else{
+              if(i == 0){
+                int compteur = 0;
+                for(int n = 0; n<=3; n++){
+                  if(state.getSelection(Coord(listAction[i].first.getX()+n, listAction[i].first.getY())).first==NULL){
+                    compteur += 1;
+                  if (compteur == 4){
+                    cout <<"CAN JUMP" << endl;
+                    listAction[i].first = Coord(listAction[i].first.getX()+3, listAction[i].first.getY());
+                    listAction[i].second = JUMP;
+                  }
+                  else{
+                    listAction[i].second = NONE;
+                  }
+                }
+              }
+
               //Jump
+            } else if(i==1){
+              int compteur = 0;
+              for(int n = 0; n<=3; n++){
+                if(state.getSelection(Coord(listAction[i].first.getX()-n, listAction[i].first.getY())).first==NULL){
+                  compteur += 1;
+                if (compteur == 4){
+                  cout <<"CAN JUMP" << endl;
+                  listAction[i].first = Coord(listAction[i].first.getX()-3, listAction[i].first.getY());
+                  listAction[i].second = JUMP;
+                }
+                else{
+                  listAction[i].second = NONE;
+                }
+              }
             }
+          }  else if(i==2){
+            int compteur = 0;
+            for(int n = 0; n<=3; n++){
+              if(state.getSelection(Coord(listAction[i].first.getX(), listAction[i].first.getY()-n)).first==NULL){
+                compteur += 1;
+              if (compteur == 4){
+                cout <<"CAN JUMP" << endl;
+                listAction[i].first = Coord(listAction[i].first.getX(), listAction[i].first.getY()-3);
+                listAction[i].second = JUMP;
+                compteur = 0;
+              }
+              else{
+                listAction[i].second = NONE;
+              }
+            }
+          }
+        } else{
+          int compteur = 0;
+          for(int n = 0; n<=3; n++){
+            if(state.getSelection(Coord(listAction[i].first.getX(), listAction[i].first.getY()+n)).first==NULL){
+              compteur += 1;
+            if (compteur == 4){
+              cout <<"CAN JUMP" << endl;
+              listAction[i].first = Coord(listAction[i].first.getX(), listAction[i].first.getY()+3);
+              listAction[i].second = JUMP;
+
+            }
+            else{
+              listAction[i].second = NONE;
+
+          }
+        }
+      }
+
+
           }
       } // end for
     }
   }
   return listAction;
-}
+}return listAction;
+}return listAction;}
