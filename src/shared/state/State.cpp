@@ -57,6 +57,22 @@ void State::setTurn(int newTurn){
   this->turn = newTurn;
 }
 
+bool State::getGameover (){
+  return this->gameover;
+}
+
+void State::setGameover (bool gameover){
+  this->gameover = gameover;
+}
+
+Player State::getWinner (){
+  return this->winner;
+}
+
+void State::setWinner(Player winner){
+  this->winner = winner;
+}
+
 const array<array<Square,13>,12>& State::getGrid()
 {
   array<array<Square,13>,12>& refGrid = this->grid;

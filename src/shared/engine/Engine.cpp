@@ -68,7 +68,7 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
                 listAction[i].second = NONE;
               }
               else{
-                if(state.getSelection(current_square).first->getID() >= state.getSelection(listAction[i].first).first->getID()){
+                if((state.getSelection(current_square).first->getID()>=state.getSelection(listAction[i].first).first->getID())||((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(listAction[i].first).second == 1 )||(state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(listAction[i].first).second == 0))){
                     cout << "A L'ATTAQUE!" << endl;
                     listAction[i].second = ATTACK;
                   }
@@ -178,7 +178,7 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
                   listAction[i].second = NONE;
                 }
                 else{
-                  if(state.getSelection(current_square).first->getID()>=state.getSelection(listAction[i].first).first->getID()){
+                  if((state.getSelection(current_square).first->getID()>=state.getSelection(listAction[i].first).first->getID())||((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(listAction[i].first).second == 1 )||(state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(listAction[i].first).second == 0))){
                       cout << "A L'ATTAQUE!" << endl;
                       listAction[i].second = ATTACK;
                     }

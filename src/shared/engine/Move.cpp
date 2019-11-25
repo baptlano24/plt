@@ -71,6 +71,16 @@ void engine::Move::execute(engine::Engine* engine)
         this->targetAnimal->setCoord(this->targetCoord);
         engine->getState().setTurn(engine->getState().getTurn()+1);
         cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
+        if(engine->getState().getSelection(this->targetAnimal->getCoord()).second == 0){
+          engine->getState().setWinner(engine->getState().getPlayer1());
+          engine->getState().setGameover(1);
+          cout<<"Victoire du Joueur1:"<< engine->getState().getPlayer1().getName() << "BRAVO !!!";
+        } else{
+          engine->getState().setWinner(engine->getState().getPlayer2());
+          engine->getState().setGameover(1);
+          cout<<"Victoire du Joueur1:"<< engine->getState().getPlayer2().getName() << "BRAVO !!!";
+        }
+
       }
     }
   }
