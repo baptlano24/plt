@@ -14,15 +14,10 @@ Move::Move(state::Animal* targetAnimal, state::Coord& targetCoord): targetAnimal
 
 void engine::Move::execute(engine::Engine* engine)
 {
-  /*
-  cout<<"Début du tour numéro : " << engine->getState().getTurn() << endl;
-  cout<<"Anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-  cout<<"Nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
-  */
-  //State& refTest1 = engine->getState();
-  //Coord& refTest2 = this->targetAnimal->getCoord();
-  //cout<<"test coord:" << engine->authorisedActions(refTest1,refTest2)[0].first.getX() << " x " << endl;
-  //this->targetAnimal->setCoord(this->targetCoord);
+  std::vector<std::pair<state::Coord,engine::ActionID>> noHighlights;
+  noHighlights.push_back(make_pair(Coord {0,0},ActionID{NONE}));
+  std::vector<std::pair<state::Coord,engine::ActionID>>& refNoHighlights = noHighlights;
+  engine->getState().setHighlights(refNoHighlights);
 
   std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord());
   for (int i =0 ;i<=3 ;i++){

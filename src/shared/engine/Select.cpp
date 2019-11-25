@@ -20,6 +20,11 @@ void Select::execute(Engine* engine)
 
   cout<<"Les coups possibles sont :" << endl;
   std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord());
+  std::vector<std::pair<state::Coord,engine::ActionID>> newHighlights = authorisedActions;
+  newHighlights.push_back(make_pair(this->targetCoord, ActionID {NONE}));
+
+  std::vector<std::pair<state::Coord,engine::ActionID>>& refNewHighlights = newHighlights;
+  engine->getState().setHighlights(refNewHighlights);
 
   for (int i =0 ;i<=3 ;i++) {
     cout<<"Case voisine: (" << authorisedActions[i].first.getX()<< "," << authorisedActions[i].first.getY() << ")"<< endl;

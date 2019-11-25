@@ -3,9 +3,9 @@
 using namespace state;
 using namespace std;
 
-Square::Square(): id(EARTH), highlight(0) {}
+Square::Square(): id(EARTH) {}
 
-Square::Square(SquareID id): id(id), highlight(0) {}
+Square::Square(SquareID id): id(id) {}
 
 SquareID Square:: getID()
 {

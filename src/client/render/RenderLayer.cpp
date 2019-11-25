@@ -6,6 +6,7 @@ using namespace std;
 using namespace state;
 using namespace sf;
 using namespace render;
+using namespace engine;
 
 RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(window){
 
@@ -24,7 +25,7 @@ RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(wind
       this->texturesAnimals.push_back(animal);
   };
 
-  for(int info_index = 0; info_index<=1; ++info_index) {
+  for(int info_index = 0; info_index<=2; ++info_index) {
       Texture info;
       info.setSmooth(true);
       if(!info.loadFromFile("../res/images/game/infosTile.png", IntRect(info_index*219, 0, 219, 219))) {
@@ -82,12 +83,39 @@ void RenderLayer::updateInfos(){
   for (int i = 0; i <= 1; i++) {
       this->spritesInfos[i].setPosition(this->gridOrigin.getX()-73, 0);
   }
-  this->spritesInfos[0].setColor(Color(180, 180, 255, 255));
-  this->spritesInfos[1].setColor(Color(255, 180, 180, 255));
+  if (this->renderingState.getTurn()%2 == 1) {
+    this->spritesInfos[0].setColor(Color(180, 180, 255, 255));
+    this->spritesInfos[1].setColor(Color(255, 180, 180, 0));
+  } else if (this->renderingState.getTurn()%2 == 0) {
+    this->spritesInfos[1].setColor(Color(255, 180, 180, 255));
+    this->spritesInfos[0].setColor(Color(180, 180, 255, 0));
+  }
 }
 
 void RenderLayer::updateHighlights(){
   cout << "{ Réaffichage des cases en surbrillance }"<< endl;
+  std::vector<std::pair<state::Coord,engine::ActionID>> newHighlights = this->renderingState.getHighlights();
+  for (int i = 0; i < 6; i++) {
+      Texture& refTexture = this->texturesInfos[2];
+      this->spritesHighlights.push_back(Sprite {refTexture});
+      this->spritesHighlights[i].setScale(0.3333,0.3333);
+      this->spritesHighlights[i].setPosition(this->gridOrigin.getX() + 73*newHighlights[i].first.getX(),
+                                             this->gridOrigin.getY() + 73*newHighlights[i].first.getY());
+      if (newHighlights[i].second == NONE){
+        this->spritesHighlights[i].setColor(Color(255, 255, 255, 0));
+      } else if (newHighlights[i].second == SHIFT) {
+        this->spritesHighlights[i].setColor(Color(200, 255, 200, 255));
+      } else if (newHighlights[i].second == ATTACK) {
+        this->spritesHighlights[i].setColor(Color(255, 0, 0, 255));
+      } else if (newHighlights[i].second == JUMP) {
+        this->spritesHighlights[i].setColor(Color(255, 255, 180, 255));
+      } else if (newHighlights[i].second == SHIFT_TRAPPED) {
+        this->spritesHighlights[i].setColor(Color(255, 200, 180, 255));
+      } else if (newHighlights[i].second == SHIFT_VICTORY) {
+        this->spritesHighlights[i].setColor(Color(200, 200, 255, 255));
+      }
+
+  }
 }
 
 void RenderLayer::updateAnimals(){
@@ -124,15 +152,17 @@ void RenderLayer::draw(RenderWindow &window) {
   window.clear();
   if (this->renderingState.getMenu() == GAME_MENU){
     window.draw(this->spriteGrid);
-    for(int index = 0; index<=7; index++) {
+    for(int index = 0; index < 6; index++) {
+      window.draw(this->spritesHighlights[index]);
+    }
+    for(int index = 0; index < 8; index++) {
       window.draw(this->animalsSpriteJ1[index]);
       window.draw(this->animalsSpriteJ2[index]);
     }
-    if (this->renderingState.getTurn()%2 == 1) {
-      window.draw(this->spritesInfos[0]);
-    } else if (this->renderingState.getTurn()%2 == 0) {
-      window.draw(this->spritesInfos[1]);
+    for(int index = 0; index < 2; index++) {
+      window.draw(this->spritesInfos[index]);
     }
+
   }
   window.display();
 }

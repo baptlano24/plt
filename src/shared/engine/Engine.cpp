@@ -178,7 +178,7 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
                   listAction[i].second = NONE;
                 }
                 else{
-                  if(state.getSelection(current_square).first->getID()>state.getSelection(listAction[i].first).first->getID()){
+                  if(state.getSelection(current_square).first->getID()>=state.getSelection(listAction[i].first).first->getID()){
                       cout << "A L'ATTAQUE!" << endl;
                       listAction[i].second = ATTACK;
                     }
@@ -283,6 +283,5 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
       } // end for
     }
   }
-  return listAction;
-}return listAction;
+ }
 }return listAction;}

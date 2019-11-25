@@ -2,11 +2,14 @@
 #include <iostream>
 using namespace std;
 using namespace state;
+using namespace engine;
 
 State::State(string nom1, string nom2) {
     this->player1 = Player(nom1,0);
     this->player2 = Player(nom2,1);
     this->menu = GAME_MENU;
+    this->highlights.push_back(make_pair(Coord {0,0},NONE));
+
     this->grid = array<array<Square,13>,12> {
       array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH}},
       array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,SHORE,SHORE,SHORE,EARTH,EARTH,EARTH,EARTH,EARTH}},
@@ -69,6 +72,17 @@ Square* State::getSquare(Coord Coord)
   return ptr_Square;
 }
 
+std::vector<std::pair<state::Coord,engine::ActionID>>& State::getHighlights()
+{
+  std::vector<std::pair<state::Coord,engine::ActionID>>& refHighlights = this->highlights;
+  return refHighlights;
+}
+
+void State::setHighlights(std::vector<std::pair<state::Coord,engine::ActionID>>& newHighlights)
+{
+  this->highlights = newHighlights;
+}
+
 pair<Animal*, int> State::getSelection(Coord coord)
 {
   pair<Animal*, int> selection;
@@ -87,6 +101,5 @@ pair<Animal*, int> State::getSelection(Coord coord)
       selection.second = this->player2.getColor();
     }
   }
-
   return selection;
 }

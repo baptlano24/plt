@@ -114,7 +114,13 @@ int main(int argc,char* argv[1]) {
             move1.execute(ptr_engine);
             StateEvent animalChangedEvent(ANIMALS_CHANGED);
             StateEvent& refAnimalChangedEvent = animalChangedEvent;
+            StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+            StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+            StateEvent infosChangedEvent(INFOS_CHANGED);
+            StateEvent& refInfosChangedEvent = infosChangedEvent;
             engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
+            engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
+            engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
             animalSelected = false;
             cout << "-- End of the move --" << endl;
           }
