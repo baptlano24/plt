@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string> //pour utiliser string::compare
 #include <utility>
+#include <unistd.h>
 #include <unordered_map>
 #include <vector>
 #include <SFML/Graphics.hpp>
@@ -79,6 +80,44 @@ int main(int argc,char* argv[1]) {
       mouseGridY = mouseY/73;
       mouseCoord.setX(mouseGridX);
       mouseCoord.setY(mouseGridY);
+
+      if(engine.getState().getTurn()%2 == 0) {
+        cout << endl << "         * IA is playing*" << endl;
+
+        if (animalSelected == false) {
+          cout << "Selection :" << endl;
+          pair<Animal*, int> selectionIA = engine.getState().getSelectionIA();
+          selectedAnimal = selectionIA.first;
+          Select selectIA(selectedAnimal, selectedAnimal->getCoord());
+          selectIA.execute(ptr_engine);
+
+          StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+          StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+          engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
+          animalSelected = true;
+
+        } else if ((animalSelected == true)) {
+          cout << "-- Beginning of the move --" << endl;
+          cout << "Animal selected id: " << selectedAnimal->getID() << endl;
+          std::pair<state::Coord,engine::ActionID> randAction = engine.randomAction(ptr_engine, selectedAnimal->getCoord());
+          targetCoord.setX(randAction.first.getX());
+          targetCoord.setY(randAction.first.getY());
+          Move move1(selectedAnimal, refTargetCoord);
+          move1.execute(ptr_engine);
+          StateEvent animalChangedEvent(ANIMALS_CHANGED);
+          StateEvent& refAnimalChangedEvent = animalChangedEvent;
+          StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+          StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+          StateEvent infosChangedEvent(INFOS_CHANGED);
+          StateEvent& refInfosChangedEvent = infosChangedEvent;
+          usleep(400000);
+          engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
+          engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
+          engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
+          animalSelected = false;
+          cout << "-- End of the move --" << endl;
+        }
+      }
 
       while (window.pollEvent(event)){
         if (event.type == Event::Closed){
