@@ -21,23 +21,8 @@ using namespace ai;
 
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
-      /*Engine engine1;
-      Coord coord1(9,2);
-      std::vector<pair<state::Coord,engine::ActionID>> listAction1;
-      listAction1 = engine1.authorisedActions(engine1.getState(),coord1);
-      Square* k = engine1.getState().getSquare(coord1);
-
-      for (int i =0; i<=3; i++){
-          if(engine1.getState().getSquare(listAction1[i].first)->getID() != WATER){
-            cout<<"NOWATER" << endl;
-            cout << engine1.getState().getSquare(listAction1[i].first)->getID() << endl;
-          }*/
-          cout << "Hello world !" << endl;
-
-
-  } else if (argc>=2 && string(argv[1])=="renderTest1"){
-      cout << "La commande renderTest1 est obsolète." << endl;
-  } else if (argc>=2 && string(argv[1])=="renderTest2"){
+      cout << "Hello world !" << endl;
+  } else if (argc>=2 && string(argv[1])=="renderTest"){
         cout<<"La commande renderTest2 est obsolète."<<endl;
         cout<<"--- Affichage de l'état initial de jeu ---"<<endl;
 
