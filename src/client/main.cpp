@@ -10,11 +10,14 @@
 #include "render.h"
 #include <engine.h>
 #include "engine.h"
+#include "ai.h"
 using namespace std;
 using namespace state;
 using namespace sf;
 using namespace render;
 using namespace engine;
+using namespace ai;
+
 
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
@@ -55,6 +58,7 @@ int main(int argc,char* argv[1]) {
     sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
     RenderLayer stateLayer(engine.getState(), window);
     RenderLayer* ptr_stateLayer = &stateLayer;
+    RandomAI randomAI;
 
     stateLayer.registerObserver(ptr_engine);
     engine.getState().registerObserver(ptr_stateLayer);
@@ -73,6 +77,16 @@ int main(int argc,char* argv[1]) {
     bool animalSelected = false;
     Animal* selectedAnimal;
 
+    StateEvent animalChangedEvent(ANIMALS_CHANGED);
+    StateEvent& refAnimalChangedEvent = animalChangedEvent;
+    StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+    StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+    StateEvent infosChangedEvent(INFOS_CHANGED);
+    StateEvent& refInfosChangedEvent = infosChangedEvent;
+    engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
+    engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
+    engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
+
     while (window.isOpen()){
       Event event;
       mouseX = Mouse::getPosition(window).x;
@@ -82,18 +96,16 @@ int main(int argc,char* argv[1]) {
       mouseCoord.setX(mouseGridX);
       mouseCoord.setY(mouseGridY);
 
+
       if(engine.getState().getTurn()%2 == 0) {
         cout << endl << "         * IA is playing*" << endl;
-
-        if (animalSelected == false) {
+        randomAI.play(ptr_engine);
+        /*if (animalSelected == false) {
           cout << "Selection :" << endl;
           pair<Animal*, int> selectionIA = engine.getState().getSelectionIA();
           selectedAnimal = selectionIA.first;
           Select selectIA(selectedAnimal, selectedAnimal->getCoord());
           selectIA.execute(ptr_engine);
-
-          StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-          StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
           engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
           animalSelected = true;
 
@@ -105,19 +117,14 @@ int main(int argc,char* argv[1]) {
           targetCoord.setY(randAction.first.getY());
           Move move1(selectedAnimal, refTargetCoord);
           move1.execute(ptr_engine);
-          StateEvent animalChangedEvent(ANIMALS_CHANGED);
-          StateEvent& refAnimalChangedEvent = animalChangedEvent;
-          StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-          StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-          StateEvent infosChangedEvent(INFOS_CHANGED);
-          StateEvent& refInfosChangedEvent = infosChangedEvent;
+
           usleep(400000);
           engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
           engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
           engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
           animalSelected = false;
           cout << "-- End of the move --" << endl;
-        }
+        }*/
       }
 
       while (window.pollEvent(event)){
@@ -152,12 +159,6 @@ int main(int argc,char* argv[1]) {
             targetCoord.setY(newY);
             Move move1(selectedAnimal, refTargetCoord);
             move1.execute(ptr_engine);
-            StateEvent animalChangedEvent(ANIMALS_CHANGED);
-            StateEvent& refAnimalChangedEvent = animalChangedEvent;
-            StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-            StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-            StateEvent infosChangedEvent(INFOS_CHANGED);
-            StateEvent& refInfosChangedEvent = infosChangedEvent;
             engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
             engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
             engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());

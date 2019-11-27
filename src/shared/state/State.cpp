@@ -119,15 +119,3 @@ pair<Animal*, int> State::getSelection(Coord coord)
   }
   return selection;
 }
-
-pair<Animal*, int> State::getSelectionIA()
-{
-  pair<Animal*, int> selection;
-  int random0_7 = rand() % 8;
-  while(this->player1.getAnimals()[random0_7].getStatus() == DEAD){
-     random0_7 = rand() % 8;
-  }
-  selection.first = &this->player1.getAnimals()[random0_7];
-  selection.second = this->player1.getColor();
-  return selection;
-}

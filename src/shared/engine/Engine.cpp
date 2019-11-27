@@ -29,16 +29,7 @@ void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 	currentOrder[priorite]=move(ptr_cmd);
 }
 
-std::pair<state::Coord,engine::ActionID> Engine::randomAction(engine::Engine* engine, Coord& current_square){
-  std::pair<state::Coord,engine::ActionID> action;
-  std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),current_square);
-  int random = rand() % 4;
-  while (authorisedActions[random].second == NONE){
-     random = rand() % 4;
-  }
-  action = authorisedActions[random];
-  return action;
-}
+
 
 std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(State& state, Coord& current_square){
   std::vector<pair<state::Coord, engine::ActionID>> listAction;

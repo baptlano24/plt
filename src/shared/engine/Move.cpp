@@ -14,7 +14,7 @@ Move::Move(state::Animal* targetAnimal, state::Coord& targetCoord): targetAnimal
 
 void engine::Move::execute(engine::Engine* engine)
 {
-  std::vector<std::pair<state::Coord,engine::ActionID>> noHighlights;
+  std::vector<std::pair<state::Coord,engine::ActionID>> noHighlights; //clean all the highlights
   noHighlights.push_back(make_pair(Coord {0,0},ActionID{NONE}));
   std::vector<std::pair<state::Coord,engine::ActionID>>& refNoHighlights = noHighlights;
   engine->getState().setHighlights(refNoHighlights);
@@ -75,7 +75,7 @@ void engine::Move::execute(engine::Engine* engine)
           engine->getState().setWinner(engine->getState().getPlayer1());
           cout<<"Victoire du Joueur1:"<< engine->getState().getPlayer1().getName() << "BRAVO !!!";
         } else{
-          engine->getState().setWinner(engine->getState().getPlayer2());          
+          engine->getState().setWinner(engine->getState().getPlayer2());
           cout<<"Victoire du Joueur1:"<< engine->getState().getPlayer2().getName() << "BRAVO !!!";
         }
         engine->getState().setGameover(1);
