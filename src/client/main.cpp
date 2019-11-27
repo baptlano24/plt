@@ -59,6 +59,7 @@ int main(int argc,char* argv[1]) {
     stateLayer.registerObserver(ptr_engine);
     engine.getState().registerObserver(ptr_stateLayer);
     stateLayer.draw(window);
+    srand (time(NULL));
 
     int newX = 1;
     int newY = 1;

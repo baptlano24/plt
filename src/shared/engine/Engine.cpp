@@ -32,7 +32,10 @@ void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 std::pair<state::Coord,engine::ActionID> Engine::randomAction(engine::Engine* engine, Coord& current_square){
   std::pair<state::Coord,engine::ActionID> action;
   std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),current_square);
-  int random = rand() % authorisedActions.size();
+  int random = rand() % 4;
+  while (authorisedActions[random].second == NONE){
+     random = rand() % 4;
+  }
   action = authorisedActions[random];
   return action;
 }
@@ -49,17 +52,27 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
   listAction.push_back(make_pair(front_square,NONE));
   listAction.push_back(make_pair(behind_square,NONE));
 
+  if(state.getSelection(current_square).first->getID() == ELEPHANT) {
+    cout << "ELEPHANT selected" << endl;
+  } else if (state.getSelection(current_square).first->getID() == CAT) {
+    cout << "CAT selected" << endl;
+  } else if (state.getSelection(current_square).first->getID() == DOG) {
+    cout << "DOG selected" << endl;
+  } else if (state.getSelection(current_square).first->getID() == WOLF) {
+    cout << "WOLF selected" << endl;
+  } else if (state.getSelection(current_square).first->getID() == LEOPARD) {
+    cout << "LEOPARD selected" << endl;
+  } else if (state.getSelection(current_square).first->getID() == TIGER) {
+    cout << "TIGER selected" << endl;
+  } else if (state.getSelection(current_square).first->getID() == LION) {
+    cout << "LION selected" << endl;
+  } else if (state.getSelection(current_square).first->getID() == ELEPHANT) {
+    cout << "ELEPHANT selected" << endl;
+  }
+
   if (state.getSelection(current_square).first->getID() == ELEPHANT || state.getSelection(current_square).first->getID() ==  CAT || state.getSelection(current_square).first->getID() == DOG || state.getSelection(current_square).first->getID() == WOLF){
 
-    if(state.getSelection(current_square).first->getID() == ELEPHANT) {
-      cout << "ELEPHANT !" << endl;
-    } else if (state.getSelection(current_square).first->getID() == CAT) {
-      cout << "CAT !" << endl;
-    } else if (state.getSelection(current_square).first->getID() == DOG) {
-      cout << "DOG !" << endl;
-    } else if (state.getSelection(current_square).first->getID() == WOLF) {
-      cout << "WOLF !" << endl;
-    }
+
     if(state.getSelection(current_square).first->getStatus() == NORMAL){
       //cout << "NORMAL!" << endl;
 
@@ -68,49 +81,49 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
           if(state.getSquare(listAction[i].first)->getID() != WATER){
             //cout << "NOWATER!" << endl;
             if(state.getSelection(listAction[i].first).first && state.getSelection(listAction[i].first).first->getStatus() != DEAD ){
-              cout << "SOMEONE!" << endl;
+              //cout << "SOMEONE!" << endl;
               cout << state.getSelection(current_square).second << endl;
               cout << state.getSelection(listAction[i].first).second << endl;
               if(state.getSelection(listAction[i].first).second == state.getSelection(current_square).second){
-                cout << "COPAIN!" << endl;
+                //cout << "COPAIN!" << endl;
                 listAction[i].second = NONE;
               }
               else{
                 if((state.getSelection(current_square).first->getID()>=state.getSelection(listAction[i].first).first->getID())||((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(listAction[i].first).second == 1 )||(state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(listAction[i].first).second == 0))){
-                    cout << "A L'ATTAQUE!" << endl;
+                    //cout << "A L'ATTAQUE!" << endl;
                     listAction[i].second = ATTACK;
                   }
                   else{
-                    cout <<"TROP FORT"<< endl;
+                    //cout <<"TROP FORT"<< endl;
                     listAction[i].second = NONE;
                   }
               }
             } else {
               if((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(current_square).second == 0 )||(state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(current_square).second == 1)){
-                cout <<"TRAP ALLIE" << endl;
+                //cout <<"TRAP ALLIE" << endl;
                 listAction[i].second = SHIFT;
               }
               else if((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(current_square).second == 1 )||(state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(current_square).second == 0)){
-                cout <<"TRAPPED" << endl;
+                //cout <<"TRAPPED" << endl;
                 listAction[i].second = SHIFT_TRAPPED;
               }
               else if((state.getSquare(listAction[i].first)->getID() == THRONEJ1 && state.getSelection(current_square).second == 1 )||(state.getSquare(listAction[i].first)->getID() == THRONEJ2 && state.getSelection(current_square).second == 0)){
-              cout <<  "VICTORY SOON" << endl;
+              //cout <<  "VICTORY SOON" << endl;
                 listAction[i].second = SHIFT_VICTORY;
               }
               else if((state.getSquare(listAction[i].first)->getID() == THRONEJ1 && state.getSelection(current_square).second == 0 )||(state.getSquare(listAction[i].first)->getID() == THRONEJ2 && state.getSelection(current_square).second == 1)){
-              cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
+              //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
                 listAction[i].second = NONE;
               }
               else {
-              cout <<  "MOVE" << endl;
+              //cout <<  "MOVE" << endl;
                 listAction[i].second = SHIFT;
               }
 
             }
           }
           else if (state.getSquare(listAction[i].first)->getID() == WATER) {
-            cout <<"WATER"<< endl;
+            //cout <<"WATER"<< endl;
             listAction[i].second = NONE;
           }
         }
@@ -118,103 +131,103 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
     }
 
   } else if (state.getSelection(current_square).first->getID() == RAT) {
-    cout << "RAT" << endl;
+
     if(state.getSelection(current_square).first->getStatus() == NORMAL){
         for (int i = 0; i<=3 ;i++) {
           if(state.getSquare(listAction[i].first)){
 
             if(state.getSelection(listAction[i].first).first){
-                cout << "SOMEONE!" << endl;
+                //cout << "SOMEONE!" << endl;
               if(state.getSelection(listAction[i].first).second == state.getSelection(current_square).second){
-                cout << "COPAIN!" << endl;
+                //cout << "COPAIN!" << endl;
                 listAction[i].second = NONE;
               } else if(state.getSquare(current_square)->getID() != WATER){
                   if(state.getSelection(listAction[i].first).first->getID() == ELEPHANT || state.getSelection(listAction[i].first).first->getID() == RAT){
-                    cout << "A L'ATTAQUE!" << endl;
+                    //cout << "A L'ATTAQUE!" << endl;
                     listAction[i].second = ATTACK;
                   }
                   else if((state.getSelection(listAction[i].first).second != state.getSelection(current_square).second)
                        && ((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(current_square).second == 0) || (state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(current_square).second == 1)) ){
-                    cout << " PIEGE ET A L'ATTAQUE!" << endl;
+                    //cout << " PIEGE ET A L'ATTAQUE!" << endl;
                     listAction[i].second = ATTACK;
                     }
                    else{
-                     cout << "MOVE TRAP ALLIE OCCUPE" << endl;
+                     //cout << "MOVE TRAP ALLIE OCCUPE" << endl;
                      listAction[i].second = NONE;
                    }
               } else {
                 if (state.getSquare(listAction[i].first)->getID() == WATER) {
-                  cout << "ATTACK" << endl;
+                  //cout << "ATTACK" << endl;
                   listAction[i].second = ATTACK;
                 } else {
-                  cout <<"Can't MOVE from WATER" << endl;
+                  //cout <<"Can't MOVE from WATER" << endl;
                   listAction[i].second = NONE;
                 }
               }
             } else {
               if((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(current_square).second == 1 )||(state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(current_square).second == 0)){
-                cout <<"TRAPPED" << endl;
+                //cout <<"TRAPPED" << endl;
                 listAction[i].second = SHIFT_TRAPPED;
               }
               else if((state.getSquare(listAction[i].first)->getID() == THRONEJ1 && state.getSelection(current_square).second == 1 )||(state.getSquare(listAction[i].first)->getID() == THRONEJ2 && state.getSelection(current_square).second == 0)){
-                cout <<  "VICTORY SOON" << endl;
+                //cout <<  "VICTORY SOON" << endl;
                 listAction[i].second = SHIFT_VICTORY;
               }
               else if((state.getSquare(listAction[i].first)->getID() == THRONEJ1 && state.getSelection(current_square).second == 0 )||(state.getSquare(listAction[i].first)->getID() == THRONEJ2 && state.getSelection(current_square).second == 1)){
-                cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
+                //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
                 listAction[i].second = NONE;
               }
               else{
-                cout <<  "MOVE" << endl;
+                //cout <<  "MOVE" << endl;
                 listAction[i].second = SHIFT;
               }
             }
           }
         } //end for
       }
-    } else if(state.getSelection(current_square).first->getID() == TIGER || state.getSelection(current_square).first->getID() == LEOPARD || state.getSelection(current_square).first->getID() == LION) {
-    cout<<"LION or TIGER or LEOPARD" << endl;
+  } else if(state.getSelection(current_square).first->getID() == TIGER || state.getSelection(current_square).first->getID() == LEOPARD || state.getSelection(current_square).first->getID() == LION) {
+
     if(state.getSelection(current_square).first->getStatus() == NORMAL){
       for (int i = 0; i<=3 ;i++) {
         if(state.getSquare(listAction[i].first)){
             if(state.getSquare(listAction[i].first)->getID() != WATER){
-              cout << "NOWATER!" << endl;
+              //cout << "NOWATER!" << endl;
               if(state.getSelection(listAction[i].first).first){
-                cout << "SOMEONE!" << endl;
+                //cout << "SOMEONE!" << endl;
                 if(state.getSelection(listAction[i].first).second == state.getSelection(current_square).second){
-                  cout << "COPAIN!" << endl;
+                  //cout << "COPAIN!" << endl;
                   listAction[i].second = NONE;
                 }
                 else{
                   if((state.getSelection(current_square).first->getID()>=state.getSelection(listAction[i].first).first->getID())||((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(listAction[i].first).second == 1 )||(state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(listAction[i].first).second == 0))){
-                      cout << "A L'ATTAQUE!" << endl;
+                      //cout << "A L'ATTAQUE!" << endl;
                       listAction[i].second = ATTACK;
                     }
                     else{
-                      cout <<"TROP FORT"<< endl;
+                      //cout <<"TROP FORT"<< endl;
                       listAction[i].second = NONE;
                     }
                 }
 
               }else{
                 if((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(current_square).second == 0 )||(state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(current_square).second == 1)){
-                  cout <<"TRAP ALLIE" << endl;
+                  //cout <<"TRAP ALLIE" << endl;
                   listAction[i].second = SHIFT;
                 }
                 else if((state.getSquare(listAction[i].first)->getID() == TRAPJ1 && state.getSelection(current_square).second == 1 )||(state.getSquare(listAction[i].first)->getID() == TRAPJ2 && state.getSelection(current_square).second == 0)){
-                  cout <<"TRAPPED" << endl;
+                  //cout <<"TRAPPED" << endl;
                   listAction[i].second = SHIFT_TRAPPED;
                 }
                 else if((state.getSquare(listAction[i].first)->getID() == THRONEJ1 && state.getSelection(current_square).second == 1 )||(state.getSquare(listAction[i].first)->getID() == THRONEJ2 && state.getSelection(current_square).second == 0)){
-                cout <<  "VICTORY SOON" << endl;
+                //cout <<  "VICTORY SOON" << endl;
                   listAction[i].second = SHIFT_VICTORY;
                 }
                 else if((state.getSquare(listAction[i].first)->getID() == THRONEJ1 && state.getSelection(current_square).second == 0 )||(state.getSquare(listAction[i].first)->getID() == THRONEJ2 && state.getSelection(current_square).second == 1)){
-                cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
+                //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
                   listAction[i].second = NONE;
                 }
                 else{
-                cout <<  "MOVE" << endl;
+                //cout <<  "MOVE" << endl;
                   listAction[i].second = SHIFT;
                 }
 
@@ -226,7 +239,7 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
                   if(state.getSelection(Coord(listAction[i].first.getX()+n, listAction[i].first.getY())).first==NULL){
                     compteur += 1;
                   if (compteur == 4){
-                    cout <<"CAN JUMP" << endl;
+                    //cout <<"CAN JUMP" << endl;
                     listAction[i].first = Coord(listAction[i].first.getX()+3, listAction[i].first.getY());
                     listAction[i].second = JUMP;
                   }
@@ -243,7 +256,7 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
                 if(state.getSelection(Coord(listAction[i].first.getX()-n, listAction[i].first.getY())).first==NULL){
                   compteur += 1;
                 if (compteur == 4){
-                  cout <<"CAN JUMP" << endl;
+                  //cout <<"CAN JUMP" << endl;
                   listAction[i].first = Coord(listAction[i].first.getX()-3, listAction[i].first.getY());
                   listAction[i].second = JUMP;
                 }
@@ -258,7 +271,7 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
               if(state.getSelection(Coord(listAction[i].first.getX(), listAction[i].first.getY()-n)).first==NULL){
                 compteur += 1;
               if (compteur == 4){
-                cout <<"CAN JUMP" << endl;
+                //cout <<"CAN JUMP" << endl;
                 listAction[i].first = Coord(listAction[i].first.getX(), listAction[i].first.getY()-3);
                 listAction[i].second = JUMP;
                 compteur = 0;
@@ -274,7 +287,7 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
             if(state.getSelection(Coord(listAction[i].first.getX(), listAction[i].first.getY()+n)).first==NULL){
               compteur += 1;
             if (compteur == 4){
-              cout <<"CAN JUMP" << endl;
+              //cout <<"CAN JUMP" << endl;
               listAction[i].first = Coord(listAction[i].first.getX(), listAction[i].first.getY()+3);
               listAction[i].second = JUMP;
 
