@@ -29,8 +29,6 @@ void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 	currentOrder[priorite]=move(ptr_cmd);
 }
 
-
-
 std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(State& state, Coord& current_square){
   std::vector<pair<state::Coord, engine::ActionID>> listAction;
 
@@ -291,9 +289,11 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
       }
 
 
-          }
-      } // end for
-    }
+       }
+      }
+     }
+    }// end for
+   }
   }
- }
-}return listAction;}
+return listAction;
+}
