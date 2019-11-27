@@ -5,6 +5,7 @@
 
 * cd plt/bin
 * make -C ../build
-* ./client Engine
+* ./client <Insert a command here>
+If you want to know all the commands, just call ./client
 
 </p>
