@@ -58,8 +58,8 @@ int main(int argc,char* argv[1]) {
     sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
     RenderLayer stateLayer(engine.getState(), window);
     RenderLayer* ptr_stateLayer = &stateLayer;
-    RandomAI randomAI0(0);
-    RandomAI randomAI1(1);
+    //RandomAI randomAI(1);
+    HeuristicAI heuristicAI(0);
 
     stateLayer.registerObserver(ptr_engine);
     engine.getState().registerObserver(ptr_stateLayer);
@@ -98,12 +98,17 @@ int main(int argc,char* argv[1]) {
       mouseCoord.setY(mouseGridY);
 
 
-      if(engine.getState().getTurn()%2 == 0) {
-        cout << endl << "         * IA0 is playing*" << endl;
-        randomAI0.play(ptr_engine);
+      /*if(engine.getState().getTurn()%2 == 0) {
+        cout << endl << "         * Random is playing*" << endl;
+        randomAI.play(ptr_engine);
       } else {
-        cout << endl << "         * IA1 is playing*" << endl;
-        randomAI1.play(ptr_engine);
+        cout << endl << "         * Heuristic is playing*" << endl;
+        heuristicAI.play(ptr_engine);
+      }*/
+
+      if (engine.getState().getTurn()%2 == 0){
+        cout << endl << "         * Heuristic is playing*" << endl;
+        heuristicAI.play(ptr_engine);
       }
 
       while (window.pollEvent(event)){
