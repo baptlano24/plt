@@ -9,7 +9,6 @@ State::State(string nom1, string nom2) {
     this->player2 = Player(nom2,1);
     this->menu = GAME_MENU;
     this->highlights.push_back(make_pair(Coord {0,0},NONE));
-
     this->grid = array<array<Square,13>,12> {
       array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH}},
       array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,SHORE,SHORE,SHORE,EARTH,EARTH,EARTH,EARTH,EARTH}},

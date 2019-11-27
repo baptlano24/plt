@@ -14,7 +14,6 @@ RandomAI::RandomAI(int color){
 }
 
 void RandomAI::play(engine::Engine* engine) {
-  cout<<"randomIA play()"<<endl;
 
   bool animalSelectedIA = false;
   Coord targetCoord;

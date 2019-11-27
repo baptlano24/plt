@@ -16,7 +16,6 @@ HeuristicAI::HeuristicAI(int color){
 }
 
 void HeuristicAI::play(engine::Engine* engine) {
-  cout<<"randomIA play()"<<endl;
 
   bool animalSelectedIA = false;
   Coord targetCoord;
