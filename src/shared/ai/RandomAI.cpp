@@ -9,7 +9,9 @@ using namespace state;
 using namespace engine;
 using namespace ai;
 
-RandomAI::RandomAI(){}
+RandomAI::RandomAI(int color){
+  this->color = color;
+}
 
 void RandomAI::play(engine::Engine* engine) {
   cout<<"randomIA play()"<<endl;
@@ -28,7 +30,7 @@ void RandomAI::play(engine::Engine* engine) {
 
   if (animalSelectedIA == false) {
     cout << "Selection IA:" << endl;
-    pair<Animal*, int> selectionIA = this->getSelectionIA(engine);
+    pair<Animal*, int> selectionIA = this->selectRandomAnimal(engine);
     selectedAnimal = selectionIA.first;
     Select selectIA(selectedAnimal, selectedAnimal->getCoord());
     selectIA.execute(engine);
@@ -65,14 +67,21 @@ std::pair<state::Coord,engine::ActionID> RandomAI::randomAction(engine::Engine* 
   return action;
 }
 
-pair<state::Animal*, int> RandomAI::getSelectionIA(engine::Engine* engine)
+pair<state::Animal*, int> RandomAI::selectRandomAnimal(engine::Engine* engine)
 {
   pair<Animal*, int> selection;
   int random0_7 = rand() % 8;
-  while(engine->getState().getPlayer1().getAnimals()[random0_7].getStatus() == DEAD){
-     random0_7 = rand() % 8;
+  if (this->color == 0){
+    while(engine->getState().getPlayer1().getAnimals()[random0_7].getStatus() == DEAD){
+       random0_7 = rand() % 8;
+    }
+    selection.first = &engine->getState().getPlayer1().getAnimals()[random0_7];
+  } else if (this->color == 1){
+    while(engine->getState().getPlayer2().getAnimals()[random0_7].getStatus() == DEAD){
+       random0_7 = rand() % 8;
+    }
+    selection.first = &engine->getState().getPlayer2().getAnimals()[random0_7];
   }
-  selection.first = &engine->getState().getPlayer1().getAnimals()[random0_7];
-  selection.second = engine->getState().getPlayer1().getColor();
+  selection.second =this->color;
   return selection;
 }

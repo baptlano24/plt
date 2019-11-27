@@ -58,7 +58,8 @@ int main(int argc,char* argv[1]) {
     sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
     RenderLayer stateLayer(engine.getState(), window);
     RenderLayer* ptr_stateLayer = &stateLayer;
-    RandomAI randomAI;
+    RandomAI randomAI0(0);
+    RandomAI randomAI1(1);
 
     stateLayer.registerObserver(ptr_engine);
     engine.getState().registerObserver(ptr_stateLayer);
@@ -98,33 +99,11 @@ int main(int argc,char* argv[1]) {
 
 
       if(engine.getState().getTurn()%2 == 0) {
-        cout << endl << "         * IA is playing*" << endl;
-        randomAI.play(ptr_engine);
-        /*if (animalSelected == false) {
-          cout << "Selection :" << endl;
-          pair<Animal*, int> selectionIA = engine.getState().getSelectionIA();
-          selectedAnimal = selectionIA.first;
-          Select selectIA(selectedAnimal, selectedAnimal->getCoord());
-          selectIA.execute(ptr_engine);
-          engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
-          animalSelected = true;
-
-        } else if ((animalSelected == true)) {
-          cout << "-- Beginning of the move --" << endl;
-          cout << "Animal selected id: " << selectedAnimal->getID() << endl;
-          std::pair<state::Coord,engine::ActionID> randAction = engine.randomAction(ptr_engine, selectedAnimal->getCoord());
-          targetCoord.setX(randAction.first.getX());
-          targetCoord.setY(randAction.first.getY());
-          Move move1(selectedAnimal, refTargetCoord);
-          move1.execute(ptr_engine);
-
-          usleep(400000);
-          engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
-          engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
-          engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
-          animalSelected = false;
-          cout << "-- End of the move --" << endl;
-        }*/
+        cout << endl << "         * IA0 is playing*" << endl;
+        randomAI0.play(ptr_engine);
+      } else {
+        cout << endl << "         * IA1 is playing*" << endl;
+        randomAI1.play(ptr_engine);
       }
 
       while (window.pollEvent(event)){
