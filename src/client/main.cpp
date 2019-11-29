@@ -93,7 +93,7 @@ void playerVSplayer(){
       else if(event.type == Event::MouseButtonPressed) {
         cout << endl << "         * Clic *" << endl;
 
-        if (animalSelected == false) {
+        if (animalSelected == false && engine.getState().getGameover() != true) {
           cout << "Selection :" << endl;
           cout << "Mouse clic pixel event : " << mouseX << " , "<< mouseY << endl;
           cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl;
@@ -150,14 +150,15 @@ void randomVSrandom(){
         window.close();
       }
     }
-    if(engine.getState().getTurn()%2 == 0) {
-      cout << endl << "         * IA0 is playing*" << endl;
-      randomAI0.play(ptr_engine);
-    } else {
-      cout << endl << "         * IA1 is playing*" << endl;
-      randomAI1.play(ptr_engine);
+    if(engine.getState().getGameover() != true){
+      if(engine.getState().getTurn()%2 == 0) {
+        cout << endl << "         * IA0 is playing*" << endl;
+        randomAI0.play(ptr_engine);
+      } else {
+        cout << endl << "         * IA1 is playing*" << endl;
+        randomAI1.play(ptr_engine);
+      }
     }
-
   }
 }
 
@@ -183,13 +184,14 @@ void randomVSheuristic(){
         window.close();
       }
     }
-    if(engine.getState().getTurn()%2 == 0) {
-      cout << endl << "         * IA random is playing*" << endl;
-      randomAI.play(ptr_engine);
-    } else {
-      cout << endl << "         * IA heuristic is playing*" << endl;
-      heuristicAI.play(ptr_engine);
-    }
-
+    if(engine.getState().getGameover() != true){
+      if(engine.getState().getTurn()%2 == 0) {
+        cout << endl << "         * IA random is playing*" << endl;
+        randomAI.play(ptr_engine);
+      } else {
+        cout << endl << "         * IA heuristic is playing*" << endl;
+        heuristicAI.play(ptr_engine);
+      }
+   }
   }
 }
