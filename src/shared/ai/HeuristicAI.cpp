@@ -1,5 +1,6 @@
 #include "../state/State.h"
 #include "HeuristicAI.h"
+#include "RandomAI.h"
 #include "engine.h"
 #include <unistd.h>
 #include <iostream>
@@ -88,7 +89,11 @@ std::pair<state::Coord,engine::ActionID> HeuristicAI::selectAction(engine::Engin
 
 pair<state::Animal*, int> HeuristicAI::selectAnimal(engine::Engine* engine)
 {
-  pair<Animal*, int> selection;
+  RandomAI randomAI(this->color);
+  return randomAI.selectRandomAnimal(engine);
+
+
+  /*pair<Animal*, int> selection;
   Coord ObjectifJ1(5,0);
   Coord ObjectifJ2(6,12);
   double dmax = 0;
@@ -121,7 +126,7 @@ pair<state::Animal*, int> HeuristicAI::selectAnimal(engine::Engine* engine)
     }
   }
   selection = make_pair(animalSelected, this->color);
-  return selection;
+  return selection;*/
 }
 
 

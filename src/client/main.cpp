@@ -26,21 +26,21 @@ void heuristicVSheuristic();
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
     cout << "Hello world !" << endl;
-  } else if (argc>=2 && string(argv[1])=="playerVSplayer") {
+  } else if (argc>=2 && string(argv[1])=="pVSp") {
     playerVSplayer();
-  } else if (argc>=2 && string(argv[1])=="randomVSrandom") {
+  } else if (argc>=2 && string(argv[1])=="rVSr") {
     randomVSrandom();
-  } else if (argc>=2 && string(argv[1])=="randomVSheuristic") {
+  } else if (argc>=2 && string(argv[1])=="rVSh") {
     randomVSheuristic();
-  } else if (argc>=2 && string(argv[1])=="heuristicVSheuristic") {
+  } else if (argc>=2 && string(argv[1])=="hVSh") {
     heuristicVSheuristic();
   } else {
     cout << "Veuillez dire une commande parmis les suivantes :" << endl;
-    cout << "        -->  hello                 -> (phrase d'accueil) " << endl;
-    cout << "        -->  playerVSplayer        -> (permet de joueur contre joueur)  " << endl;
-    cout << "        -->  randomVSrandom        -> (permet de voir jouer ordinateur aléatoire contre ordinateur aléatoire)  " << endl;
-    cout << "        -->  randomVSheuristic     -> (permet de voir jouer ordinateur aléatoire contre ordinateur heuristique)  " << endl;
-    cout << "        -->  heuristicVSheuristic  -> (permet de voir jouer ordinateur heuristique contre ordinateur heuristique)  " << endl;
+    cout << "-->  hello  -> (phrase d'accueil) " << endl;
+    cout << "-->  pVSp   -> (jouer joueur contre joueur)  " << endl;
+    cout << "-->  rVSr   -> (jouer ordinateur aléatoire contre ordinateur aléatoire)  " << endl;
+    cout << "-->  rVSh   -> (jouer ordinateur aléatoire contre ordinateur heuristique)  " << endl;
+    cout << "-->  hVSh   -> (jouer ordinateur heuristique contre ordinateur heuristique)  " << endl;
   }
   return 0;
 }
@@ -230,6 +230,6 @@ void heuristicVSheuristic(){
         cout << endl << "         * IA heuristiAI1 is playing*" << endl;
         heuristicAI1.play(ptr_engine);
       }
-   }
+    }
   }
 }
