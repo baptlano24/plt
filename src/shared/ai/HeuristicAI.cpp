@@ -42,9 +42,9 @@ void HeuristicAI::play(engine::Engine* engine) {
   if ((animalSelectedIA == true)) {
     cout << "-- Beginning of the IA move --" << endl;
     cout << "Animal selected id: " << selectedAnimal->getID() << endl;
-    std::pair<state::Coord,engine::ActionID> randAction = this->selectAction(engine, selectedAnimal->getCoord());
-    targetCoord.setX(randAction.first.getX());
-    targetCoord.setY(randAction.first.getY());
+    std::pair<state::Coord,engine::ActionID> action = this->selectAction(engine, selectedAnimal->getCoord());
+    targetCoord.setX(action.first.getX());
+    targetCoord.setY(action.first.getY());
     engine::Move moveIA(selectedAnimal, refTargetCoord);
     moveIA.execute(engine);
 
@@ -63,7 +63,7 @@ std::pair<state::Coord,engine::ActionID> HeuristicAI::selectAction(engine::Engin
 
   Coord ObjectifJ1(5,0);
   Coord ObjectifJ2(6,12);
-  double dmin = 10000;
+  double dmin = 100;
   pair<state::Coord,engine::ActionID> actionSelected;
 
   if(this->color == 0){
@@ -75,7 +75,13 @@ std::pair<state::Coord,engine::ActionID> HeuristicAI::selectAction(engine::Engin
       }
     }
   } else if (this->color == 1){
-
+    for(int i=0; i<4; i++){
+      double distance = getDistance(authorisedActions[i].first, ObjectifJ1);
+      if(distance < dmin && authorisedActions[i].second != NONE) {
+        dmin = distance;
+        actionSelected = authorisedActions[i];
+      }
+    }
   }
   return actionSelected;
 }
@@ -88,8 +94,8 @@ pair<state::Animal*, int> HeuristicAI::selectAnimal(engine::Engine* engine)
   double dmax = 0;
   //vector<pair<Animal*,float>> distances;
   Animal* animalSelected;
+  Animal* animal;
   if(this->color == 0){
-    Animal* animal;
     for(int i=0; i<8; i++){
       animal = &engine->getState().getPlayer1().getAnimals()[i];
       Coord& animalCoord = animal->getCoord();
@@ -99,10 +105,20 @@ pair<state::Animal*, int> HeuristicAI::selectAnimal(engine::Engine* engine)
         dmax = distance;
         animalSelected = animal;
       }
-      cout << "distance " << distance << endl;
+      cout << "distance Objectif-position actuelle " << distance << endl;
     }
   } else if (this->color == 1){
-
+    for(int i=0; i<8; i++){
+      animal = &engine->getState().getPlayer2().getAnimals()[i];
+      Coord& animalCoord = animal->getCoord();
+      double distance = getDistance(animalCoord, ObjectifJ1);
+      //distances.push_back(make_pair(animal,distance));
+      if((distance > dmax || animalSelected->getID()< animal->getID()) && animal->getStatus() != DEAD) {
+        dmax = distance;
+        animalSelected = animal;
+      }
+      cout << "distance Objectif-position actuelle " << distance << endl;
+    }
   }
   selection = make_pair(animalSelected, this->color);
   return selection;

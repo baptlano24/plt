@@ -21,6 +21,7 @@ using namespace ai;
 void playerVSplayer();
 void randomVSrandom();
 void randomVSheuristic();
+void heuristicVSheuristic();
 
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
@@ -31,12 +32,15 @@ int main(int argc,char* argv[1]) {
     randomVSrandom();
   } else if (argc>=2 && string(argv[1])=="randomVSheuristic") {
     randomVSheuristic();
+  } else if (argc>=2 && string(argv[1])=="heuristicVSheuristic") {
+    heuristicVSheuristic();
   } else {
     cout << "Veuillez dire une commande parmis les suivantes :" << endl;
-    cout << "        -->  hello              -> (phrase d'accueil) " << endl;
-    cout << "        -->  playerVSplayer     -> (permet de joueur contre joueur)  " << endl;
-    cout << "        -->  randomVSrandom     -> (permet de voir jouer ordinateur aléatoire contre ordinateur aléatoire)  " << endl;
-    cout << "        -->  randomVSheuristic  -> (permet de voir jouer ordinateur aléatoire contre ordinateur heuristique)  " << endl;
+    cout << "        -->  hello                 -> (phrase d'accueil) " << endl;
+    cout << "        -->  playerVSplayer        -> (permet de joueur contre joueur)  " << endl;
+    cout << "        -->  randomVSrandom        -> (permet de voir jouer ordinateur aléatoire contre ordinateur aléatoire)  " << endl;
+    cout << "        -->  randomVSheuristic     -> (permet de voir jouer ordinateur aléatoire contre ordinateur heuristique)  " << endl;
+    cout << "        -->  heuristicVSheuristic  -> (permet de voir jouer ordinateur heuristique contre ordinateur heuristique)  " << endl;
   }
   return 0;
 }
@@ -191,6 +195,40 @@ void randomVSheuristic(){
       } else {
         cout << endl << "         * IA heuristic is playing*" << endl;
         heuristicAI.play(ptr_engine);
+      }
+   }
+  }
+}
+
+void heuristicVSheuristic(){
+  cout<<"Lancement de la commande randomVSheuristic."<<endl;
+  Engine engine;
+  Engine* ptr_engine = &engine;
+  sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
+  RenderLayer stateLayer(engine.getState(), window);
+  RenderLayer* ptr_stateLayer = &stateLayer;
+  HeuristicAI heuristicAI0(0);
+  HeuristicAI heuristicAI1(1);
+
+  stateLayer.registerObserver(ptr_engine);
+  engine.getState().registerObserver(ptr_stateLayer);
+  stateLayer.draw(window);
+  srand (time(NULL));
+
+  while (window.isOpen()){
+    Event event;
+    while (window.pollEvent(event)){
+      if (event.type == Event::Closed){
+        window.close();
+      }
+    }
+    if(engine.getState().getGameover() != true){
+      if(engine.getState().getTurn()%2 == 0) {
+        cout << endl << "         * IA heuristicAI0 is playing*" << endl;
+        heuristicAI0.play(ptr_engine);
+      } else {
+        cout << endl << "         * IA heuristiAI1 is playing*" << endl;
+        heuristicAI1.play(ptr_engine);
       }
    }
   }
