@@ -8,6 +8,8 @@ State::State(string nom1, string nom2) {
     this->player1 = Player(nom1,0);
     this->player2 = Player(nom2,1);
     this->menu = GAME_MENU;
+    this->playing = 0;
+    this->turn = 1;
     this->highlights.push_back(make_pair(Coord {0,0},NONE));
     this->grid = array<array<Square,13>,12> {
       array<Square,13> {{EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH,EARTH}},
@@ -54,6 +56,15 @@ int State::getTurn()
 
 void State::setTurn(int newTurn){
   this->turn = newTurn;
+}
+
+int State::getPlaying()
+{
+  return this->playing;
+}
+
+void State::setPlaying(int playing){
+  this->playing = playing;
 }
 
 bool State::getGameover (){

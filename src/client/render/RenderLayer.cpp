@@ -83,10 +83,10 @@ void RenderLayer::updateInfos(){
   for (int i = 0; i <= 1; i++) {
       this->spritesInfos[i].setPosition(this->gridOrigin.getX()-73, 0);
   }
-  if (this->renderingState.getTurn()%2 == 1) {
+  if (this->renderingState.getPlaying() == 0) {
     this->spritesInfos[0].setColor(Color(180, 180, 255, 255));
     this->spritesInfos[1].setColor(Color(255, 180, 180, 0));
-  } else if (this->renderingState.getTurn()%2 == 0) {
+  } else if (this->renderingState.getPlaying() == 1) {
     this->spritesInfos[1].setColor(Color(255, 180, 180, 255));
     this->spritesInfos[0].setColor(Color(180, 180, 255, 0));
   }
@@ -101,19 +101,27 @@ void RenderLayer::updateHighlights(){
       this->spritesHighlights[i].setScale(0.3333,0.3333);
       this->spritesHighlights[i].setPosition(this->gridOrigin.getX() + 73*newHighlights[i].first.getX(),
                                              this->gridOrigin.getY() + 73*newHighlights[i].first.getY());
-      if (newHighlights[i].second == NONE){
-        this->spritesHighlights[i].setColor(Color(255, 255, 255, 0));
-      } else if (newHighlights[i].second == SHIFT) {
-        this->spritesHighlights[i].setColor(Color(200, 255, 200, 255));
-      } else if (newHighlights[i].second == ATTACK) {
-        this->spritesHighlights[i].setColor(Color(255, 0, 0, 255));
-      } else if (newHighlights[i].second == JUMP) {
-        this->spritesHighlights[i].setColor(Color(255, 255, 180, 255));
-      } else if (newHighlights[i].second == SHIFT_TRAPPED) {
-        this->spritesHighlights[i].setColor(Color(255, 200, 180, 255));
-      } else if (newHighlights[i].second == SHIFT_VICTORY) {
-        this->spritesHighlights[i].setColor(Color(200, 200, 255, 255));
-      }
+     switch(newHighlights[i].second)
+     {
+       case NONE :
+         this->spritesHighlights[i].setColor(Color(255, 255, 255, 0));
+         break;
+       case SHIFT :
+         this->spritesHighlights[i].setColor(Color(200, 255, 200, 255));
+         break;
+       case ATTACK :
+         this->spritesHighlights[i].setColor(Color(255, 0, 0, 255));
+         break;
+       case JUMP :
+         this->spritesHighlights[i].setColor(Color(255, 255, 180, 255));
+         break;
+       case SHIFT_TRAPPED :
+         this->spritesHighlights[i].setColor(Color(255, 200, 180, 255));
+         break;
+       case SHIFT_VICTORY :
+         this->spritesHighlights[i].setColor(Color(200, 200, 255, 255));
+         break;
+     }
 
   }
 }
@@ -136,9 +144,9 @@ vector<Sprite> RenderLayer::vectToSprites(vector<state::Animal>& animalsMap, int
         spriteAnimals[i].setPosition(this->gridOrigin.getX() + 73*animalsMap[i].getCoord().getX() ,
                                      this->gridOrigin.getY() + 73*animalsMap[i].getCoord().getY() );
         if (animalsMap[i].getStatus() == NORMAL) {
-            if (color == 1) {
+            if (color == 0) {
                 spriteAnimals[i].setColor(Color(180, 180, 255, 255));
-            } else if (color == 0) {
+            } else if (color == 1) {
                 spriteAnimals[i].setColor(Color(255, 180, 180, 255));
             }
         } else if (animalsMap[i].getStatus() == DEAD) {

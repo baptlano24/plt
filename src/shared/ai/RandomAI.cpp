@@ -13,7 +13,7 @@ RandomAI::RandomAI(int color){
   this->color = color;
 }
 
-void RandomAI::play(engine::Engine* engine) {
+void RandomAI::play(Engine* engine) {
 
   bool animalSelectedIA = false;
   Coord targetCoord;
@@ -28,6 +28,7 @@ void RandomAI::play(engine::Engine* engine) {
   StateEvent& refInfosChangedEvent = infosChangedEvent;
 
   if (animalSelectedIA == false) {
+    usleep(2000000);
     cout << "Selection IA:" << endl;
     pair<Animal*, int> selectionIA = this->selectRandomAnimal(engine);
     selectedAnimal = selectionIA.first;
@@ -38,15 +39,14 @@ void RandomAI::play(engine::Engine* engine) {
 
   }
   if ((animalSelectedIA == true)) {
+    usleep(2000000);
     cout << "-- Beginning of the IA move --" << endl;
-    cout << "Animal selected id: " << selectedAnimal->getID() << endl;
-    std::pair<state::Coord,engine::ActionID> randAction = this->randomAction(engine, selectedAnimal->getCoord());
+    pair<Coord,ActionID> randAction = this->randomAction(engine, selectedAnimal->getCoord());
     targetCoord.setX(randAction.first.getX());
     targetCoord.setY(randAction.first.getY());
-    engine::Move moveIA(selectedAnimal, refTargetCoord);
+    Move moveIA(selectedAnimal, refTargetCoord);
     moveIA.execute(engine);
 
-    usleep(400000);
     engine->getState().notifyObservers(refAnimalChangedEvent, engine->getState());
     engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
     engine->getState().notifyObservers(refInfosChangedEvent, engine->getState());
@@ -55,9 +55,9 @@ void RandomAI::play(engine::Engine* engine) {
   }
 }
 
-std::pair<state::Coord,engine::ActionID> RandomAI::randomAction(engine::Engine* engine, Coord& current_square){
-  std::pair<state::Coord,engine::ActionID> action;
-  std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),current_square);
+pair<Coord,ActionID> RandomAI::randomAction(Engine* engine, Coord& current_square){
+  pair<Coord,ActionID> action;
+  vector<pair<Coord,ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),current_square);
   int random = rand() % 4;
   while (authorisedActions[random].second == NONE){
      random = rand() % 4;
@@ -66,7 +66,7 @@ std::pair<state::Coord,engine::ActionID> RandomAI::randomAction(engine::Engine* 
   return action;
 }
 
-pair<state::Animal*, int> RandomAI::selectRandomAnimal(engine::Engine* engine)
+pair<Animal*, int> RandomAI::selectRandomAnimal(Engine* engine)
 {
   pair<Animal*, int> selection;
   int random0_7 = rand() % 8;

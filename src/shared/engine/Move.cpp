@@ -14,73 +14,58 @@ Move::Move(state::Animal* targetAnimal, state::Coord& targetCoord): targetAnimal
 
 void engine::Move::execute(engine::Engine* engine)
 {
-  std::vector<std::pair<state::Coord,engine::ActionID>> noHighlights; //clean all the highlights
+  std::vector<std::pair<state::Coord,engine::ActionID>> noHighlights; //clean all the highlights with one NONE highlight
   noHighlights.push_back(make_pair(Coord {0,0},ActionID{NONE}));
   std::vector<std::pair<state::Coord,engine::ActionID>>& refNoHighlights = noHighlights;
   engine->getState().setHighlights(refNoHighlights);
 
   std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord());
+  cout<<"Tour numéro : " << engine->getState().getTurn() << endl;
+  cout<<"Anciennes coord           :" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
+  cout<<"Nouvelles coord demandées :" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
+
   for (int i =0 ;i<=3 ;i++){
     if (authorisedActions[i].first == this->targetCoord){
-
-      if (authorisedActions[i].second == SHIFT)//Higlight = 1 pour moove
+      switch(authorisedActions[i].second)
       {
-        cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-        cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
-        this->targetAnimal->setCoord(this->targetCoord);
-        engine->getState().setTurn(engine->getState().getTurn()+1);
-        cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-      }
+        case SHIFT :
+          this->targetAnimal->setCoord(this->targetCoord);
+          break;
+        case ATTACK :
+          cout<<"Animal adverse DEAD" <<endl;
+          engine->getState().getSelection(this->targetCoord).first->setStatus(DEAD);
+          this->targetAnimal->setCoord(this->targetCoord);
+          break;
+        case JUMP :
+          this->targetAnimal->setCoord(this->targetCoord);
+          break;
+        case SHIFT_TRAPPED :
+          cout<<"Animal TRAPPED" <<endl;
+          this->targetAnimal->setCoord(this->targetCoord);
+          break;
+        case SHIFT_VICTORY :
+          cout<<"Animal VICTORY" <<endl;
+          this->targetAnimal->setCoord(this->targetCoord);
 
-      if (authorisedActions[i].second == ATTACK )//Higlight = 2 pour attack
-      {
-        engine->getState().getSelection(this->targetCoord).first->setStatus(DEAD);
-        cout<<"AnimalAdverseDEAD" <<endl;
-        cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-        cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
-        this->targetAnimal->setCoord(this->targetCoord);
-        engine->getState().setTurn(engine->getState().getTurn()+1);
-        cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-      }
-
-      if (authorisedActions[i].second == JUMP)//Higlight = 3 pour moove
-      {
-        cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-        cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
-        this->targetAnimal->setCoord(this->targetCoord);
-        engine->getState().setTurn(engine->getState().getTurn()+1);
-        cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-      }
-
-      if (authorisedActions[i].second == SHIFT_TRAPPED)//Higlight = 4 pour moove
-      {
-
-        cout<<"Animal TRAPPED" <<endl;
-        cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-        cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
-        this->targetAnimal->setCoord(this->targetCoord);
-        engine->getState().setTurn(engine->getState().getTurn()+1);
-        cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-      }
-
-      if (authorisedActions[i].second == SHIFT_VICTORY)//Higlight = 4 pour moove
-      {
-        cout<<"Animal VICTORY" <<endl;
-        cout<<"anciennes coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-        cout<<"nouvelles coord demandees:" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
-        this->targetAnimal->setCoord(this->targetCoord);
-        engine->getState().setTurn(engine->getState().getTurn()+1);
-        cout<<"nouvelles coord:" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
-        if(engine->getState().getSelection(this->targetAnimal->getCoord()).second == 0){
-          engine->getState().setWinner(engine->getState().getPlayer1());
-          cout<<"Victoire du Joueur1:"<< engine->getState().getPlayer1().getName() << "BRAVO !!!";
-        } else{
-          engine->getState().setWinner(engine->getState().getPlayer2());
-          cout<<"Victoire du Joueur1:"<< engine->getState().getPlayer2().getName() << "BRAVO !!!";
-        }
-        engine->getState().setGameover(1);
+          if(engine->getState().getSelection(this->targetAnimal->getCoord()).second == 0){
+            engine->getState().setWinner(engine->getState().getPlayer1());
+            cout<<"Victoire du Joueur1 "<< engine->getState().getPlayer1().getName() << "BRAVO !!!";
+          } else{
+            engine->getState().setWinner(engine->getState().getPlayer2());
+            cout<<"Victoire du Joueur2 "<< engine->getState().getPlayer2().getName() << "BRAVO !!!";
+          }
+          engine->getState().setGameover(1);
+          break;
       }
     }
   }
+
+  if(engine->getState().getPlaying() == 0){
+    engine->getState().setPlaying(1);
+  } else if (engine->getState().getPlaying() == 1){
+    engine->getState().setPlaying(0);
+  }
+  engine->getState().setTurn(engine->getState().getTurn()+1);
   cout<<"Passage au tour numéro : " << engine->getState().getTurn() << endl;
+  cout<<"C'est au joueur " << engine->getState().getPlaying() << " de jouer"<< endl;
 }
