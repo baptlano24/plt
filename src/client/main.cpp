@@ -226,10 +226,12 @@ void heuristicVSheuristic(){
       if(engine.getState().getPlaying() == 0) {
         cout << endl << "         * IA heuristicAI0 is playing*" << endl;
         cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        usleep(400000);
         heuristicAI0.play(ptr_engine);
       } else {
         cout << endl << "         * IA heuristiAI1 is playing*" << endl;
         cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        usleep(400000);
         heuristicAI1.play(ptr_engine);
       }
     }

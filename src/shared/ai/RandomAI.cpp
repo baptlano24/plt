@@ -28,7 +28,6 @@ void RandomAI::play(Engine* engine) {
   StateEvent& refInfosChangedEvent = infosChangedEvent;
 
   if (animalSelectedIA == false) {
-    usleep(2000000);
     cout << "Selection IA:" << endl;
     pair<Animal*, int> selectionIA = this->selectRandomAnimal(engine);
     selectedAnimal = selectionIA.first;
@@ -39,7 +38,6 @@ void RandomAI::play(Engine* engine) {
 
   }
   if ((animalSelectedIA == true)) {
-    usleep(2000000);
     cout << "-- Beginning of the IA move --" << endl;
     pair<Coord,ActionID> randAction = this->randomAction(engine, selectedAnimal->getCoord());
     targetCoord.setX(randAction.first.getX());

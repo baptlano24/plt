@@ -28,6 +28,8 @@ void engine::Move::execute(engine::Engine* engine)
     if (authorisedActions[i].first == this->targetCoord){
       switch(authorisedActions[i].second)
       {
+        case NONE :
+          break;
         case SHIFT :
           this->targetAnimal->setCoord(this->targetCoord);
           break;

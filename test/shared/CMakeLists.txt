@@ -5,5 +5,6 @@ add_custom_test(shared_animal)
 add_custom_test(shared_state)
 add_custom_test(shared_StateEvent)
 add_custom_test(shared_coord)
-add_custom_test(render_RenderLayer)
+add_custom_test(shared_RandomAI)
+add_custom_test(shared_HeuristicAI)
 # vim: set sw=2 sts=2 et:

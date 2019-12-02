@@ -1,4 +1,4 @@
-#include "ai.h"
+/*#include "ai.h"
 #include "../state/State.h"
 #include "Vertex.h"
 #include "engine.h"
@@ -74,3 +74,4 @@ void Vertex::setDistanceDestination(int newDistanceDestination){
 int Vertex::getTotalCount(){
 	return distanceSource + distanceDestination;
 }
+*/

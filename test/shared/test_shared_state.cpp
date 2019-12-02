@@ -13,9 +13,18 @@ BOOST_AUTO_TEST_CASE(TestState)
 {
   {
     State state1{};
-    state1.getPlayer1().getName();
     state1.getPlayer1().setName("Bibou");
-    state1.getPlayer2().getName();
+    BOOST_CHECK_EQUAL(state1.getPlayer1().getName(), "Bibou");
+    BOOST_CHECK_EQUAL(state1.getMenu(), GAME_MENU);
+    state1.setMenu(SETTINGS_MENU);
+    BOOST_CHECK_EQUAL(state1.getMenu(), SETTINGS_MENU);
+    BOOST_CHECK_EQUAL(state1.getGameover(), 0);
+    state1.setGameover(1);
+    state1.setWinner(state1.getPlayer1());
+    BOOST_CHECK_EQUAL(state1.getGameover(), 1);
+    BOOST_CHECK_EQUAL(state1.getWinner().getColor(), state1.getPlayer1().getColor());
+
+
   }
   {
     State state2{"booba","baboo"};

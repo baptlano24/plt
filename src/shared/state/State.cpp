@@ -49,6 +49,10 @@ menuID& State::getMenu()
   return refMenu;
 }
 
+void State::setMenu(menuID newMenu){
+  this->menu = newMenu;
+}
+
 int State::getTurn()
 {
   return this->turn;
