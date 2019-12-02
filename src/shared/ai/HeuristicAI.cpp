@@ -60,14 +60,14 @@ std::pair<state::Coord,engine::ActionID> HeuristicAI::selectAction(engine::Engin
   std::pair<state::Coord,engine::ActionID> action;
   std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),current_square);
 
-  Coord ObjectifJ1(5,0);
-  Coord ObjectifJ2(6,12);
+  Coord ObjectifJ1(6,12);
+  Coord ObjectifJ2(5,0);
   double dmin = 100;
   pair<state::Coord,engine::ActionID> actionSelected;
 
   if(this->color == 0){
     for(int i=0; i<4; i++){
-      double distance = getDistance(authorisedActions[i].first, ObjectifJ2);
+      double distance = getDistance(authorisedActions[i].first, ObjectifJ1);
       if(distance < dmin && authorisedActions[i].second != NONE) {
         dmin = distance;
         actionSelected = authorisedActions[i];
@@ -75,7 +75,7 @@ std::pair<state::Coord,engine::ActionID> HeuristicAI::selectAction(engine::Engin
     }
   } else if (this->color == 1){
     for(int i=0; i<4; i++){
-      double distance = getDistance(authorisedActions[i].first, ObjectifJ1);
+      double distance = getDistance(authorisedActions[i].first, ObjectifJ2);
       if(distance < dmin && authorisedActions[i].second != NONE) {
         dmin = distance;
         actionSelected = authorisedActions[i];

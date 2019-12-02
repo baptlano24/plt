@@ -51,10 +51,10 @@ void engine::Move::execute(engine::Engine* engine)
 
           if(engine->getState().getSelection(this->targetAnimal->getCoord()).second == 0){
             engine->getState().setWinner(engine->getState().getPlayer1());
-            cout<<"Victoire du Joueur1 "<< engine->getState().getPlayer1().getName() << "BRAVO !!!";
+            cout<<"Victoire du Joueur1 "<< engine->getState().getPlayer1().getName() << " BRAVO !!!";
           } else{
             engine->getState().setWinner(engine->getState().getPlayer2());
-            cout<<"Victoire du Joueur2 "<< engine->getState().getPlayer2().getName() << "BRAVO !!!";
+            cout<<"Victoire du Joueur2 "<< engine->getState().getPlayer2().getName() << " BRAVO !!!";
           }
           engine->getState().setGameover(1);
           break;

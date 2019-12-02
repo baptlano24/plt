@@ -71,8 +71,6 @@ std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(
             //cout << "NOWATER!" << endl;
             if(state.getSelection(listAction[i].first).first && state.getSelection(listAction[i].first).first->getStatus() != DEAD ){
               //cout << "SOMEONE!" << endl;
-              cout << state.getSelection(current_square).second << endl;
-              cout << state.getSelection(listAction[i].first).second << endl;
               if(state.getSelection(listAction[i].first).second == state.getSelection(current_square).second){
                 //cout << "COPAIN!" << endl;
                 listAction[i].second = NONE;

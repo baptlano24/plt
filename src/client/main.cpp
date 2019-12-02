@@ -21,7 +21,12 @@ using namespace ai;
 void playerVSplayer();
 void randomVSrandom();
 void randomVSheuristic();
+void randomVSadvanced();
 void heuristicVSheuristic();
+void advancedVSheuristic();
+void advancedVSadvanced();
+
+int delai = 200000 ; //temps de jeu des IA
 
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
@@ -32,15 +37,24 @@ int main(int argc,char* argv[1]) {
     randomVSrandom();
   } else if (argc>=2 && string(argv[1])=="rVSh") {
     randomVSheuristic();
+  } else if (argc>=2 && string(argv[1])=="rVSa") {
+    randomVSadvanced();
   } else if (argc>=2 && string(argv[1])=="hVSh") {
     heuristicVSheuristic();
+  } else if (argc>=2 && string(argv[1])=="aVSh") {
+    advancedVSheuristic();
+  } else if (argc>=2 && string(argv[1])=="aVSa") {
+    advancedVSadvanced();
   } else {
     cout << "Veuillez dire une commande parmis les suivantes :" << endl;
     cout << "-->  hello  -> (phrase d'accueil) " << endl;
     cout << "-->  pVSp   -> (jouer joueur contre joueur)  " << endl;
     cout << "-->  rVSr   -> (jouer ordinateur aléatoire contre ordinateur aléatoire)  " << endl;
     cout << "-->  rVSh   -> (jouer ordinateur aléatoire contre ordinateur heuristique)  " << endl;
+    cout << "-->  rVSh   -> (jouer ordinateur aléatoire contre ordinateur advanced)  " << endl;
     cout << "-->  hVSh   -> (jouer ordinateur heuristique contre ordinateur heuristique)  " << endl;
+    cout << "-->  aVSh   -> (jouer ordinateur avancé contre ordinateur heuristique)  " << endl;
+    cout << "-->  aVSa   -> (jouer ordinateur avancé contre ordinateur avancé)  " << endl;
   }
   return 0;
 }
@@ -133,7 +147,6 @@ void playerVSplayer(){
 }
 
 void randomVSrandom(){
-  cout<<"Lancement de la commande randomVSrandom."<<endl;
   Engine engine;
   Engine* ptr_engine = &engine;
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
@@ -156,10 +169,12 @@ void randomVSrandom(){
     }
     if(engine.getState().getGameover() != true){
       if(engine.getState().getTurn()%2 == 0) {
-        cout << endl << "         * IA0 is playing*" << endl;
+        cout << endl << "         * IA0 is playing *" << endl;
+        usleep(delai);
         randomAI0.play(ptr_engine);
       } else {
-        cout << endl << "         * IA1 is playing*" << endl;
+        cout << endl << "         * IA1 is playing *" << endl;
+        usleep(delai);
         randomAI1.play(ptr_engine);
       }
     }
@@ -167,7 +182,6 @@ void randomVSrandom(){
 }
 
 void randomVSheuristic(){
-  cout<<"Lancement de la commande randomVSheuristic."<<endl;
   Engine engine;
   Engine* ptr_engine = &engine;
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
@@ -190,10 +204,12 @@ void randomVSheuristic(){
     }
     if(engine.getState().getGameover() != true){
       if(engine.getState().getTurn()%2 == 0) {
-        cout << endl << "         * IA random is playing*" << endl;
+        cout << endl << "         * IA random is playing *" << endl;
+        usleep(delai);
         randomAI.play(ptr_engine);
       } else {
-        cout << endl << "         * IA heuristic is playing*" << endl;
+        cout << endl << "         * IA heuristic is playing *" << endl;
+        usleep(delai);
         heuristicAI.play(ptr_engine);
       }
    }
@@ -201,7 +217,6 @@ void randomVSheuristic(){
 }
 
 void heuristicVSheuristic(){
-  cout<<"Lancement de la commande randomVSheuristic."<<endl;
   Engine engine;
   Engine* ptr_engine = &engine;
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
@@ -224,15 +239,126 @@ void heuristicVSheuristic(){
     }
     if(engine.getState().getGameover() != true){
       if(engine.getState().getPlaying() == 0) {
-        cout << endl << "         * IA heuristicAI0 is playing*" << endl;
+        cout << endl << "         * IA heuristicAI0 is playing *" << endl;
         cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
-        usleep(400000);
+        usleep(delai);
         heuristicAI0.play(ptr_engine);
       } else {
-        cout << endl << "         * IA heuristiAI1 is playing*" << endl;
+        cout << endl << "         * IA heuristiAI1 is playing *" << endl;
         cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
-        usleep(400000);
+        usleep(delai);
         heuristicAI1.play(ptr_engine);
+      }
+    }
+  }
+}
+
+void advancedVSheuristic(){
+  Engine engine;
+  Engine* ptr_engine = &engine;
+  sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
+  RenderLayer stateLayer(engine.getState(), window);
+  RenderLayer* ptr_stateLayer = &stateLayer;
+  AdvancedAI advancedAI(0);
+  HeuristicAI heuristicAI(1);
+
+  stateLayer.registerObserver(ptr_engine);
+  engine.getState().registerObserver(ptr_stateLayer);
+  stateLayer.draw(window);
+  srand (time(NULL));
+
+  while (window.isOpen()){
+    Event event;
+    while (window.pollEvent(event)){
+      if (event.type == Event::Closed){
+        window.close();
+      }
+    }
+    if(engine.getState().getGameover() != true){
+      if(engine.getState().getPlaying() == 0) {
+        cout << endl << "         * IA AdvancedAI is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        usleep(delai);
+        advancedAI.play(ptr_engine);
+      } else {
+        cout << endl << "         * IA heuristiAI is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        usleep(delai);
+        heuristicAI.play(ptr_engine);
+      }
+    }
+  }
+}
+
+void randomVSadvanced(){
+  Engine engine;
+  Engine* ptr_engine = &engine;
+  sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
+  RenderLayer stateLayer(engine.getState(), window);
+  RenderLayer* ptr_stateLayer = &stateLayer;
+  AdvancedAI advancedAI(0);
+  RandomAI randomAI(1);
+
+  stateLayer.registerObserver(ptr_engine);
+  engine.getState().registerObserver(ptr_stateLayer);
+  stateLayer.draw(window);
+  srand (time(NULL));
+
+  while (window.isOpen()){
+    Event event;
+    while (window.pollEvent(event)){
+      if (event.type == Event::Closed){
+        window.close();
+      }
+    }
+    if(engine.getState().getGameover() != true){
+      if(engine.getState().getPlaying() == 0) {
+        cout << endl << "         * IA AdvancedAI is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        usleep(delai);
+        advancedAI.play(ptr_engine);
+      } else {
+        cout << endl << "         * IA randomAI is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        usleep(delai);
+        randomAI.play(ptr_engine);
+      }
+    }
+  }
+}
+
+void advancedVSadvanced(){
+  Engine engine;
+  Engine* ptr_engine = &engine;
+  sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
+  RenderLayer stateLayer(engine.getState(), window);
+  RenderLayer* ptr_stateLayer = &stateLayer;
+  AdvancedAI advancedAI0(0);
+  AdvancedAI advancedAI1(1);
+
+  stateLayer.registerObserver(ptr_engine);
+  engine.getState().registerObserver(ptr_stateLayer);
+  stateLayer.draw(window);
+  srand (time(NULL));
+
+  while (window.isOpen()){
+    Event event;
+    while (window.pollEvent(event)){
+      if (event.type == Event::Closed){
+        window.close();
+      }
+    }
+    if(engine.getState().getGameover() != true){
+      if(engine.getState().getPlaying() == 0) {
+        cout << endl << "         * IA advancedAI0 is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        usleep(delai);
+        advancedAI0.play(ptr_engine);
+      } else {
+        cout << endl << "         * IA advancedAI1 is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        usleep(delai);
+        advancedAI1.play(ptr_engine);
       }
     }
   }
