@@ -24,11 +24,13 @@ void engine::Move::execute(engine::Engine* engine)
   cout<<"Anciennes coord           :" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
   cout<<"Nouvelles coord demandées :" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
 
+  bool actionNONE = false;
   for (int i =0 ;i<=3 ;i++){
     if (authorisedActions[i].first == this->targetCoord){
       switch(authorisedActions[i].second)
       {
         case NONE :
+          actionNONE = true;
           break;
         case SHIFT :
           this->targetAnimal->setCoord(this->targetCoord);
@@ -62,12 +64,17 @@ void engine::Move::execute(engine::Engine* engine)
     }
   }
 
-  if(engine->getState().getPlaying() == 0){
-    engine->getState().setPlaying(1);
-  } else if (engine->getState().getPlaying() == 1){
-    engine->getState().setPlaying(0);
+  if(actionNONE == false){
+    if(engine->getState().getPlaying() == 0){
+      engine->getState().setPlaying(1);
+    } else if (engine->getState().getPlaying() == 1){
+      engine->getState().setPlaying(0);
+    }
+    engine->getState().setTurn(engine->getState().getTurn()+1);
+    cout<<"Passage au tour numéro : " << engine->getState().getTurn() << endl;
+    cout<<"C'est au joueur " << engine->getState().getPlaying() << " de jouer"<< endl;
+  } else {
+    cout<<"action NONE, encote tour numero " << engine->getState().getTurn() << endl;
   }
-  engine->getState().setTurn(engine->getState().getTurn()+1);
-  cout<<"Passage au tour numéro : " << engine->getState().getTurn() << endl;
-  cout<<"C'est au joueur " << engine->getState().getPlaying() << " de jouer"<< endl;
+
 }
