@@ -131,12 +131,12 @@ double AdvancedAI::calculateScore(Engine* engine, Animal* selectedAnimal, Coord&
     } else if (this->color == 1){
       for (int i=0; i<8; ++i){
         distanceEnnemyWin = getDistance(objectifJ1, animalsJ1[i].getCoord());
-        cout << "   <-> distanceEnnemyWin " << distanceEnnemyWin << endl;
+        //cout << "   <-> distanceEnnemyWin " << distanceEnnemyWin << endl;
         if(animalsJ1[i].getStatus() != DEAD && ((animalsJ1[i].getID() < selectedAnimal->getID()) || ((animalsJ1[i].getID()==ELEPHANT || animalsJ1[i].getID()==RAT) && selectedAnimal->getID()==RAT))){
           distancePrey = getDistance(coord, animalsJ1[i].getCoord());
-          cout << "   <-> distancePrey " << distancePrey << endl;
-          cout << "    ++preyScore  ++ " << exp(-distancePrey/3+6.4) << endl;
-          cout << "    ++preyScore/d++ " << exp(-distancePrey/3+6.4)/distanceEnnemyWin << endl;
+          //cout << "   <-> distancePrey " << distancePrey << endl;
+          //cout << "    ++preyScore  ++ " << exp(-distancePrey/3+6.4) << endl;
+          //cout << "    ++preyScore/d++ " << exp(-distancePrey/3+6.4)/distanceEnnemyWin << endl;
           preyScore += exp(-distancePrey/3+6.4)/distanceEnnemyWin ;
         } else if(animalsJ1[i].getStatus() != DEAD && ((animalsJ1[i].getID() >= selectedAnimal->getID()) || (animalsJ1[i].getID()==RAT && selectedAnimal->getID()==ELEPHANT))){
           distancePredator = getDistance(coord, animalsJ1[i].getCoord());
