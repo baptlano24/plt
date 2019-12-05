@@ -41,11 +41,13 @@ void AdvancedAI::play(engine::Engine* engine) {
   }
   if ((animalSelectedIA == true)) {
     cout << "-- Beginning of the IA move --" << endl;
+    cout << "     [State score before : " << calculateScoreState(engine->getState(), this->color) << " ]" << endl;
     std::pair<state::Coord,engine::ActionID> action = this->selectAction(engine, selectedAnimal->getCoord());
     targetCoord.setX(action.first.getX());
     targetCoord.setY(action.first.getY());
     engine::Move moveIA(selectedAnimal, refTargetCoord);
     moveIA.execute(engine);
+    cout << "     [State score after  : " << calculateScoreState(engine->getState(), this->color) << " ]" << endl;
 
     engine->getState().notifyObservers(refAnimalChangedEvent, engine->getState());
     engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
@@ -67,15 +69,15 @@ std::pair<state::Coord,engine::ActionID> AdvancedAI::selectAction(engine::Engine
   for(int i=0; i<4; ++i){
     if(authorisedActions[i].second != NONE){
       if(selection.second == 0){
-        score = calculateScore(engine, selection.first, authorisedActions[i].first, objectifJ1, objectifJ2);
+        score = calculateScore(engine->getState(), selection.first, authorisedActions[i].first, objectifJ1, objectifJ2);
       } else if (selection.second == 1){
-        score = calculateScore(engine, selection.first, authorisedActions[i].first, objectifJ1, objectifJ2);
+        score = calculateScore(engine->getState(), selection.first, authorisedActions[i].first, objectifJ1, objectifJ2);
       }
       if (scoreMax<score) {
         scoreMax = score;
         actionSelected = authorisedActions[i];
       }
-      cout << "    Score total de la case testée ("<< i << ") score: " << score << endl;
+      cout << "               => Score total "<< score <<" de la case ("<< authorisedActions[i].first.getX() << "," << authorisedActions[i].first.getY() << ")" << endl;
     }
   }
   return actionSelected;
@@ -101,13 +103,35 @@ pair<state::Animal*, int> AdvancedAI::selectAnimal(engine::Engine* engine)
   return selection;*/
 }
 
-double AdvancedAI::calculateScore(Engine* engine, Animal* selectedAnimal, Coord& coord, Coord& objectifJ1, Coord& objectifJ2){
+double AdvancedAI::calculateScoreState(State& state, int color){
+  double score = 0;
+  Coord objectifJ1(6,12);
+  Coord objectifJ2(5,0);
+
+  if(color == 0){
+    for (int i=0; i<8; ++i){
+      score = score + calculateScore(state, &state.getPlayer1().getAnimals()[i], state.getPlayer1().getAnimals()[i].getCoord(), objectifJ1, objectifJ2);
+    }
+  } else {
+    for (int i=0; i<8; ++i){
+      score = score + calculateScore(state, &state.getPlayer2().getAnimals()[i], state.getPlayer2().getAnimals()[i].getCoord(), objectifJ1, objectifJ2);
+    }
+  }
+
+
+
+
+  return score;
+}
+
+
+double AdvancedAI::calculateScore(State& state, Animal* selectedAnimal, Coord& coord, Coord& objectifJ1, Coord& objectifJ2){
   double preyScore = 0;
   double predatorScore = 0;
   double objectifScore = 0;
 
-  vector<Animal>& animalsJ1 = engine->getState().getPlayer1().getAnimals();
-  vector<Animal>& animalsJ2 = engine->getState().getPlayer2().getAnimals();
+  vector<Animal>& animalsJ1 = state.getPlayer1().getAnimals();
+  vector<Animal>& animalsJ2 = state.getPlayer2().getAnimals();
 
   int distancePrey;
   int distancePredator;
@@ -118,7 +142,7 @@ double AdvancedAI::calculateScore(Engine* engine, Animal* selectedAnimal, Coord&
     if(this->color == 0){
       for (int i=0; i<8; ++i){
         distanceEnnemyWin = getDistance(objectifJ2, animalsJ2[i].getCoord());
-        if(animalsJ2[i].getStatus() != DEAD && animalsJ2[i].getID() < selectedAnimal->getID()){
+        if(animalsJ2[i].getStatus() != DEAD && (animalsJ2[i].getID() < selectedAnimal->getID()) ){
           distancePrey = getDistance(coord, animalsJ2[i].getCoord());
           preyScore += exp(-distancePrey/3+4.6);
         } else if(animalsJ2[i].getStatus() != DEAD && animalsJ2[i].getID() >= selectedAnimal->getID()){
@@ -127,18 +151,22 @@ double AdvancedAI::calculateScore(Engine* engine, Animal* selectedAnimal, Coord&
         }
       }
       distanceObjectif = getDistance(coord, objectifJ1);
-      //objectifScore = exp(-distanceObjectif/2+4.8);
+      objectifScore = exp(-distanceObjectif/2+4.8);
     } else if (this->color == 1){
       for (int i=0; i<8; ++i){
         distanceEnnemyWin = getDistance(objectifJ1, animalsJ1[i].getCoord());
         //cout << "   <-> distanceEnnemyWin " << distanceEnnemyWin << endl;
-        if(animalsJ1[i].getStatus() != DEAD && ((animalsJ1[i].getID() < selectedAnimal->getID()) || ((animalsJ1[i].getID()==ELEPHANT || animalsJ1[i].getID()==RAT) && selectedAnimal->getID()==RAT))){
+        if(animalsJ1[i].getStatus() != DEAD && (animalsJ1[i].getID() < selectedAnimal->getID()
+                                              || (animalsJ1[i].getID()==ELEPHANT && selectedAnimal->getID()==RAT)
+                                              || state.getSquare(animalsJ2[i].getCoord())->getID() == TRAPJ2) ){
           distancePrey = getDistance(coord, animalsJ1[i].getCoord());
           //cout << "   <-> distancePrey " << distancePrey << endl;
           //cout << "    ++preyScore  ++ " << exp(-distancePrey/3+6.4) << endl;
           //cout << "    ++preyScore/d++ " << exp(-distancePrey/3+6.4)/distanceEnnemyWin << endl;
           preyScore += exp(-distancePrey/3+6.4)/distanceEnnemyWin ;
-        } else if(animalsJ1[i].getStatus() != DEAD && ((animalsJ1[i].getID() >= selectedAnimal->getID()) || (animalsJ1[i].getID()==RAT && selectedAnimal->getID()==ELEPHANT))){
+        } else if(animalsJ1[i].getStatus() != DEAD && (animalsJ1[i].getID() >= selectedAnimal->getID()
+                                                     || (animalsJ1[i].getID()==RAT && selectedAnimal->getID()==ELEPHANT)
+                                                     || state.getSquare(selectedAnimal->getCoord())->getID() == TRAPJ1) ){
           distancePredator = getDistance(coord, animalsJ1[i].getCoord());
           predatorScore += (-200)*exp(-distancePredator/2);
         }
@@ -147,11 +175,10 @@ double AdvancedAI::calculateScore(Engine* engine, Animal* selectedAnimal, Coord&
       objectifScore = exp(-distanceObjectif/6+4.9);
     }
   }
-  cout << "  ~ preyScore " << preyScore << endl;
-  cout << "  ~ predatorScore " << predatorScore << endl;
-  cout << "  ~ objectifScore " << objectifScore << endl;
+  //cout << "  ~ preyScore " << preyScore << endl;
+  //cout << "  ~ predatorScore " << predatorScore << endl;
+  //cout << "  ~ objectifScore " << objectifScore << endl;
   double totalScore = preyScore + predatorScore + objectifScore;
-  cout << " ~ totalScore " << totalScore << endl;
 
   return totalScore;
 }

@@ -51,7 +51,7 @@ int main(int argc,char* argv[1]) {
     cout << "-->  pVSp   -> (jouer joueur contre joueur)  " << endl;
     cout << "-->  rVSr   -> (jouer ordinateur aléatoire contre ordinateur aléatoire)  " << endl;
     cout << "-->  rVSh   -> (jouer ordinateur aléatoire contre ordinateur heuristique)  " << endl;
-    cout << "-->  rVSh   -> (jouer ordinateur aléatoire contre ordinateur advanced)  " << endl;
+    cout << "-->  rVSa   -> (jouer ordinateur aléatoire contre ordinateur advanced)  " << endl;
     cout << "-->  hVSh   -> (jouer ordinateur heuristique contre ordinateur heuristique)  " << endl;
     cout << "-->  aVSh   -> (jouer ordinateur avancé contre ordinateur heuristique)  " << endl;
     cout << "-->  aVSa   -> (jouer ordinateur avancé contre ordinateur avancé)  " << endl;
@@ -117,7 +117,7 @@ void playerVSplayer(){
           cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl;
           pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
           selectedAnimal = selection.first;
-          if (selection.first != 0 && engine.getState().getTurn()%2 == selection.second){
+          if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
             Select select1(selectedAnimal, mouseCoord);
             select1.execute(ptr_engine);
             StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);

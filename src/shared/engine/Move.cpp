@@ -24,33 +24,36 @@ void engine::Move::execute(engine::Engine* engine)
   cout<<"Anciennes coord           :" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
   cout<<"Nouvelles coord demandées :" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
 
-  bool actionNONE = false;
+  bool actionValide = false;
   for (int i =0 ;i<=3 ;i++){
     if (authorisedActions[i].first == this->targetCoord){
       switch(authorisedActions[i].second)
       {
         case NONE :
-          actionNONE = true;
           break;
         case SHIFT :
+          actionValide = true;
           this->targetAnimal->setCoord(this->targetCoord);
           break;
         case ATTACK :
+          actionValide = true;
           cout<<"Animal adverse DEAD" <<endl;
           engine->getState().getSelection(this->targetCoord).first->setStatus(DEAD);
           this->targetAnimal->setCoord(this->targetCoord);
           break;
         case JUMP :
+          actionValide = true;
           this->targetAnimal->setCoord(this->targetCoord);
           break;
         case SHIFT_TRAPPED :
+          actionValide = true;
           cout<<"Animal TRAPPED" <<endl;
           this->targetAnimal->setCoord(this->targetCoord);
           break;
         case SHIFT_VICTORY :
+          actionValide = true;
           cout<<"Animal VICTORY" <<endl;
           this->targetAnimal->setCoord(this->targetCoord);
-
           if(engine->getState().getSelection(this->targetAnimal->getCoord()).second == 0){
             engine->getState().setWinner(engine->getState().getPlayer1());
             cout<<"Victoire du Joueur1 "<< engine->getState().getPlayer1().getName() << " BRAVO !!!";
@@ -64,7 +67,7 @@ void engine::Move::execute(engine::Engine* engine)
     }
   }
 
-  if(actionNONE == false){
+  if(actionValide == true){
     if(engine->getState().getPlaying() == 0){
       engine->getState().setPlaying(1);
     } else if (engine->getState().getPlaying() == 1){
@@ -74,7 +77,7 @@ void engine::Move::execute(engine::Engine* engine)
     cout<<"Passage au tour numéro : " << engine->getState().getTurn() << endl;
     cout<<"C'est au joueur " << engine->getState().getPlaying() << " de jouer"<< endl;
   } else {
-    cout<<"action NONE, encote tour numero " << engine->getState().getTurn() << endl;
+    cout<<"action non valide, c'est encore le tour numero " << engine->getState().getTurn() << endl;
   }
 
 }
