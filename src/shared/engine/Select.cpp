@@ -27,7 +27,6 @@ void Select::execute(Engine* engine)
   engine->getState().setHighlights(refNewHighlights);
 
   for (int i =0 ;i<=3 ;i++) {
-    cout<<"Case voisine: (" << authorisedActions[i].first.getX()<< "," << authorisedActions[i].first.getY() << ")"<< endl;
-    cout<<"  Action possible : " << authorisedActions[i].second << endl;
+    cout<<"  Case voisine: (" << authorisedActions[i].first.getX()<< "," << authorisedActions[i].first.getY() << ") avec action " << authorisedActions[i].second << endl;
   }
 }

@@ -31,7 +31,6 @@ void AdvancedAI::play(engine::Engine* engine) {
   StateEvent& refInfosChangedEvent = infosChangedEvent;
 
   if (animalSelectedIA == false) {
-    cout << "Selection IA:" << endl;
     pair<Animal*, int> selectionIA = this->selectAnimal(engine);
     selectedAnimal = selectionIA.first;
     Select selectIA(selectedAnimal, selectedAnimal->getCoord());
@@ -39,15 +38,15 @@ void AdvancedAI::play(engine::Engine* engine) {
     engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
     animalSelectedIA = true;
   }
-  if ((animalSelectedIA == true)) {
-    cout << "-- Beginning of the IA move --" << endl;
-    cout << "     [State score before : " << calculateScoreState(engine->getState(), this->color) << " ]" << endl;
+  if (animalSelectedIA == true) {
+    cout << "-- Beginning of the IA advanced move --" << endl;
+    cout << "               [State score before : " << calculateScoreState(engine->getState(), this->color) << " ]" << endl;
     std::pair<state::Coord,engine::ActionID> action = this->selectAction(engine, selectedAnimal->getCoord());
     targetCoord.setX(action.first.getX());
     targetCoord.setY(action.first.getY());
     engine::Move moveIA(selectedAnimal, refTargetCoord);
     moveIA.execute(engine);
-    cout << "     [State score after  : " << calculateScoreState(engine->getState(), this->color) << " ]" << endl;
+    cout << "               [State score after  : " << calculateScoreState(engine->getState(), this->color) << " ]" << endl;
 
     engine->getState().notifyObservers(refAnimalChangedEvent, engine->getState());
     engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
@@ -64,15 +63,13 @@ std::pair<state::Coord,engine::ActionID> AdvancedAI::selectAction(engine::Engine
   pair<Animal*, int> selection = engine->getState().getSelection(current_square);
 
   int score;
+  score = calculateScore(engine->getState(), selection.first, current_square, objectifJ1, objectifJ2);
+  cout << "          -> score actuel de l'animal d'ID " << selection.first->getID() <<" : "<< score << " sur la case ("<< current_square.getX() << "," << current_square.getY() << ")" << endl;
   int scoreMax = -1000000;
   pair<state::Coord,engine::ActionID> actionSelected;
   for(int i=0; i<4; ++i){
     if(authorisedActions[i].second != NONE){
-      if(selection.second == 0){
-        score = calculateScore(engine->getState(), selection.first, authorisedActions[i].first, objectifJ1, objectifJ2);
-      } else if (selection.second == 1){
-        score = calculateScore(engine->getState(), selection.first, authorisedActions[i].first, objectifJ1, objectifJ2);
-      }
+      score = calculateScore(engine->getState(), selection.first, authorisedActions[i].first, objectifJ1, objectifJ2);
       if (scoreMax<score) {
         scoreMax = score;
         actionSelected = authorisedActions[i];
@@ -137,6 +134,8 @@ double AdvancedAI::calculateScore(State& state, Animal* selectedAnimal, Coord& c
   int distancePredator;
   int distanceObjectif;
   int distanceEnnemyWin;
+  int counterPrey = 0;
+  int counterPredator = 0;
 
   if (selectedAnimal){
     if(this->color == 0){
@@ -159,18 +158,22 @@ double AdvancedAI::calculateScore(State& state, Animal* selectedAnimal, Coord& c
         if(animalsJ1[i].getStatus() != DEAD && (animalsJ1[i].getID() < selectedAnimal->getID()
                                               || (animalsJ1[i].getID()==ELEPHANT && selectedAnimal->getID()==RAT)
                                               || state.getSquare(animalsJ2[i].getCoord())->getID() == TRAPJ2) ){
+          counterPrey ++;
           distancePrey = getDistance(coord, animalsJ1[i].getCoord());
           //cout << "   <-> distancePrey " << distancePrey << endl;
           //cout << "    ++preyScore  ++ " << exp(-distancePrey/3+6.4) << endl;
           //cout << "    ++preyScore/d++ " << exp(-distancePrey/3+6.4)/distanceEnnemyWin << endl;
-          preyScore += exp(-distancePrey/3+6.4)/distanceEnnemyWin ;
+          preyScore += exp(-distancePrey/6+7.5)/distanceEnnemyWin ;
         } else if(animalsJ1[i].getStatus() != DEAD && (animalsJ1[i].getID() >= selectedAnimal->getID()
                                                      || (animalsJ1[i].getID()==RAT && selectedAnimal->getID()==ELEPHANT)
                                                      || state.getSquare(selectedAnimal->getCoord())->getID() == TRAPJ1) ){
+          counterPredator++;
           distancePredator = getDistance(coord, animalsJ1[i].getCoord());
           predatorScore += (-200)*exp(-distancePredator/2);
         }
       }
+      preyScore /= counterPrey;
+      predatorScore /= counterPredator;
       distanceObjectif = getDistance(coord, objectifJ2);
       objectifScore = exp(-distanceObjectif/6+4.9);
     }

@@ -41,7 +41,7 @@ void HeuristicAI::play(engine::Engine* engine) {
 
   }
   if ((animalSelectedIA == true)) {
-    cout << "-- Beginning of the IA move --" << endl;
+    cout << "-- Beginning of the IA heuristic move --" << endl;
     std::pair<state::Coord,engine::ActionID> action = this->selectAction(engine, selectedAnimal->getCoord());
     targetCoord.setX(action.first.getX());
     targetCoord.setY(action.first.getY());

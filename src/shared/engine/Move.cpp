@@ -20,7 +20,6 @@ void engine::Move::execute(engine::Engine* engine)
   engine->getState().setHighlights(refNoHighlights);
 
   std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord());
-  cout<<"Tour numéro : " << engine->getState().getTurn() << endl;
   cout<<"Anciennes coord           :" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
   cout<<"Nouvelles coord demandées :" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
 
@@ -75,7 +74,7 @@ void engine::Move::execute(engine::Engine* engine)
     }
     engine->getState().setTurn(engine->getState().getTurn()+1);
     cout<<"Passage au tour numéro : " << engine->getState().getTurn() << endl;
-    cout<<"C'est au joueur " << engine->getState().getPlaying() << " de jouer"<< endl;
+    cout<<"C'est au joueur " << engine->getState().getPlaying()+1 << " de jouer"<< endl;
   } else {
     cout<<"action non valide, c'est encore le tour numero " << engine->getState().getTurn() << endl;
   }
