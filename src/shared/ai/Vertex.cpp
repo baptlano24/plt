@@ -1,4 +1,4 @@
-/*#include "ai.h"
+#include "ai.h"
 #include "../state/State.h"
 #include "Vertex.h"
 #include "engine.h"
@@ -10,14 +10,8 @@ using namespace engine;
 using namespace state;
 using namespace std;
 
-Vertex::Vertex(Vertex* predecesseur):predecesseur(predecesseur){
-	position.setX(0);
-	position.setY(0);
-	distanceSource=0;
-  distanceDestination=0;
-
-}
-
+Vertex::Vertex(){}
+/*
 
 Vertex::Vertex(){
 	new (this) Vertex(NULL);

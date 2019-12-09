@@ -62,10 +62,10 @@ std::pair<state::Coord,engine::ActionID> AdvancedAI::selectAction(engine::Engine
   std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),current_square);
   pair<Animal*, int> selection = engine->getState().getSelection(current_square);
 
-  int score;
+  double score;
   score = calculateScore(engine->getState(), selection.first, current_square, objectifJ1, objectifJ2);
   cout << "          -> score actuel de l'animal d'ID " << selection.first->getID() <<" : "<< score << " sur la case ("<< current_square.getX() << "," << current_square.getY() << ")" << endl;
-  int scoreMax = -1000000;
+  double scoreMax = -900000000000;
   pair<state::Coord,engine::ActionID> actionSelected;
   for(int i=0; i<4; ++i){
     if(authorisedActions[i].second != NONE){
