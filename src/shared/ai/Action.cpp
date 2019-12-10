@@ -11,9 +11,12 @@ using namespace ai;
 
 
 
-Action::Action(double score, state::Animal* animal, state::Coord& coord, engine::ActionID Id):
+Action::Action(double score, state::Animal* animal, state::Coord* coord, engine::ActionID Id):
 score(score),animal(animal), coord(coord), actionID(Id){}
 
+Action::Action(){
+  new (this) Action(0,NULL,NULL,NONE);
+}
 double Action::getScore(){
   return this->score;
 }
@@ -22,7 +25,7 @@ state::Animal* Action::getAnimal(){
   return this->animal;
 }
 
-state::Coord& Action::getCoord(){
+state::Coord* Action::getCoord(){
   return this->coord;
 }
 
