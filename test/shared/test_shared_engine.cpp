@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE(TestStaticAssert)
 BOOST_AUTO_TEST_CASE(TestEngine)
 {
   Engine engine;
-  Engine* ptr_engine = &engine;
+  //Engine* ptr_engine = &engine;
   state::State& ref_state = engine.getState();
 
   //engine.getState().getPlayer1().getAnimals()[7].setCoord(Coord(10,10));
@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(TestEngine)
 
   for(int i =0;i<=7;i++){
     Coord initCoord = engine.getState().getPlayer1().getAnimals()[i].getCoord();
-    
+
     engine.getState().getPlayer1().getAnimals()[i].setCoord(Coord(4,4));
     state::Coord& ref_Coord = engine.getState().getPlayer1().getAnimals()[i].getCoord();
     engine.authorisedActions(ref_state,ref_Coord);
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(TestEngine)
     engine.authorisedActions(ref_state,ref_Coord);
     engine.getState().getPlayer1().getAnimals()[i].setCoord(Coord(5,2));
     engine.getState().getPlayer2().getAnimals()[i].setCoord(Coord(5,2));
-    state::Coord& ref_Coord2 = engine.getState().getPlayer1().getAnimals()[i].getCoord();
+    //state::Coord& ref_Coord2 = engine.getState().getPlayer1().getAnimals()[i].getCoord();
     engine.authorisedActions(ref_state,ref_Coord);
     engine.getState().getPlayer1().getAnimals()[i].setCoord(initCoord1);
     engine.getState().getPlayer2().getAnimals()[i].setCoord(initCoord2);

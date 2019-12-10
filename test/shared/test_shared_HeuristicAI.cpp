@@ -4,12 +4,12 @@
 using namespace ::ai;
 
 
-BOOST_AUTO_TEST_CASE(TestHeuristicAI)
+BOOST_AUTO_TEST_CASE(TestNoviceAI)
 {
   engine::Engine engine;
   engine::Engine* ptr_engine = &engine;
-  HeuristicAI heuAItest0(0);
-  HeuristicAI heuAItest1(1);
-  heuAItest0.play(ptr_engine);
-  heuAItest1.play(ptr_engine);
+  NoviceAI novAItest0(0);
+  NoviceAI novAItest1(1);
+  novAItest0.play(ptr_engine);
+  novAItest1.play(ptr_engine);
 }

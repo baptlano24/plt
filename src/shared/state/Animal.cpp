@@ -4,7 +4,35 @@
 using namespace std;
 using namespace state;
 
-Animal :: Animal(Coord coord, AnimalStatus status, AnimalID id): coord(coord), status(status), id(id){}
+Animal :: Animal(Coord coord, AnimalStatus status, AnimalID id): coord(coord), status(status), id(id){
+  switch(id)
+  {
+    case RAT :
+      this->name = "RAT";
+      break;
+    case CAT :
+      this->name = "CAT";
+      break;
+    case DOG :
+      this->name = "DOG";
+      break;
+    case WOLF :
+      this->name = "WOLF";
+      break;
+    case LEOPARD :
+      this->name = "LEOPARD";
+      break;
+    case TIGER :
+      this->name = "TIGER";
+      break;
+    case LION :
+      this->name = "LION";
+      break;
+    case ELEPHANT :
+      this->name = "ELEPHANT";
+      break;
+  }
+}
 
 Animal :: Animal(){
     new (this) Animal({0,0}, NORMAL, RAT);
@@ -13,6 +41,11 @@ Animal :: Animal(){
 AnimalStatus Animal::getStatus() const
 {
     return this->status;
+}
+
+std::string Animal::getName()
+{
+    return this->name;
 }
 
 Coord& Animal::getCoord()
