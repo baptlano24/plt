@@ -12,10 +12,6 @@ Engine::Engine(): currentState(){
   this->switchTurn = 0;
 }
 
-Engine::~Engine(){
-
-}
-
 state::State& Engine::getState(){
   	state::State& refEtat=currentState;
   	return refEtat;

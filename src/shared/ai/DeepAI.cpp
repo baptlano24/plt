@@ -11,8 +11,9 @@ using namespace engine;
 using namespace ai;
 
 
-DeepAI::DeepAI(int color){
+DeepAI::DeepAI(int color, engine::Engine* engine){
   this->color = color;
+  this->map = &engine->getState().getGrid();
 }
 
 void DeepAI::play(engine::Engine* engine) {
