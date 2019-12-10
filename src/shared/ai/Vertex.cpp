@@ -10,7 +10,7 @@ using namespace engine;
 using namespace state;
 using namespace std;
 
-Vertex::Vertex(){}
+//Vertex::Vertex(){}
 /*
 
 Vertex::Vertex(){
