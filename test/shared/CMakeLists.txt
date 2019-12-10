@@ -9,4 +9,5 @@ add_custom_test(shared_coord)
 add_custom_test(shared_RandomAI)
 add_custom_test(shared_HeuristicAI)
 add_custom_test(shared_AdvancedAI)
+#add_custom_test(shared_RenderLayer)
 # vim: set sw=2 sts=2 et:

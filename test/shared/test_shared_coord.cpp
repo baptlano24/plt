@@ -19,5 +19,12 @@ BOOST_AUTO_TEST_CASE(Coord_test)
         BOOST_CHECK_EQUAL(coord2.getX(),5);
         BOOST_CHECK_EQUAL(coord2.getY(),1);
     }
+    {
+      Coord coucou (0,1);
+      Coord coucou2 (0,1);
+
+      BOOST_CHECK(coucou == coucou2);
+
+    }
 
 }

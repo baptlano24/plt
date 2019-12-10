@@ -2,6 +2,7 @@
 #include <ai.h>
 #include <state.h>
 
+using namespace std;
 using namespace ::ai;
 using namespace ::state;
 
