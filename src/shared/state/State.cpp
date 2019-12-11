@@ -87,9 +87,9 @@ void State::setWinner(Player winner){
   this->winner = winner;
 }
 
-const array<array<Square,13>,12>& State::getGrid()
+ std::array<array<Square,13>,12>& State::getGrid()
 {
-  array<array<Square,13>,12>& refGrid = this->grid;
+  std::array<array<Square,13>,12>& refGrid = this->grid;
   return refGrid;
 }
 

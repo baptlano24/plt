@@ -49,6 +49,7 @@ Vertex::Vertex(state::State& CurrentState){
   }
 }
 
+
 Vertex::Vertex(Vertex* vertex, Action action){
   this->parent = vertex;
   this->myAnimals = *vertex->getMyAnimals();
@@ -88,6 +89,7 @@ Vertex::Vertex(Vertex* vertex, Action action){
   vertex->addChild(this);
 }
 
+
 Vertex::~Vertex(){
 	//delete himself;
 }
@@ -115,6 +117,7 @@ std::vector<Vertex*> Vertex:: getChildren (){
 Action Vertex:: getAction (){
   return this->action;
 }
+
 
 int Vertex:: getPlaying (){
   return this->playing;
