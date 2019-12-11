@@ -6,7 +6,6 @@ using namespace std;
 using namespace ai;
 using namespace state;
 
-
 BOOST_AUTO_TEST_CASE(TestDeepAI){
   engine::Engine engine;
   engine::Engine* ptr_engine = &engine;
