@@ -79,18 +79,11 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                 //cout << "NOWATER!" << endl;
                 if(selectionList.first && selectionList.first->getStatus() != DEAD ){
                   //cout << "SOMEONE!" << endl;
-                  if(selectionList.second == selection.second){
-                    //cout << "COPAIN!" << endl;
-                    //do nothing
-                  }
-                  else{
+                  if(selectionList.second != selection.second){
+                    //cout << "ENNEMY" << endl;
                     if((selection.first->getID()>=selectionList.first->getID())||((squareId_list== TRAPJ1 && selectionList.second == 1 )||(squareId_list== TRAPJ2 && selectionList.second == 0))){
                         //cout << "A L'ATTAQUE!" << endl;
                         listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
-                      }
-                      else{
-                        //cout <<"TROP FORT"<< endl;
-                        //do nothing
                       }
                   }
                 } else {
@@ -117,10 +110,6 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
 
                 }
               }
-              else if (squareId_list== WATER) {
-                //cout <<"WATER"<< endl;
-                //do nothing
-              }
             }
           } // end for
 
@@ -144,18 +133,11 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                            && ((squareId_list== TRAPJ1 && selection.second== 0) || (squareId_list== TRAPJ2 && selection.second== 1)) ){
                         //cout << " PIEGE ET A L'ATTAQUE!" << endl;
                         listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
-                        }
-                       else{
-                         //cout << "MOVE TRAP ALLIE OCCUPE" << endl;
-                         //do nothing
-                       }
+                      }
                   } else {
                     if (squareId_list== WATER) {
                       //cout << "ATTACK" << endl;
                       listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
-                    } else {
-                      //cout <<"Can't MOVE from WATER" << endl;
-                      //do nothing
                     }
                   }
                 } else {
@@ -197,10 +179,6 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                           //cout << "A L'ATTAQUE!" << endl;
                           listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
                         }
-                        else{
-                          //cout <<"TROP FORT"<< endl;
-                          //do nothing
-                        }
                     }
 
                   }else{
@@ -237,9 +215,6 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                         listCoord[j] = Coord(listCoord[j].getX()+3, listCoord[j].getY());
                         listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
                       }
-                      else{
-                        //do nothing
-                      }
                     }
                   }
 
@@ -254,9 +229,6 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                       listCoord[j] = Coord(listCoord[j].getX()-3, listCoord[j].getY());
                       listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
                     }
-                    else{
-                      //do nothing
-                    }
                   }
                 }
               }  else if(j==2){
@@ -270,9 +242,6 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                     listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
                     compteur = 0;
                   }
-                  else{
-                    //do nothing
-                  }
                 }
               }
             } else{
@@ -284,12 +253,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                   //cout <<"CAN JUMP" << endl;
                   listCoord[j] = Coord(listCoord[j].getX(), listCoord[j].getY()-3);
                   listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
-
                 }
-                else{
-                  //do nothing
-
-              }
             }
           }
 
