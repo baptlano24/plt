@@ -25,6 +25,23 @@ DeepAI::DeepAI(int color, engine::Engine* engine){
 
 }
 
+void DeepAI::createChildren (Vertex* vertex, int depth){
+  //std::vector<state::Animal>* listAnimals = vertex->getMyAnimals();
+  std::vector<Vertex*> listChildren = vertex->getChildren();
+  std::vector<Action> listActions = this->enumerateActions(vertex);
+  if(depth>=2){
+    for(int i = 0; i<=(int)listActions.size(); i++){
+      Vertex Child = Vertex(vertex, listActions[i]);
+      createChildren(&Child,depth-1);
+    }
+  } else if (depth == 1){
+    for(int i = 0; i<=(int)listActions.size(); i++){
+      Vertex Child = Vertex(vertex, listActions[i]);
+      Child.getAction()->setScore(1000);//a calculer
+    }
+  }
+}
+
 
 void DeepAI::play(engine::Engine* engine) {
 

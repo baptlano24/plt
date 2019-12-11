@@ -55,6 +55,8 @@ Vertex::Vertex(Vertex* vertex, Action action){
   this->myAnimals = *vertex->getMyAnimals();
   this->hisAnimals = *vertex->getHisAnimals();
   this->playing = 1 - vertex->getPlaying();
+  this->action = action;
+
   Animal* movedAnimal;
   for(int i; i<=(int)this->myAnimals.size();i++){
     if(this->myAnimals[i].getCoord() == action.getAnimal()->getCoord()){
@@ -114,8 +116,8 @@ std::vector<Vertex*> Vertex:: getChildren (){
   return this->children;
 }
 
-Action Vertex:: getAction (){
-  return this->action;
+Action* Vertex:: getAction (){
+  return &this->action;
 }
 
 
