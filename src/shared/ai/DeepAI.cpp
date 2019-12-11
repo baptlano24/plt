@@ -42,173 +42,175 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
       Coord left_square(current_square.getX()-1,current_square.getY());
       Coord front_square(current_square.getX(),current_square.getY()-1);
       Coord behind_square(current_square.getX(),current_square.getY()+1);
+
       listCoord.push_back(right_square);
       listCoord.push_back(left_square);
       listCoord.push_back(behind_square);
       listCoord.push_back(front_square);
+      std::pair<Animal*,int> selection = vertex->getSelection(vertex,current_square);
+      std::pair<Animal*,int> selectionList;
+      SquareID squareId_list;
+      Animal* animal = &vertex->getMyAnimals()->at(+i);
 
-      if (vertex->getSelection(vertex,current_square).first->getID() == ELEPHANT || vertex->getSelection(vertex,current_square).first->getID() ==  CAT || vertex->getSelection(vertex,current_square).first->getID() == DOG || vertex->getSelection(vertex,current_square).first->getID() == WOLF){
-
-
-        if(vertex->getSelection(vertex,current_square).first->getStatus() == NORMAL){
+      if (selection.first->getID() == ELEPHANT || selection.first->getID() ==  CAT || selection.first->getID() == DOG || selection.first->getID() == WOLF){
           //cout << "NORMAL!" << endl;
-
           for (int j = 0; j<=(int)listCoord.size() ;j++) {
-            //if(map1[listCoord[j].getX()][listCoord[j].getY()]){
-              if(map1[listCoord[j].getX()][listCoord[j].getY()].getID() != WATER){
+            if (listCoord[j].getX()<=11 && listCoord[j].getX()>=0 && listCoord[j].getY()<= 12 && listCoord[j].getY()>=0){
+              selectionList = vertex->getSelection(vertex,listCoord[j]);
+              squareId_list = map1[listCoord[j].getX()][listCoord[j].getY()].getID();
+              if(squareId_list!= WATER){
                 //cout << "NOWATER!" << endl;
-                if(vertex->getSelection(vertex,listCoord[j]).first && vertex->getSelection(vertex,listCoord[j]).first->getStatus() != DEAD ){
+                if(selectionList.first && selectionList.first->getStatus() != DEAD ){
                   //cout << "SOMEONE!" << endl;
-                  if(vertex->getSelection(vertex,listCoord[j]).second == vertex->getSelection(vertex,current_square).second){
+                  if(selectionList.second == selection.second){
                     //cout << "COPAIN!" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                    //do nothing
                   }
                   else{
-                    if((vertex->getSelection(vertex,current_square).first->getID()>=vertex->getSelection(vertex,listCoord[j]).first->getID())||((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ1 && vertex->getSelection(vertex,listCoord[j]).second == 1 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ2 && vertex->getSelection(vertex,listCoord[j]).second == 0))){
+                    if((selection.first->getID()>=selectionList.first->getID())||((squareId_list== TRAPJ1 && selectionList.second == 1 )||(squareId_list== TRAPJ2 && selectionList.second == 0))){
                         //cout << "A L'ATTAQUE!" << endl;
-                        listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],ATTACK));
+                        listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
                       }
                       else{
                         //cout <<"TROP FORT"<< endl;
-                        listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                        //do nothing
                       }
                   }
                 } else {
-                  if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ1 && vertex->getSelection(vertex,current_square).second== 0 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ2 && vertex->getSelection(vertex,current_square).second== 1)){
+                  if((squareId_list== TRAPJ1 && selection.second== 0 )||(squareId_list== TRAPJ2 && selection.second== 1)){
                     //cout <<"TRAP ALLIE" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT));
+                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
                   }
-                  else if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ1 && vertex->getSelection(vertex,current_square).second== 1 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ2 && vertex->getSelection(vertex,current_square).second== 0)){
+                  else if((squareId_list== TRAPJ1 && selection.second== 1 )||(squareId_list== TRAPJ2 && selection.second== 0)){
                     //cout <<"TRAPPED" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT_TRAPPED));
+                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_TRAPPED));
                   }
-                  else if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ1 && vertex->getSelection(vertex,current_square).second== 1 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ2 && vertex->getSelection(vertex,current_square).second== 0)){
+                  else if((squareId_list== THRONEJ1 && selection.second== 1 )||(squareId_list== THRONEJ2 && selection.second== 0)){
                   //cout <<  "VICTORY SOON" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT_VICTORY));
+                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_VICTORY));
                   }
-                  else if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ1 && vertex->getSelection(vertex,current_square).second== 0 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ2 && vertex->getSelection(vertex,current_square).second== 1)){
+                  else if((squareId_list== THRONEJ1 && selection.second== 0 )||(squareId_list== THRONEJ2 && selection.second== 1)){
                   //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                    //do nothing
                   }
                   else {
                   //cout <<  "MOVE" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT));
+                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
                   }
 
                 }
               }
-              else if (map1[listCoord[j].getX()][listCoord[j].getY()].getID() == WATER) {
+              else if (squareId_list== WATER) {
                 //cout <<"WATER"<< endl;
-                listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                //do nothing
               }
-            //}
+            }
           } // end for
-        }
 
-      } else if (vertex->getSelection(vertex,current_square).first->getID() == RAT) {
+      } else if (selection.first->getID() == RAT) {
 
-        if(vertex->getSelection(vertex,current_square).first->getStatus() == NORMAL){
             for (int j = 0; j<=(int)listCoord.size() ;j++) {
-              //if(state.getSquare(listCoord[j])){
-
-                if(vertex->getSelection(vertex,listCoord[j]).first){
+              if (listCoord[j].getX()<=11 && listCoord[j].getX()>=0 && listCoord[j].getY()<= 12 && listCoord[j].getY()>=0){
+              selectionList = vertex->getSelection(vertex,listCoord[j]);
+              squareId_list = map1[listCoord[j].getX()][listCoord[j].getY()].getID();
+                if(selectionList.first){
                     //cout << "SOMEONE!" << endl;
-                  if(vertex->getSelection(vertex,listCoord[j]).second == vertex->getSelection(vertex,current_square).second){
+                  if(selectionList.second == selection.second){
                     //cout << "COPAIN!" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
-                  } else if(map1[listCoord[j].getX()][listCoord[j].getY()].getID() != WATER){
-                      if(vertex->getSelection(vertex,listCoord[j]).first->getID() == ELEPHANT || vertex->getSelection(vertex,listCoord[j]).first->getID() == RAT){
+                    //do nothing
+                  } else if(squareId_list!= WATER){
+                      if(selectionList.first->getID() == ELEPHANT || selectionList.first->getID() == RAT){
                         //cout << "A L'ATTAQUE!" << endl;
-                        listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],ATTACK));
+                        listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
                       }
-                      else if((vertex->getSelection(vertex,listCoord[j]).second != vertex->getSelection(vertex,current_square).second)
-                           && ((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ1 && vertex->getSelection(vertex,current_square).second== 0) || (map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ2 && vertex->getSelection(vertex,current_square).second== 1)) ){
+                      else if((selectionList.second != selection.second)
+                           && ((squareId_list== TRAPJ1 && selection.second== 0) || (squareId_list== TRAPJ2 && selection.second== 1)) ){
                         //cout << " PIEGE ET A L'ATTAQUE!" << endl;
-                        listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],ATTACK));
+                        listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
                         }
                        else{
                          //cout << "MOVE TRAP ALLIE OCCUPE" << endl;
-                         listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                         //do nothing
                        }
                   } else {
-                    if (map1[listCoord[j].getX()][listCoord[j].getY()].getID() == WATER) {
+                    if (squareId_list== WATER) {
                       //cout << "ATTACK" << endl;
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],ATTACK));
+                      listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
                     } else {
                       //cout <<"Can't MOVE from WATER" << endl;
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                      //do nothing
                     }
                   }
                 } else {
-                  if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ1 && vertex->getSelection(vertex,current_square).second== 1 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ2 && vertex->getSelection(vertex,current_square).second== 0)){
+                  if((squareId_list== TRAPJ1 && selection.second== 1 )||(squareId_list== TRAPJ2 && selection.second== 0)){
                     //cout <<"TRAPPED" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT_TRAPPED));
+                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_TRAPPED));
                   }
-                  else if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ1 && vertex->getSelection(vertex,current_square).second== 1 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ2 && vertex->getSelection(vertex,current_square).second== 0)){
+                  else if((squareId_list== THRONEJ1 && selection.second== 1 )||(squareId_list== THRONEJ2 && selection.second== 0)){
                     //cout <<  "VICTORY SOON" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT_VICTORY));
+                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_VICTORY));
                   }
-                  else if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ1 && vertex->getSelection(vertex,current_square).second== 0 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ2 && vertex->getSelection(vertex,current_square).second== 1)){
+                  else if((squareId_list== THRONEJ1 && selection.second== 0 )||(squareId_list== THRONEJ2 && selection.second== 1)){
                     //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                    //do nothing
                   }
                   else{
                     //cout <<  "MOVE" << endl;
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT));
+                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
                   }
                 }
-              //}
+              }
             } //end for
-          }
-      } else if(vertex->getSelection(vertex,current_square).first->getID() == TIGER || vertex->getSelection(vertex,current_square).first->getID() == LEOPARD || vertex->getSelection(vertex,current_square).first->getID() == LION) {
+      } else if(selection.first->getID() == TIGER || selection.first->getID() == LEOPARD || selection.first->getID() == LION) {
 
-        if(vertex->getSelection(vertex,current_square).first->getStatus() == NORMAL){
           for (int j = 0; j<=(int)listCoord.size() ;j++) {
-            //if(state.getSquare(listCoord[j])){
-                if(map1[listCoord[j].getX()][listCoord[j].getY()].getID() != WATER){
+            if (listCoord[j].getX()<=11 && listCoord[j].getX()>=0 && listCoord[j].getY()<= 12 && listCoord[j].getY()>=0){
+            selectionList = vertex->getSelection(vertex,listCoord[j]);
+            squareId_list = map1[listCoord[j].getX()][listCoord[j].getY()].getID();
+                if(squareId_list!= WATER){
                   //cout << "NOWATER!" << endl;
-                  if(vertex->getSelection(vertex,listCoord[j]).first){
+                  if(selectionList.first){
                     //cout << "SOMEONE!" << endl;
-                    if(vertex->getSelection(vertex,listCoord[j]).second == vertex->getSelection(vertex,current_square).second){
+                    if(selectionList.second == selection.second){
                       //cout << "COPAIN!" << endl;
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                      //do nothing
                     }
                     else{
-                      if((vertex->getSelection(vertex,current_square).first->getID()>=vertex->getSelection(vertex,listCoord[j]).first->getID())||((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ1 && vertex->getSelection(vertex,listCoord[j]).second == 1 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ2 && vertex->getSelection(vertex,listCoord[j]).second == 0))){
+                      if((selection.first->getID()>=selectionList.first->getID())||((squareId_list== TRAPJ1 && selectionList.second == 1 )||(squareId_list== TRAPJ2 && selectionList.second == 0))){
                           //cout << "A L'ATTAQUE!" << endl;
-                          listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],ATTACK));
+                          listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
                         }
                         else{
                           //cout <<"TROP FORT"<< endl;
-                          listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                          //do nothing
                         }
                     }
 
                   }else{
-                    if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ1 && vertex->getSelection(vertex,current_square).second== 0 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ2 && vertex->getSelection(vertex,current_square).second== 1)){
+                    if((squareId_list== TRAPJ1 && selection.second== 0 )||(squareId_list== TRAPJ2 && selection.second== 1)){
                       //cout <<"TRAP ALLIE" << endl;
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT));
+                      listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
                     }
-                    else if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ1 && vertex->getSelection(vertex,current_square).second== 1 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == TRAPJ2 && vertex->getSelection(vertex,current_square).second== 0)){
+                    else if((squareId_list== TRAPJ1 && selection.second== 1 )||(squareId_list== TRAPJ2 && selection.second== 0)){
                       //cout <<"TRAPPED" << endl;
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT_TRAPPED));
+                      listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_TRAPPED));
                     }
-                    else if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ1 && vertex->getSelection(vertex,current_square).second== 1 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ2 && vertex->getSelection(vertex,current_square).second== 0)){
+                    else if((squareId_list== THRONEJ1 && selection.second== 1 )||(squareId_list== THRONEJ2 && selection.second== 0)){
                     //cout <<  "VICTORY SOON" << endl;
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT_VICTORY));
+                      listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_VICTORY));
                     }
-                    else if((map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ1 && vertex->getSelection(vertex,current_square).second== 0 )||(map1[listCoord[j].getX()][listCoord[j].getY()].getID() == THRONEJ2 && vertex->getSelection(vertex,current_square).second== 1)){
+                    else if((squareId_list== THRONEJ1 && selection.second== 0 )||(squareId_list== THRONEJ2 && selection.second== 1)){
                     //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                      //do nothing
                     }
                     else{
                     //cout <<  "MOVE" << endl;
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],SHIFT));
+                      listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
                     }
 
                   }
                 }else{
-                  if(i == 0){
+                  if(j == 0){
                     int compteur = 0;
                     for(int n = 0; n<=3; n++){
                       if(vertex->getSelection(vertex,Coord(listCoord[j].getX()+n, listCoord[j].getY())).first==NULL){
@@ -216,16 +218,16 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                       if (compteur == 4){
                         //cout <<"CAN JUMP" << endl;
                         listCoord[j] = Coord(listCoord[j].getX()+3, listCoord[j].getY());
-                        listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],JUMP));
+                        listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
                       }
                       else{
-                        listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                        //do nothing
                       }
                     }
                   }
 
                   //Jump
-                } else if(i==1){
+                } else if(j==1){
                   int compteur = 0;
                   for(int n = 0; n<=3; n++){
                     if(vertex->getSelection(vertex,Coord(listCoord[j].getX()-n, listCoord[j].getY())).first==NULL){
@@ -233,42 +235,42 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                     if (compteur == 4){
                       //cout <<"CAN JUMP" << endl;
                       listCoord[j] = Coord(listCoord[j].getX()-3, listCoord[j].getY());
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],JUMP));
+                      listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
                     }
                     else{
-                      listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                      //do nothing
                     }
                   }
                 }
-              }  else if(i==2){
+              }  else if(j==2){
                 int compteur = 0;
                 for(int n = 0; n<=3; n++){
-                  if(vertex->getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()-n)).first==NULL){
+                  if(vertex->getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()+n)).first==NULL){
                     compteur += 1;
                   if (compteur == 4){
                     //cout <<"CAN JUMP" << endl;
-                    listCoord[j] = Coord(listCoord[j].getX(), listCoord[j].getY()-3);
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],JUMP));
+                    listCoord[j] = Coord(listCoord[j].getX(), listCoord[j].getY()+3);
+                    listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
                     compteur = 0;
                   }
                   else{
-                    listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                    //do nothing
                   }
                 }
               }
             } else{
               int compteur = 0;
               for(int n = 0; n<=3; n++){
-                if(vertex->getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()+n)).first==NULL){
+                if(vertex->getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()-n)).first==NULL){
                   compteur += 1;
                 if (compteur == 4){
                   //cout <<"CAN JUMP" << endl;
-                  listCoord[j] = Coord(listCoord[j].getX(), listCoord[j].getY()+3);
-                  listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],JUMP));
+                  listCoord[j] = Coord(listCoord[j].getX(), listCoord[j].getY()-3);
+                  listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
 
                 }
                 else{
-                  listAction.push_back(Action(0,&vertex->getMyAnimals()->at(i),&listCoord[j],NONE));
+                  //do nothing
 
               }
             }
@@ -277,9 +279,8 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
 
            }
           }
-        // }
+         }
         }// end for
-       }
       }
     }
     return listAction;}
