@@ -24,7 +24,6 @@ BOOST_AUTO_TEST_CASE(Coord_test)
       Coord coucou2 (0,1);
 
       BOOST_CHECK(coucou == coucou2);
-
     }
 
 }

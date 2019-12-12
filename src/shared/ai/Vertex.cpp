@@ -52,6 +52,7 @@ Vertex::Vertex(state::State& CurrentState){
 
 Vertex::Vertex(Vertex* vertex, Action action){
   this->parent = vertex;
+  this->children = std::vector<Vertex*>();
   this->myAnimals = *vertex->getMyAnimals();
   this->hisAnimals = *vertex->getHisAnimals();
   this->playing = 1 - vertex->getPlaying();
@@ -93,7 +94,15 @@ Vertex::Vertex(Vertex* vertex, Action action){
 
 
 Vertex::~Vertex(){
-	//delete himself;
+  killChildren(this);
+}
+
+void Vertex::killChildren(Vertex* vertex){
+  if((int)this->children.size() == 0){
+    for(int i; i<=(int)this->children.size(); i++){
+      delete &this->children[i];
+    }
+  }
 }
 
 void Vertex::addChild(Vertex* child){
@@ -104,11 +113,11 @@ Vertex* Vertex:: getParent(){
   return this->parent;
 }
 
-std::vector<state::Animal>* Vertex:: getMyAnimals (){
+std::vector<state::Animal>* Vertex::getMyAnimals (){
   return &this->myAnimals;
 }
 
-std::vector<state::Animal>* Vertex:: getHisAnimals (){
+std::vector<state::Animal>* Vertex::getHisAnimals (){
   return &this->hisAnimals;
 }
 
@@ -116,46 +125,14 @@ std::vector<Vertex*>* Vertex:: getChildren (){
   return &this->children;
 }
 
-Action* Vertex:: getAction (){
+Action* Vertex::getAction (){
   return &this->action;
 }
 
-
-int Vertex:: getPlaying (){
+int Vertex::getPlaying (){
   return this->playing;
 }
 
-void Vertex::setAction (ai::Action newaction){
+void Vertex::setAction(ai::Action newaction){
    this->action = newaction;
-}
-
-pair<Animal*, int> Vertex::getSelection(Vertex* vertex, Coord coord)
-{
-  pair<Animal*, int> selection;
-  selection.first = NULL;
-  selection.second = 666;
-  std::vector<state::Animal>* myAnimals = vertex->getMyAnimals();
-  std::vector<state::Animal>* hisAnimals = vertex->getHisAnimals();
-
-  for (int i = 0; i<=(int)myAnimals->size(); i++) {
-    if (myAnimals->at(i).getCoord() == coord ) {
-      selection.first = &myAnimals->at(i);
-      if(vertex->getPlaying() == 0){
-        selection.second = 0;
-      } else {
-        selection.second = 1;
-      }
-    }
-  }
-  for (int i= 0; i<=(int)hisAnimals->size(); i++) {
-    if (hisAnimals->at(i).getCoord() == coord ) {
-      selection.first = &hisAnimals->at(i);
-      if(vertex->getPlaying() == 0){
-        selection.second = 1;
-      } else {
-        selection.second = 0;
-      }
-    }
-  }
-  return selection;
 }

@@ -43,9 +43,8 @@ Action DeepAI::min(Action& action1,Action& action2){
 
 
 
- std::array<std::array<state::Square,13>,12>* DeepAI::getMap(){
+std::array<std::array<state::Square,13>,12>* DeepAI::getMap(){
    return this->map;
-
 }
 
 void DeepAI::createChildren (Vertex* vertex, int depth){
@@ -101,6 +100,64 @@ void DeepAI::play(engine::Engine* engine) {
 
 }
 
+double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal){
+  vector<Animal>& hisAnimals = *vertex->getHisAnimals();
+  /****** PARAMETERS ******/
+  Coord myObjective;
+  Coord hisObjective;
+
+  Coord myCoord = myAnimal->getCoord();
+  Coord hisCoord;
+
+  if (vertex->getPlaying()==0){
+    myObjective.setX(6);
+    myObjective.setY(12);
+    hisObjective.setX(5);
+    hisObjective.setY(0);
+  } else {
+    myObjective.setX(5);
+    myObjective.setY(0);
+    hisObjective.setX(6);
+    hisObjective.setY(12);
+  }
+
+  int distancePrey;
+  int distancePredator;
+  int distanceObjectif = getDistance(myObjective, myCoord);
+  int distanceEnnemyWin;
+  AnimalID myAnimalID = myAnimal->getID();
+  AnimalID hisAnimalID;
+
+  double preyScore = 0;
+  double predatorScore = 0;
+  double objectifScore = exp(-distanceObjectif/6+4.9);
+  /****** END PARAMETERS ******/
+
+  for (auto& hisAnimal : hisAnimals){
+    hisAnimalID = hisAnimal.getID();
+    hisCoord = hisAnimal.getCoord();
+    distanceEnnemyWin = getDistance(hisObjective, hisCoord);
+    if( hisAnimalID <= myAnimalID || (hisAnimalID==ELEPHANT && myAnimalID==RAT) || this->map->at(hisCoord.getX())[hisCoord.getY()].getID() == TRAPJ2 ){
+      distancePrey = getDistance(myCoord, hisCoord);
+      preyScore += exp(-distancePrey/6+7.5)/distanceEnnemyWin;
+    } else if( hisAnimalID >= myAnimalID || (hisAnimal.getID()==RAT && myAnimalID==ELEPHANT) || this->map->at(myCoord.getX())[myCoord.getY()].getID() == TRAPJ1 ){
+      distancePredator = getDistance(myCoord, hisCoord);
+      predatorScore += (-200)*exp(-distancePredator/2);
+    }
+  }
+
+  double totalScore = preyScore + predatorScore + objectifScore;
+  return totalScore;
+}
+
+void DeepAI::calculateVertexScore(Vertex* vertex){
+  double score = 0;
+  for (auto& myAnimal : *vertex->getMyAnimals()){
+    score += calculateAnimalScore(vertex, &myAnimal);
+  }
+  vertex->getAction()->setScore(score);
+}
+
 std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
   std::vector<Action> listAction;
   std::array<std::array<state::Square,13>,12>* map = getMap();
@@ -118,7 +175,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
       listCoord.push_back(left_square);
       listCoord.push_back(behind_square);
       listCoord.push_back(front_square);
-      std::pair<Animal*,int> selection = vertex->getSelection(vertex,current_square);
+      std::pair<Animal*,int> selection = getSelection(vertex,current_square);
       std::pair<Animal*,int> selectionList;
       SquareID squareId_list;
       Animal* animal = &vertex->getMyAnimals()->at(+i);
@@ -127,7 +184,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
           //cout << "NORMAL!" << endl;
           for (int j = 0; j<=(int)listCoord.size() ;j++) {
             if (listCoord[j].getX()<=11 && listCoord[j].getX()>=0 && listCoord[j].getY()<= 12 && listCoord[j].getY()>=0){
-              selectionList = vertex->getSelection(vertex,listCoord[j]);
+              selectionList = getSelection(vertex,listCoord[j]);
               squareId_list = map1[listCoord[j].getX()][listCoord[j].getY()].getID();
               if(squareId_list!= WATER){
                 //cout << "NOWATER!" << endl;
@@ -171,7 +228,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
 
             for (int j = 0; j<=(int)listCoord.size() ;j++) {
               if (listCoord[j].getX()<=11 && listCoord[j].getX()>=0 && listCoord[j].getY()<= 12 && listCoord[j].getY()>=0){
-              selectionList = vertex->getSelection(vertex,listCoord[j]);
+              selectionList = getSelection(vertex,listCoord[j]);
               squareId_list = map1[listCoord[j].getX()][listCoord[j].getY()].getID();
                 if(selectionList.first){
                     //cout << "SOMEONE!" << endl;
@@ -218,7 +275,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
 
           for (int j = 0; j<=(int)listCoord.size() ;j++) {
             if (listCoord[j].getX()<=11 && listCoord[j].getX()>=0 && listCoord[j].getY()<= 12 && listCoord[j].getY()>=0){
-            selectionList = vertex->getSelection(vertex,listCoord[j]);
+            selectionList = getSelection(vertex,listCoord[j]);
             squareId_list = map1[listCoord[j].getX()][listCoord[j].getY()].getID();
                 if(squareId_list!= WATER){
                   //cout << "NOWATER!" << endl;
@@ -262,7 +319,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                   if(j == 0){
                     int compteur = 0;
                     for(int n = 0; n<=3; n++){
-                      if(vertex->getSelection(vertex,Coord(listCoord[j].getX()+n, listCoord[j].getY())).first==NULL){
+                      if(getSelection(vertex,Coord(listCoord[j].getX()+n, listCoord[j].getY())).first==NULL){
                         compteur += 1;
                       if (compteur == 4){
                         //cout <<"CAN JUMP" << endl;
@@ -276,7 +333,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                 } else if(j==1){
                   int compteur = 0;
                   for(int n = 0; n<=3; n++){
-                    if(vertex->getSelection(vertex,Coord(listCoord[j].getX()-n, listCoord[j].getY())).first==NULL){
+                    if(getSelection(vertex,Coord(listCoord[j].getX()-n, listCoord[j].getY())).first==NULL){
                       compteur += 1;
                     if (compteur == 4){
                       //cout <<"CAN JUMP" << endl;
@@ -288,7 +345,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
               }  else if(j==2){
                 int compteur = 0;
                 for(int n = 0; n<=3; n++){
-                  if(vertex->getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()+n)).first==NULL){
+                  if(getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()+n)).first==NULL){
                     compteur += 1;
                   if (compteur == 4){
                     //cout <<"CAN JUMP" << endl;
@@ -301,7 +358,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
             } else{
               int compteur = 0;
               for(int n = 0; n<=3; n++){
-                if(vertex->getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()-n)).first==NULL){
+                if(getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()-n)).first==NULL){
                   compteur += 1;
                 if (compteur == 4){
                   //cout <<"CAN JUMP" << endl;
@@ -325,4 +382,35 @@ int DeepAI::getDistance(Coord& coord1, Coord& coord2){
   int distance;
   distance = abs(coord2.getX()-coord1.getX())+abs(coord2.getY()-coord1.getY());
   return distance;
+}
+
+pair<Animal*, int> DeepAI::getSelection(Vertex* vertex, Coord coord)
+{
+  pair<Animal*, int> selection;
+  selection.first = NULL;
+  selection.second = 666;
+  std::vector<state::Animal>* myAnimals = vertex->getMyAnimals();
+  std::vector<state::Animal>* hisAnimals = vertex->getHisAnimals();
+
+  for (int i = 0; i<=(int)myAnimals->size(); i++) {
+    if (myAnimals->at(i).getCoord() == coord ) {
+      selection.first = &myAnimals->at(i);
+      if(vertex->getPlaying() == 0){
+        selection.second = 0;
+      } else {
+        selection.second = 1;
+      }
+    }
+  }
+  for (int i= 0; i<=(int)hisAnimals->size(); i++) {
+    if (hisAnimals->at(i).getCoord() == coord ) {
+      selection.first = &hisAnimals->at(i);
+      if(vertex->getPlaying() == 0){
+        selection.second = 1;
+      } else {
+        selection.second = 0;
+      }
+    }
+  }
+  return selection;
 }
