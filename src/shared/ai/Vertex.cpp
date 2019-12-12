@@ -112,8 +112,8 @@ std::vector<state::Animal>* Vertex:: getHisAnimals (){
   return &this->hisAnimals;
 }
 
-std::vector<Vertex*> Vertex:: getChildren (){
-  return this->children;
+std::vector<Vertex*>* Vertex:: getChildren (){
+  return &this->children;
 }
 
 Action* Vertex:: getAction (){

@@ -36,3 +36,12 @@ engine::ActionID Action::getId(){
 void Action::setScore(double score){
   this->score = score;
 }
+
+bool operator> (Action& action1,  Action& action2){
+  if(action1.getScore() > action2.getScore()){
+    return true;
+  }
+  else{
+    return false;
+  }
+}

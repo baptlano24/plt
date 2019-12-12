@@ -3,8 +3,10 @@
 #include "Vertex.h"
 #include "state.h"
 #include "engine.h"
+#include "Action.h"
 #include <unistd.h>
 #include <iostream>
+#include <limits>
 #include <math.h>
 
 using namespace std;
@@ -19,6 +21,27 @@ DeepAI::DeepAI(int color, engine::Engine* engine){
   this->map = &engine->getState().getGrid();
 }
 
+Action DeepAI::max(Action& action1,Action& action2){
+  if(action1.getScore()>action2.getScore()){
+    return action1;
+  }
+  else{
+    return action2;
+  }
+}
+
+Action DeepAI::min(Action& action1,Action& action2){
+  if(action1.getScore()>action2.getScore()){
+    return action2;
+  }
+  else{
+    return action1;
+  }
+}
+
+
+
+
 
  std::array<std::array<state::Square,13>,12>* DeepAI::getMap(){
    return this->map;
@@ -26,8 +49,8 @@ DeepAI::DeepAI(int color, engine::Engine* engine){
 }
 
 void DeepAI::createChildren (Vertex* vertex, int depth){
-  //std::vector<state::Animal>* listAnimals = vertex->getMyAnimals();
-  std::vector<Vertex*> listChildren = vertex->getChildren();
+
+
   std::vector<Action> listActions = this->enumerateActions(vertex);
   if(depth>=2){
     for(int i = 0; i<=(int)listActions.size(); i++){
@@ -41,6 +64,37 @@ void DeepAI::createChildren (Vertex* vertex, int depth){
     }
   }
 }
+
+
+Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing){
+  std::vector<Vertex*>* listChildren = vertex->getChildren();
+  double max = std::numeric_limits<double>::max();
+  Action action_vertex = *vertex->getAction();
+  Action action = Action(0,NULL,NULL,NONE);
+
+  if (depth ==0 or listChildren->empty()){
+    return action = action_vertex;
+  }
+  if(maximizing){
+    action.setScore(-max);
+    for(auto child : *listChildren){
+      Action minmax = DeepAI::minmax(child,depth-1,false);
+      Action& ref_minmax = minmax;
+      action = DeepAI::max(action, ref_minmax);
+    }
+    return action;
+  }else{
+    action.setScore(max);
+    for(auto child : *listChildren){
+      Action minmax = DeepAI::minmax(child,depth-1,true);
+      Action& ref_minmax = minmax;
+      action = DeepAI::min(action, ref_minmax);
+    }
+    return action;
+
+  }
+}
+
 
 
 void DeepAI::play(engine::Engine* engine) {
