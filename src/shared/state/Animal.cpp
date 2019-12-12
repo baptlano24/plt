@@ -60,7 +60,7 @@ void Animal::setStatus(AnimalStatus status)
 }
 
 void Animal::setCoord(Coord coord)
-{
+{   
     this->coord = coord;
 }
 

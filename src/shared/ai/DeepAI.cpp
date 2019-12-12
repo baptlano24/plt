@@ -14,56 +14,52 @@ using namespace state;
 using namespace engine;
 using namespace ai;
 
-
-
 DeepAI::DeepAI(int color, engine::Engine* engine){
   this->color = color;
   this->map = &engine->getState().getGrid();
 }
 
-Action DeepAI::max(Action& action1,Action& action2){
-  if(action1.getScore()>action2.getScore()){
-    return action1;
-  }
-  else{
-    return action2;
-  }
-}
+void DeepAI::play(engine::Engine* engine) {
 
-Action DeepAI::min(Action& action1,Action& action2){
-  if(action1.getScore()>action2.getScore()){
-    return action2;
-  }
-  else{
-    return action1;
-  }
-}
+  State& state = engine->getState();
 
+  StateEvent animalChangedEvent(ANIMALS_CHANGED);
+  StateEvent& refAnimalChangedEvent = animalChangedEvent;
+  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+  StateEvent infosChangedEvent(INFOS_CHANGED);
+  StateEvent& refInfosChangedEvent = infosChangedEvent;
 
+  Vertex parentVertex(state);
 
-
-
-std::array<std::array<state::Square,13>,12>* DeepAI::getMap(){
-   return this->map;
+  int depth = 1; //ONE GENERATION
+  createChildren(&parentVertex, depth);
+  /*Action bestAction = minmax(&parentVertex, depth, true);
+  Animal* selectedAnimal = bestAction.getAnimal();
+  Coord* selectedCoord = bestAction.getCoord();
+  cout << "___DeepIA___ I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord->getX() << "," << selectedCoord->getY() << ")";
+  Move moveDeepIA(selectedAnimal,*selectedCoord);
+  moveDeepIA.execute(engine);
+  */
+  state.notifyObservers(refAnimalChangedEvent, state);
+  state.notifyObservers(refHighlightsChangedEvent, state);
+  state.notifyObservers(refInfosChangedEvent, state);
 }
 
 void DeepAI::createChildren (Vertex* vertex, int depth){
-
-
   std::vector<Action> listActions = this->enumerateActions(vertex);
   if(depth>=2){
-    for(int i = 0; i<=(int)listActions.size(); i++){
-      Vertex Child = Vertex(vertex, listActions[i]);
-      createChildren(&Child,depth-1);
+    for(auto& action : listActions){
+      Vertex child = Vertex(vertex, action); //NEW CHILD
+      createChildren(&child, depth-1);
     }
   } else if (depth == 1){
-    for(int i = 0; i<=(int)listActions.size(); i++){
-      Vertex Child = Vertex(vertex, listActions[i]);
-      Child.getAction()->setScore(1000);//a calculer
+    for(auto& action : listActions){
+      Vertex child = Vertex(vertex, action); //NEW CHILD
+      calculateVertexScore(&child);
     }
   }
 }
-
 
 Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing){
   std::vector<Vertex*>* listChildren = vertex->getChildren();
@@ -90,14 +86,7 @@ Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing){
       action = DeepAI::min(action, ref_minmax);
     }
     return action;
-
   }
-}
-
-
-
-void DeepAI::play(engine::Engine* engine) {
-
 }
 
 double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal){
@@ -162,220 +151,221 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
   std::vector<Action> listAction;
   std::array<std::array<state::Square,13>,12>* map = getMap();
   std::array<std::array<state::Square,13>,12> map1 = *map;
-  for(int i = 0; i<= (int)vertex->getMyAnimals()->size(); i++)
-    {
-      std::vector<state::Coord> listCoord;
-      Coord current_square = vertex->getMyAnimals()->at(i).getCoord();
-      Coord right_square(current_square.getX()+1,current_square.getY());
-      Coord left_square(current_square.getX()-1,current_square.getY());
-      Coord front_square(current_square.getX(),current_square.getY()-1);
-      Coord behind_square(current_square.getX(),current_square.getY()+1);
+  int playing = vertex->getPlaying();
 
-      listCoord.push_back(right_square);
-      listCoord.push_back(left_square);
-      listCoord.push_back(behind_square);
-      listCoord.push_back(front_square);
-      std::pair<Animal*,int> selection = getSelection(vertex,current_square);
-      std::pair<Animal*,int> selectionList;
-      SquareID squareId_list;
-      Animal* animal = &vertex->getMyAnimals()->at(+i);
+  for(auto& myAnimal : *vertex->getMyAnimals()){
+    std::vector<state::Coord> listCoord;
 
-      if (selection.first->getID() == ELEPHANT || selection.first->getID() ==  CAT || selection.first->getID() == DOG || selection.first->getID() == WOLF){
-          //cout << "NORMAL!" << endl;
-          for (int j = 0; j<=(int)listCoord.size() ;j++) {
-            if (listCoord[j].getX()<=11 && listCoord[j].getX()>=0 && listCoord[j].getY()<= 12 && listCoord[j].getY()>=0){
-              selectionList = getSelection(vertex,listCoord[j]);
-              squareId_list = map1[listCoord[j].getX()][listCoord[j].getY()].getID();
-              if(squareId_list!= WATER){
-                //cout << "NOWATER!" << endl;
-                if(selectionList.first && selectionList.first->getStatus() != DEAD ){
+    Coord current_square = myAnimal.getCoord();
+    int csX = current_square.getX();
+    int csY = current_square.getY();
+    Coord right_square (csX+1,csY);
+    Coord left_square  (csX-1,csY);
+    Coord front_square (csX,csY-1);
+    Coord behind_square(csX,csY+1);
+
+    listCoord.push_back(right_square);
+    listCoord.push_back(left_square);
+    listCoord.push_back(behind_square);
+    listCoord.push_back(front_square);
+    std::pair<Animal*,int> selectionList;
+    SquareID squareId_list;
+
+    if (myAnimal.getID() == ELEPHANT || myAnimal.getID() ==  CAT || myAnimal.getID() == DOG || myAnimal.getID() == WOLF){
+        //cout << "NORMAL!" << endl;
+        for (auto& coord : listCoord) {
+          if (coord.getX()<=11 && coord.getX()>=0 && coord.getY()<= 12 && coord.getY()>=0){
+            selectionList = getSelection(vertex,coord);
+            squareId_list = map1[coord.getX()][coord.getY()].getID();
+            if(squareId_list!= WATER){
+              //cout << "NOWATER!" << endl;
+              if(selectionList.first && selectionList.first->getStatus() != DEAD ){
+                //cout << "SOMEONE!" << endl;
+                if(selectionList.second != playing){
+                  //cout << "ENNEMY" << endl;
+                  if((myAnimal.getID()>=selectionList.first->getID())||((squareId_list== TRAPJ1 && selectionList.second == 1 )||(squareId_list== TRAPJ2 && selectionList.second == 0))){
+                      //cout << "A L'ATTAQUE!" << endl;
+                      listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
+                    }
+                }
+              } else {
+                if((squareId_list== TRAPJ1 && playing == 0 )||(squareId_list== TRAPJ2 && playing == 1)){
+                  //cout <<"TRAP ALLIE" << endl;
+                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
+                }
+                else if((squareId_list== TRAPJ1 && playing == 1 )||(squareId_list== TRAPJ2 && playing == 0)){
+                  //cout <<"TRAPPED" << endl;
+                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_TRAPPED));
+                }
+                else if((squareId_list== THRONEJ1 && playing == 1 )||(squareId_list== THRONEJ2 && playing == 0)){
+                //cout <<  "VICTORY SOON" << endl;
+                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_VICTORY));
+                }
+                else if((squareId_list== THRONEJ1 && playing == 0 )||(squareId_list== THRONEJ2 && playing == 1)){
+                //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
+                  //do nothing
+                }
+                else {
+                //cout <<  "MOVE" << endl;
+                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
+                }
+
+              }
+            }
+          }
+        } // end for
+
+    } else if (myAnimal.getID() == RAT) {
+
+          for (auto& coord : listCoord) {
+            if (coord.getX()<=11 && coord.getX()>=0 && coord.getY()<= 12 && coord.getY()>=0){
+            selectionList = getSelection(vertex,coord);
+            squareId_list = map1[coord.getX()][coord.getY()].getID();
+              if(selectionList.first){
                   //cout << "SOMEONE!" << endl;
-                  if(selectionList.second != selection.second){
-                    //cout << "ENNEMY" << endl;
-                    if((selection.first->getID()>=selectionList.first->getID())||((squareId_list== TRAPJ1 && selectionList.second == 1 )||(squareId_list== TRAPJ2 && selectionList.second == 0))){
-                        //cout << "A L'ATTAQUE!" << endl;
-                        listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
-                      }
-                  }
+                if(selectionList.second == playing){
+                  //cout << "COPAIN!" << endl;
+                  //do nothing
+                } else if(squareId_list!= WATER){
+                    if(selectionList.first->getID() == ELEPHANT || selectionList.first->getID() == RAT){
+                      //cout << "A L'ATTAQUE!" << endl;
+                      listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
+                    }
+                    else if((selectionList.second != playing)
+                         && ((squareId_list== TRAPJ1 && playing == 0) || (squareId_list== TRAPJ2 && playing == 1)) ){
+                      //cout << " PIEGE ET A L'ATTAQUE!" << endl;
+                      listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
+                    }
                 } else {
-                  if((squareId_list== TRAPJ1 && selection.second== 0 )||(squareId_list== TRAPJ2 && selection.second== 1)){
-                    //cout <<"TRAP ALLIE" << endl;
-                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
+                  if (squareId_list== WATER) {
+                    //cout << "ATTACK" << endl;
+                    listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
                   }
-                  else if((squareId_list== TRAPJ1 && selection.second== 1 )||(squareId_list== TRAPJ2 && selection.second== 0)){
-                    //cout <<"TRAPPED" << endl;
-                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_TRAPPED));
-                  }
-                  else if((squareId_list== THRONEJ1 && selection.second== 1 )||(squareId_list== THRONEJ2 && selection.second== 0)){
+                }
+              } else {
+                if((squareId_list== TRAPJ1 && playing == 1 )||(squareId_list== TRAPJ2 && playing == 0)){
+                  //cout <<"TRAPPED" << endl;
+                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_TRAPPED));
+                }
+                else if((squareId_list== THRONEJ1 && playing == 1 )||(squareId_list== THRONEJ2 && playing == 0)){
                   //cout <<  "VICTORY SOON" << endl;
-                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_VICTORY));
-                  }
-                  else if((squareId_list== THRONEJ1 && selection.second== 0 )||(squareId_list== THRONEJ2 && selection.second== 1)){
+                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_VICTORY));
+                }
+                else if((squareId_list== THRONEJ1 && playing == 0 )||(squareId_list== THRONEJ2 && playing == 1)){
                   //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
-                    //do nothing
-                  }
-                  else {
+                  //do nothing
+                }
+                else{
                   //cout <<  "MOVE" << endl;
-                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
-                  }
-
+                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
                 }
               }
             }
-          } // end for
+          } //end for
+    } else if(myAnimal.getID() == TIGER || myAnimal.getID() == LEOPARD || myAnimal.getID() == LION) {
 
-      } else if (selection.first->getID() == RAT) {
-
-            for (int j = 0; j<=(int)listCoord.size() ;j++) {
-              if (listCoord[j].getX()<=11 && listCoord[j].getX()>=0 && listCoord[j].getY()<= 12 && listCoord[j].getY()>=0){
-              selectionList = getSelection(vertex,listCoord[j]);
-              squareId_list = map1[listCoord[j].getX()][listCoord[j].getY()].getID();
+        for (auto& coord : listCoord) {
+          if (coord.getX()<=11 && coord.getX()>=0 && coord.getY()<= 12 && coord.getY()>=0){
+          selectionList = getSelection(vertex,coord);
+          squareId_list = map1[coord.getX()][coord.getY()].getID();
+              if(squareId_list!= WATER){
+                //cout << "NOWATER!" << endl;
                 if(selectionList.first){
-                    //cout << "SOMEONE!" << endl;
-                  if(selectionList.second == selection.second){
+                  //cout << "SOMEONE!" << endl;
+                  if(selectionList.second == playing){
                     //cout << "COPAIN!" << endl;
-                    //do nothing
-                  } else if(squareId_list!= WATER){
-                      if(selectionList.first->getID() == ELEPHANT || selectionList.first->getID() == RAT){
-                        //cout << "A L'ATTAQUE!" << endl;
-                        listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
-                      }
-                      else if((selectionList.second != selection.second)
-                           && ((squareId_list== TRAPJ1 && selection.second== 0) || (squareId_list== TRAPJ2 && selection.second== 1)) ){
-                        //cout << " PIEGE ET A L'ATTAQUE!" << endl;
-                        listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
-                      }
-                  } else {
-                    if (squareId_list== WATER) {
-                      //cout << "ATTACK" << endl;
-                      listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
-                    }
-                  }
-                } else {
-                  if((squareId_list== TRAPJ1 && selection.second== 1 )||(squareId_list== TRAPJ2 && selection.second== 0)){
-                    //cout <<"TRAPPED" << endl;
-                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_TRAPPED));
-                  }
-                  else if((squareId_list== THRONEJ1 && selection.second== 1 )||(squareId_list== THRONEJ2 && selection.second== 0)){
-                    //cout <<  "VICTORY SOON" << endl;
-                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_VICTORY));
-                  }
-                  else if((squareId_list== THRONEJ1 && selection.second== 0 )||(squareId_list== THRONEJ2 && selection.second== 1)){
-                    //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
                     //do nothing
                   }
                   else{
-                    //cout <<  "MOVE" << endl;
-                    listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
-                  }
-                }
-              }
-            } //end for
-      } else if(selection.first->getID() == TIGER || selection.first->getID() == LEOPARD || selection.first->getID() == LION) {
-
-          for (int j = 0; j<=(int)listCoord.size() ;j++) {
-            if (listCoord[j].getX()<=11 && listCoord[j].getX()>=0 && listCoord[j].getY()<= 12 && listCoord[j].getY()>=0){
-            selectionList = getSelection(vertex,listCoord[j]);
-            squareId_list = map1[listCoord[j].getX()][listCoord[j].getY()].getID();
-                if(squareId_list!= WATER){
-                  //cout << "NOWATER!" << endl;
-                  if(selectionList.first){
-                    //cout << "SOMEONE!" << endl;
-                    if(selectionList.second == selection.second){
-                      //cout << "COPAIN!" << endl;
-                      //do nothing
-                    }
-                    else{
-                      if((selection.first->getID()>=selectionList.first->getID())||((squareId_list== TRAPJ1 && selectionList.second == 1 )||(squareId_list== TRAPJ2 && selectionList.second == 0))){
-                          //cout << "A L'ATTAQUE!" << endl;
-                          listAction.push_back(Action(0,animal,&listCoord[j],ATTACK));
-                        }
-                    }
-
-                  }else{
-                    if((squareId_list== TRAPJ1 && selection.second== 0 )||(squareId_list== TRAPJ2 && selection.second== 1)){
-                      //cout <<"TRAP ALLIE" << endl;
-                      listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
-                    }
-                    else if((squareId_list== TRAPJ1 && selection.second== 1 )||(squareId_list== TRAPJ2 && selection.second== 0)){
-                      //cout <<"TRAPPED" << endl;
-                      listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_TRAPPED));
-                    }
-                    else if((squareId_list== THRONEJ1 && selection.second== 1 )||(squareId_list== THRONEJ2 && selection.second== 0)){
-                    //cout <<  "VICTORY SOON" << endl;
-                      listAction.push_back(Action(0,animal,&listCoord[j],SHIFT_VICTORY));
-                    }
-                    else if((squareId_list== THRONEJ1 && selection.second== 0 )||(squareId_list== THRONEJ2 && selection.second== 1)){
-                    //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
-                      //do nothing
-                    }
-                    else{
-                    //cout <<  "MOVE" << endl;
-                      listAction.push_back(Action(0,animal,&listCoord[j],SHIFT));
-                    }
-
-                  }
-                }else{
-                  if(j == 0){
-                    int compteur = 0;
-                    for(int n = 0; n<=3; n++){
-                      if(getSelection(vertex,Coord(listCoord[j].getX()+n, listCoord[j].getY())).first==NULL){
-                        compteur += 1;
-                      if (compteur == 4){
-                        //cout <<"CAN JUMP" << endl;
-                        listCoord[j] = Coord(listCoord[j].getX()+3, listCoord[j].getY());
-                        listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
+                    if((myAnimal.getID()>=selectionList.first->getID())||((squareId_list== TRAPJ1 && selectionList.second == 1 )||(squareId_list== TRAPJ2 && selectionList.second == 0))){
+                        //cout << "A L'ATTAQUE!" << endl;
+                        listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
                       }
-                    }
                   }
 
-                  //Jump
-                } else if(j==1){
+                }else{
+                  if((squareId_list== TRAPJ1 && playing == 0 )||(squareId_list== TRAPJ2 && playing == 1)){
+                    //cout <<"TRAP ALLIE" << endl;
+                    listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
+                  }
+                  else if((squareId_list== TRAPJ1 && playing == 1 )||(squareId_list== TRAPJ2 && playing == 0)){
+                    //cout <<"TRAPPED" << endl;
+                    listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_TRAPPED));
+                  }
+                  else if((squareId_list== THRONEJ1 && playing == 1 )||(squareId_list== THRONEJ2 && playing == 0)){
+                  //cout <<  "VICTORY SOON" << endl;
+                    listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_VICTORY));
+                  }
+                  else if((squareId_list== THRONEJ1 && playing == 0 )||(squareId_list== THRONEJ2 && playing == 1)){
+                  //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
+                    //do nothing
+                  }
+                  else{
+                  //cout <<  "MOVE" << endl;
+                    listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
+                  }
+
+                }
+              }else{
+                if(j == 0){
                   int compteur = 0;
                   for(int n = 0; n<=3; n++){
-                    if(getSelection(vertex,Coord(listCoord[j].getX()-n, listCoord[j].getY())).first==NULL){
+                    if(getSelection(vertex,Coord(coord.getX()+n, coord.getY())).first==NULL){
                       compteur += 1;
                     if (compteur == 4){
                       //cout <<"CAN JUMP" << endl;
-                      listCoord[j] = Coord(listCoord[j].getX()-3, listCoord[j].getY());
-                      listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
+                      coord = Coord(coord.getX()+3, coord.getY());
+                      listAction.push_back(Action(0,&myAnimal,&coord,JUMP));
                     }
                   }
                 }
-              }  else if(j==2){
+
+                //Jump
+              } else if (j==1){
                 int compteur = 0;
                 for(int n = 0; n<=3; n++){
-                  if(getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()+n)).first==NULL){
+                  if(getSelection(vertex,Coord(coord.getX()-n, coord.getY())).first==NULL){
                     compteur += 1;
-                  if (compteur == 4){
-                    //cout <<"CAN JUMP" << endl;
-                    listCoord[j] = Coord(listCoord[j].getX(), listCoord[j].getY()+3);
-                    listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
-                    compteur = 0;
+                    if (compteur == 4){
+                      //cout <<"CAN JUMP" << endl;
+                      coord = Coord(coord.getX()-3, coord.getY());
+                      listAction.push_back(Action(0,&myAnimal,&coord,JUMP));
+                    }
+                  }
+                }
+              } else if(j==2){
+                int compteur = 0;
+                for(int n = 0; n<=3; n++){
+                  if(getSelection(vertex,Coord(coord.getX(), coord.getY()+n)).first==NULL){
+                    compteur += 1;
+                    if (compteur == 4){
+                      //cout <<"CAN JUMP" << endl;
+                      coord = Coord(coord.getX(), coord.getY()+3);
+                      listAction.push_back(Action(0,&myAnimal,&coord,JUMP));
+                      compteur = 0;
+                    }
+                  }
+                }
+              } else{
+                int compteur = 0;
+                for(int n = 0; n<=3; n++){
+                  if(getSelection(vertex,Coord(coord.getX(), coord.getY()-n)).first==NULL){
+                    compteur += 1;
+                    if (compteur == 4){
+                      //cout <<"CAN JUMP" << endl;
+                      coord = Coord(coord.getX(), coord.getY()-3);
+                      listAction.push_back(Action(0,&myAnimal,&coord,JUMP));
+                    }
                   }
                 }
               }
-            } else{
-              int compteur = 0;
-              for(int n = 0; n<=3; n++){
-                if(getSelection(vertex,Coord(listCoord[j].getX(), listCoord[j].getY()-n)).first==NULL){
-                  compteur += 1;
-                if (compteur == 4){
-                  //cout <<"CAN JUMP" << endl;
-                  listCoord[j] = Coord(listCoord[j].getX(), listCoord[j].getY()-3);
-                  listAction.push_back(Action(0,animal,&listCoord[j],JUMP));
-                }
             }
           }
-
-
-           }
-          }
-         }
         }// end for
       }
     }
-    return listAction;}
+  return listAction;
+}
 
 
 int DeepAI::getDistance(Coord& coord1, Coord& coord2){
@@ -388,13 +378,11 @@ pair<Animal*, int> DeepAI::getSelection(Vertex* vertex, Coord coord)
 {
   pair<Animal*, int> selection;
   selection.first = NULL;
-  selection.second = 666;
-  std::vector<state::Animal>* myAnimals = vertex->getMyAnimals();
-  std::vector<state::Animal>* hisAnimals = vertex->getHisAnimals();
+  selection.second = -1;
 
-  for (int i = 0; i<=(int)myAnimals->size(); i++) {
-    if (myAnimals->at(i).getCoord() == coord ) {
-      selection.first = &myAnimals->at(i);
+  for (auto& myAnimal : *vertex->getMyAnimals()) {
+    if (myAnimal.getCoord() == coord ) {
+      selection.first = &myAnimal;
       if(vertex->getPlaying() == 0){
         selection.second = 0;
       } else {
@@ -402,9 +390,9 @@ pair<Animal*, int> DeepAI::getSelection(Vertex* vertex, Coord coord)
       }
     }
   }
-  for (int i= 0; i<=(int)hisAnimals->size(); i++) {
-    if (hisAnimals->at(i).getCoord() == coord ) {
-      selection.first = &hisAnimals->at(i);
+  for (auto& hisAnimal : *vertex->getHisAnimals()) {
+    if (hisAnimal.getCoord() == coord ) {
+      selection.first = &hisAnimal;
       if(vertex->getPlaying() == 0){
         selection.second = 1;
       } else {
@@ -413,4 +401,26 @@ pair<Animal*, int> DeepAI::getSelection(Vertex* vertex, Coord coord)
     }
   }
   return selection;
+}
+
+Action DeepAI::max(Action& action1,Action& action2){
+  if(action1.getScore()>action2.getScore()){
+    return action1;
+  }
+  else{
+    return action2;
+  }
+}
+
+Action DeepAI::min(Action& action1,Action& action2){
+  if(action1.getScore()>action2.getScore()){
+    return action2;
+  }
+  else{
+    return action1;
+  }
+}
+
+std::array<std::array<state::Square,13>,12>* DeepAI::getMap(){
+   return this->map;
 }

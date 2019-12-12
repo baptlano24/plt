@@ -26,6 +26,7 @@ void noviceVSplayer();
 void heuristicVSnovice();
 void heuristicVSheuristic();
 void heuristicVSplayer();
+void deepVSplayer();
 
 int delai = 200000 ; //temps de jeu des IA
 
@@ -48,17 +49,20 @@ int main(int argc,char* argv[1]) {
     heuristicVSheuristic();
   } else if (argc>=2 && string(argv[1])=="hVSp") {
     heuristicVSplayer();
+  } else if (argc>=2 && string(argv[1])=="dVSp") {
+    deepVSplayer();
   } else {
     cout << "Veuillez dire une commande parmis les suivantes :" << endl;
-    cout << "-->  hello  -> (phrase d'accueil) " << endl;
-    cout << "-->  pVSp   -> (jouer joueur contre joueur)  " << endl;
-    cout << "-->  rVSr   -> (jouer ordinateur aléatoire contre ordinateur aléatoire)  " << endl;
-    cout << "-->  rVSn   -> (jouer ordinateur aléatoire contre ordinateur novice)  " << endl;
-    cout << "-->  rVSh   -> (jouer ordinateur aléatoire contre ordinateur heuristique)  " << endl;
-    cout << "-->  nVSp   -> (jouer ordinateur novice contre joueur)  " << endl;
-    cout << "-->  hVSn   -> (jouer ordinateur heuristique contre ordinateur novice)  " << endl;
-    cout << "-->  hVSh   -> (jouer ordinateur heuristique contre ordinateur heuristique)  " << endl;
-    cout << "-->  hVSp   -> (jouer ordinateur heuristique contre joueur)  " << endl;
+    cout << "-->  hello  - phrase d'accueil" << endl;
+    cout << "-->  pVSp   - jouer joueur contre joueur" << endl;
+    cout << "-->  rVSr   - jouer ordinateur aléatoire contre ordinateur aléatoire" << endl;
+    cout << "-->  rVSn   - jouer ordinateur aléatoire contre ordinateur novice" << endl;
+    cout << "-->  rVSh   - jouer ordinateur aléatoire contre ordinateur heuristique" << endl;
+    cout << "-->  nVSp   - jouer ordinateur novice contre joueur" << endl;
+    cout << "-->  hVSn   - jouer ordinateur heuristique contre ordinateur novice" << endl;
+    cout << "-->  hVSh   - jouer ordinateur heuristique contre ordinateur heuristique" << endl;
+    cout << "-->  hVSp   - jouer ordinateur heuristique contre joueur" << endl;
+    cout << "-->  dVSp   - jouer ordinateur avancé (MinMax) contre joueur" << endl;
   }
   return 0;
 }
@@ -509,6 +513,96 @@ void heuristicVSplayer(){
       usleep(delai);
       heuristicAI1.play(ptr_engine);
       cout << "         * IA HeuristicAI1 turn ends  *" << endl;
+    }
+  }
+}
+void deepVSplayer(){
+  Engine engine;
+  Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
+  RenderLayer stateLayer(state, window);
+  RenderLayer* ptr_stateLayer = &stateLayer;
+  DeepAI deepAI1(1, ptr_engine);
+
+  stateLayer.registerObserver(ptr_engine);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(window);
+  srand (time(NULL));
+
+  int newX = 1;
+  int newY = 1;
+  int mouseX;
+  int mouseY;
+  int mouseGridX;
+  int mouseGridY;
+  Coord mouseCoord;
+  Coord targetCoord;
+  Coord& refTargetCoord = targetCoord;
+  bool animalSelected = false;
+  Animal* selectedAnimal;
+
+  StateEvent animalChangedEvent(ANIMALS_CHANGED);
+  StateEvent& refAnimalChangedEvent = animalChangedEvent;
+  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+  StateEvent infosChangedEvent(INFOS_CHANGED);
+  StateEvent& refInfosChangedEvent = infosChangedEvent;
+  state.notifyObservers(refAnimalChangedEvent, state);
+  state.notifyObservers(refHighlightsChangedEvent, state);
+  state.notifyObservers(refInfosChangedEvent, state);
+
+  while (window.isOpen()){
+    Event event;
+    mouseX = Mouse::getPosition(window).x;
+    mouseY = Mouse::getPosition(window).y;
+    mouseGridX = (mouseX-73*3)/73; //73*3 to change by gridOrigine.getX() when in the render
+    mouseGridY = mouseY/73;
+    mouseCoord.setX(mouseGridX);
+    mouseCoord.setY(mouseGridY);
+
+    while (window.pollEvent(event)){
+      if (event.type == Event::Closed){
+        window.close();
+      } else if(event.type == Event::MouseButtonPressed) {
+        cout << endl << "         * Clic *" << endl;
+        state.notifyObservers(refHighlightsChangedEvent, state);
+        if (animalSelected == false && state.getGameover() != true && state.getPlaying() == 0) {
+          cout << " Mouse clic pixel event : " << mouseX << " , "<< mouseY << endl;
+          cout << " Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl;
+          pair<Animal*, int> selection = state.getSelection(mouseCoord);
+          selectedAnimal = selection.first;
+          if (selection.first != 0 && state.getPlaying() == selection.second){
+            Select select1(selectedAnimal, mouseCoord);
+            select1.execute(ptr_engine);
+            StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+            StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+            state.notifyObservers(refHighlightsChangedEvent, state);
+            animalSelected = true;
+          }
+
+        } else if (animalSelected == true) {
+          cout << endl << "-- Beginning of player the move --" << endl;
+          newX = mouseGridX;
+          newY = mouseGridY;
+          targetCoord.setX(newX);
+          targetCoord.setY(newY);
+          Move move1(selectedAnimal, refTargetCoord);
+          move1.execute(ptr_engine);
+          state.notifyObservers(refAnimalChangedEvent, state);
+          state.notifyObservers(refHighlightsChangedEvent, state);
+          state.notifyObservers(refInfosChangedEvent, state);
+          animalSelected = false;
+          cout << "-- End of the move --" << endl;
+        }
+      }
+    }
+    if(state.getGameover() != true && state.getPlaying() == 1){
+      cout << endl << "         * IA deepAI1 is playing *" << endl;
+      cout<<"Tour numéro : " << state.getTurn() << endl;
+      usleep(delai);
+      deepAI1.play(ptr_engine);
+      cout << "         * IA deepAI1 turn ends  *" << endl;
     }
   }
 }

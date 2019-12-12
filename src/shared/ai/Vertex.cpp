@@ -49,7 +49,6 @@ Vertex::Vertex(state::State& CurrentState){
   }
 }
 
-
 Vertex::Vertex(Vertex* vertex, Action action){
   this->parent = vertex;
   this->children = std::vector<Vertex*>();
