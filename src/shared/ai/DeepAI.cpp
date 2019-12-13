@@ -17,7 +17,7 @@ using namespace ai;
 DeepAI::DeepAI(int color, engine::Engine* engine, int depth_in){
   this->color = color;
   this->map = &engine->getState().getGrid();
-  if(depth_in>=1 && depth_in<=4){
+  if(depth_in>=1 && depth_in<=3){
     this->depth = depth_in;
   } else {
     this->depth = 1;

@@ -50,11 +50,17 @@ int main(int argc,char* argv[1]) {
   } else if (argc>=2 && string(argv[1])=="hVSp") {
     heuristicVSplayer();
   } else if (argc>=2 && string(argv[1])=="dVSp") {
-    int depth_in = stoi(argv[2]);
-    if(depth_in>=1 && depth_in<=4){
+    int depth_in;
+    try {
+        depth_in = stoi(argv[2]);
+    }
+    catch(const std::logic_error){
+      cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de dVSp." << endl;
+    }
+    if(depth_in>=1 && depth_in<=3){
       deepVSplayer(depth_in);
     } else {
-      cout << "La profondeur doit être entre 1 et 4" << endl;
+      cout << "   La profondeur doit être entre 1 et 3. Veuillez recommancer." << endl;
     }
   } else {
     cout << "Veuillez dire une commande parmis les suivantes :" << endl;
