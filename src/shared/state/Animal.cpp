@@ -35,7 +35,7 @@ Animal :: Animal(Coord coord, AnimalStatus status, AnimalID id): coord(coord), s
 }
 
 Animal :: Animal(){
-    new (this) Animal({0,0}, NORMAL, RAT);
+    new (this) Animal({0,0}, NORMAL, WOLF);
 }
 
 AnimalStatus Animal::getStatus() const
@@ -60,7 +60,7 @@ void Animal::setStatus(AnimalStatus status)
 }
 
 void Animal::setCoord(Coord coord)
-{   
+{
     this->coord = coord;
 }
 

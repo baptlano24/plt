@@ -31,63 +31,64 @@ void DeepAI::play(engine::Engine* engine) {
   StateEvent& refInfosChangedEvent = infosChangedEvent;
 
   Vertex parentVertex(state);
+  /*cout << "       Ally team contains   : ";
+  for(auto& myAnimal : *parentVertex.getMyAnimals()){
+    cout << myAnimal.getName() << " (" << myAnimal.getCoord().getX() << "," << myAnimal.getCoord().getY() << "),";
+  }
+  cout << endl;
+  cout << "       Ennemy team contains : ";
+  for(auto& hisAnimal : *parentVertex.getHisAnimals()){
+    cout << hisAnimal.getName() << " (" << hisAnimal.getCoord().getX() << "," << hisAnimal.getCoord().getY() << "),";
+  }
+  cout << endl;*/
+  int depth = 3; //ONE GENERATION
+  Action bestAction = minmax(&parentVertex, depth, true, depth);
+  Animal* selectedAnimal = state.getSelection(bestAction.getAnimal().getCoord()).first;
+  Coord selectedCoord = bestAction.getCoord();
 
-  int depth = 2; //ONE GENERATION
-  createChildren(&parentVertex, depth);
-  Action bestAction = minmax(&parentVertex, depth, true);
-  //Animal* selectedAnimal = bestAction.getAnimal();
-  //Coord* selectedCoord = bestAction.getCoord();
-  //cout << "___DeepIA___ I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord->getX() << "," << selectedCoord->getY() << ")";
-  //Move moveDeepIA(selectedAnimal,*selectedCoord);
-  //moveDeepIA.execute(engine);
+  cout << "   ___DeepIA___ I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << endl;
+  Move moveDeepIA(selectedAnimal,selectedCoord);
+  moveDeepIA.execute(engine);
 
   state.notifyObservers(refAnimalChangedEvent, state);
   state.notifyObservers(refHighlightsChangedEvent, state);
   state.notifyObservers(refInfosChangedEvent, state);
 }
 
-void DeepAI::createChildren (Vertex* vertex, int depth){
+Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDepth){
   std::vector<Action> listActions = this->enumerateActions(vertex);
-  if(depth>=2){
-    for(auto& action : listActions){
-      Vertex child = Vertex(vertex, action); //NEW CHILD
-      createChildren(&child, depth-1);
-    }
-  } else if (depth == 1){
-    for(auto& action : listActions){
-      Vertex child = Vertex(vertex, action); //NEW CHILD
-      calculateVertexScore(&child);
-    }
-  }
-}
-
-Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing){
-  std::vector<Vertex*>* listChildren = vertex->getChildren();
   double max = std::numeric_limits<double>::max();
-  Action action_vertex = *vertex->getAction();
-  Action action = Action(0,NULL,NULL,NONE);
+  Action action_vertex = vertex->getAction();
 
-  if (depth ==0 or listChildren->empty()){
-    cout << "Score final"<< action_vertex.getScore() << endl;
-    return action = action_vertex;
+  if (depth == 0){
+    calculateVertexScore(vertex);
+    return vertex->getAction();
+  }
+  if (depth == totalDepth){
+    action_vertex.setScore(-max);
+    for(auto action : listActions){
+      Vertex child = Vertex(vertex, action);
+      Action action_minmax = DeepAI::minmax(&child,depth-1,false,totalDepth);
+      action_vertex = DeepAI::max(action_vertex, action_minmax);
+    }
+    return action_vertex;
   }
   if(maximizing){
-    action.setScore(-max);
-    for(auto child : *listChildren){
-      Action minmax = DeepAI::minmax(child,depth-1,false);
-      Action& ref_minmax = minmax;
-      cout << minmax.getScore() << endl;
-      action = DeepAI::max(action, ref_minmax);
+    action_vertex.setScore(-max);
+    for(auto action : listActions){
+      Vertex child = Vertex(vertex, action);
+      Action action_minmax = DeepAI::minmax(&child,depth-1,false,totalDepth);
+      action_vertex.setScore(DeepAI::max(action_vertex, action_minmax).getScore());
     }
-    return action;
+    return action_vertex;
   }else{
-    action.setScore(max);
-    for(auto child : *listChildren){
-      Action minmax = DeepAI::minmax(child,depth-1,true);
-      Action& ref_minmax = minmax;
-      action = DeepAI::min(action, ref_minmax);
+    action_vertex.setScore(max);
+    for(auto action : listActions){
+      Vertex child = Vertex(vertex, action);
+      Action action_minmax = DeepAI::minmax(&child,depth-1,true,totalDepth);
+      action_vertex.setScore(DeepAI::min(action_vertex, action_minmax).getScore());
     }
-    return action;
+    return action_vertex;
   }
 }
 
@@ -146,7 +147,7 @@ void DeepAI::calculateVertexScore(Vertex* vertex){
   for (auto& myAnimal : *vertex->getMyAnimals()){
     score += calculateAnimalScore(vertex, &myAnimal);
   }
-  vertex->getAction()->setScore(score);
+  vertex->setActionScore(score);
 }
 
 std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
@@ -187,29 +188,29 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                   //cout << "ENNEMY" << endl;
                   if((myAnimal.getID()>=selectionList.first->getID())||((squareId_list== TRAPJ1 && selectionList.second == 1 )||(squareId_list== TRAPJ2 && selectionList.second == 0))){
                       //cout << "A L'ATTAQUE!" << endl;
-                      listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
+                      listAction.push_back(Action(0,myAnimal,coord,ATTACK));
                     }
                 }
               } else {
                 if((squareId_list== TRAPJ1 && playing == 0 )||(squareId_list== TRAPJ2 && playing == 1)){
                   //cout <<"TRAP ALLIE" << endl;
-                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
+                  listAction.push_back(Action(0,myAnimal,coord,SHIFT));
                 }
                 else if((squareId_list== TRAPJ1 && playing == 1 )||(squareId_list== TRAPJ2 && playing == 0)){
                   //cout <<"TRAPPED" << endl;
-                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_TRAPPED));
+                  listAction.push_back(Action(0,myAnimal,coord,SHIFT_TRAPPED));
                 }
                 else if((squareId_list== THRONEJ1 && playing == 1 )||(squareId_list== THRONEJ2 && playing == 0)){
                 //cout <<  "VICTORY SOON" << endl;
-                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_VICTORY));
+                  listAction.push_back(Action(0,myAnimal,coord,SHIFT_VICTORY));
                 }
                 else if((squareId_list== THRONEJ1 && playing == 0 )||(squareId_list== THRONEJ2 && playing == 1)){
                 //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
                   //do nothing
                 }
                 else {
-                cout <<  "MOVE" << endl;
-                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
+                //cout <<  "MOVE" << endl;
+                  listAction.push_back(Action(0,myAnimal,coord,SHIFT));
                 }
 
               }
@@ -230,36 +231,36 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                   //do nothing
                 } else if(squareId_list!= WATER){
                     if(selectionList.first->getID() == ELEPHANT || selectionList.first->getID() == RAT){
-                      cout << "A L'ATTAQUE!" << endl;
-                      listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
+                      //cout << "A L'ATTAQUE!" << endl;
+                      listAction.push_back(Action(0,myAnimal,coord,ATTACK));
                     }
                     else if((selectionList.second != playing)
                          && ((squareId_list== TRAPJ1 && playing == 0) || (squareId_list== TRAPJ2 && playing == 1)) ){
-                      cout << " PIEGE ET A L'ATTAQUE!" << endl;
-                      listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
+                      //cout << " PIEGE ET A L'ATTAQUE!" << endl;
+                      listAction.push_back(Action(0,myAnimal,coord,ATTACK));
                     }
                 } else {
                   if (squareId_list== WATER) {
-                    cout << "ATTACK" << endl;
-                    listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
+                    //cout << "ATTACK" << endl;
+                    listAction.push_back(Action(0,myAnimal,coord,ATTACK));
                   }
                 }
               } else {
                 if((squareId_list== TRAPJ1 && playing == 1 )||(squareId_list== TRAPJ2 && playing == 0)){
-                  cout <<"TRAPPED" << endl;
-                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_TRAPPED));
+                  //cout <<"TRAPPED" << endl;
+                  listAction.push_back(Action(0,myAnimal,coord,SHIFT_TRAPPED));
                 }
                 else if((squareId_list== THRONEJ1 && playing == 1 )||(squareId_list== THRONEJ2 && playing == 0)){
-                  cout <<  "VICTORY SOON" << endl;
-                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_VICTORY));
+                  //cout <<  "VICTORY SOON" << endl;
+                  listAction.push_back(Action(0,myAnimal,coord,SHIFT_VICTORY));
                 }
                 else if((squareId_list== THRONEJ1 && playing == 0 )||(squareId_list== THRONEJ2 && playing == 1)){
                   //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
                   //do nothing
                 }
                 else{
-                  cout <<  "MOVE" << endl;
-                  listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
+                  //cout <<  "MOVE" << endl;
+                  listAction.push_back(Action(0,myAnimal,coord,SHIFT));
                 }
               }
             }
@@ -281,31 +282,31 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                   }
                   else{
                     if((myAnimal.getID()>=selectionList.first->getID())||((squareId_list== TRAPJ1 && selectionList.second == 1 )||(squareId_list== TRAPJ2 && selectionList.second == 0))){
-                        cout << "A L'ATTAQUE!" << endl;
-                        listAction.push_back(Action(0,&myAnimal,&coord,ATTACK));
+                        //cout << "A L'ATTAQUE!" << endl;
+                        listAction.push_back(Action(0,myAnimal,coord,ATTACK));
                       }
                   }
 
                 }else{
                   if((squareId_list== TRAPJ1 && playing == 0 )||(squareId_list== TRAPJ2 && playing == 1)){
-                    cout <<"TRAP ALLIE" << endl;
-                    listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
+                    //cout <<"TRAP ALLIE" << endl;
+                    listAction.push_back(Action(0,myAnimal,coord,SHIFT));
                   }
                   else if((squareId_list== TRAPJ1 && playing == 1 )||(squareId_list== TRAPJ2 && playing == 0)){
-                    cout <<"TRAPPED" << endl;
-                    listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_TRAPPED));
+                    //cout <<"TRAPPED" << endl;
+                    listAction.push_back(Action(0,myAnimal,coord,SHIFT_TRAPPED));
                   }
                   else if((squareId_list== THRONEJ1 && playing == 1 )||(squareId_list== THRONEJ2 && playing == 0)){
-                  cout <<  "VICTORY SOON" << endl;
-                    listAction.push_back(Action(0,&myAnimal,&coord,SHIFT_VICTORY));
+                  //cout <<  "VICTORY SOON" << endl;
+                    listAction.push_back(Action(0,myAnimal,coord,SHIFT_VICTORY));
                   }
                   else if((squareId_list== THRONEJ1 && playing == 0 )||(squareId_list== THRONEJ2 && playing == 1)){
                   //cout <<  "YOU ARE NOT THE KING! GO OUT!" << endl;
                     //do nothing
                   }
                   else{
-                  cout <<  "MOVE" << endl;
-                    listAction.push_back(Action(0,&myAnimal,&coord,SHIFT));
+                  //cout <<  "MOVE" << endl;
+                    listAction.push_back(Action(0,myAnimal,coord,SHIFT));
                   }
 
                 }
@@ -316,9 +317,9 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                     if(getSelection(vertex,Coord(coord.getX()+n, coord.getY())).first==NULL){
                       compteur += 1;
                     if (compteur == 4){
-                      cout <<"CAN JUMP" << endl;
+                      //cout <<"CAN JUMP" << endl;
                       coord = Coord(coord.getX()+3, coord.getY());
-                      listAction.push_back(Action(0,&myAnimal,&coord,JUMP));
+                      listAction.push_back(Action(0,myAnimal,coord,JUMP));
                     }
                   }
                 }
@@ -330,9 +331,9 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                   if(getSelection(vertex,Coord(coord.getX()-n, coord.getY())).first==NULL){
                     compteur += 1;
                     if (compteur == 4){
-                      cout <<"CAN JUMP" << endl;
+                      //cout <<"CAN JUMP" << endl;
                       coord = Coord(coord.getX()-3, coord.getY());
-                      listAction.push_back(Action(0,&myAnimal,&coord,JUMP));
+                      listAction.push_back(Action(0,myAnimal,coord,JUMP));
                     }
                   }
                 }
@@ -342,9 +343,9 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                   if(getSelection(vertex,Coord(coord.getX(), coord.getY()+n)).first==NULL){
                     compteur += 1;
                     if (compteur == 4){
-                      cout <<"CAN JUMP" << endl;
+                      //cout <<"CAN JUMP" << endl;
                       coord = Coord(coord.getX(), coord.getY()+3);
-                      listAction.push_back(Action(0,&myAnimal,&coord,JUMP));
+                      listAction.push_back(Action(0,myAnimal,coord,JUMP));
                       compteur = 0;
                     }
                   }
@@ -355,9 +356,9 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                   if(getSelection(vertex,Coord(coord.getX(), coord.getY()-n)).first==NULL){
                     compteur += 1;
                     if (compteur == 4){
-                      cout <<"CAN JUMP" << endl;
+                      //cout <<"CAN JUMP" << endl;
                       coord = Coord(coord.getX(), coord.getY()-3);
-                      listAction.push_back(Action(0,&myAnimal,&coord,JUMP));
+                      listAction.push_back(Action(0,myAnimal,coord,JUMP));
                     }
                   }
                 }

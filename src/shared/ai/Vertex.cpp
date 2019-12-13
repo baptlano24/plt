@@ -12,10 +12,6 @@ using namespace state;
 using namespace std;
 
 Vertex::Vertex(state::State& CurrentState){
-  this->parent = NULL;
-  this->children = std::vector<Vertex*>();
-  this->myAnimals = std::vector<state::Animal>();
-  this->hisAnimals = std::vector<state::Animal>();
   this->playing = CurrentState.getPlaying();
   if(this->playing == 0){
     this->myAnimals = CurrentState.getPlayer1().getAliveAnimals();
@@ -26,46 +22,61 @@ Vertex::Vertex(state::State& CurrentState){
   }
 }
 
-Vertex::Vertex(Vertex* vertex, Action action){
+Vertex::Vertex(Vertex* vertex, Action& action):action(action){
   this->parent = vertex;
-  this->children = std::vector<Vertex*>();
+  this->playing = 1 - vertex->getPlaying();
   this->myAnimals = *vertex->getMyAnimals();
   this->hisAnimals = *vertex->getHisAnimals();
-  this->playing = 1 - vertex->getPlaying();
-  this->action = action;
-
+  Coord actionDestinationCoord = this->action.getCoord();
+  Coord actionAnimalCoord = this->action.getAnimal().getCoord();
   Animal* movedAnimal;
+
   for(auto& myAnimal : myAnimals){
-    if(myAnimal.getCoord() == action.getAnimal()->getCoord()){
+    if(myAnimal.getCoord() == actionAnimalCoord){
       movedAnimal = &myAnimal;
     }
   }
-  switch(action.getId())
+  /*if(movedAnimal){
+    cout << "     Animal is a "<< movedAnimal->getName()<< " and wants to go in (" << actionDestinationCoord.getX() << "," << actionDestinationCoord.getY() << ")" << endl;
+  }
+  cout<<"       create vertex with ActionID "<<this->action.getId()<<endl;*/
+  switch(this->action.getId())
   {
     case NONE :
       break;
     case SHIFT :
-      movedAnimal->setCoord(*action.getCoord());
+      movedAnimal->setCoord(actionDestinationCoord);
       break;
     case ATTACK :
       for(int i=0; i<(int)this->hisAnimals.size();i++){
-        if(this->hisAnimals[i].getCoord() == *action.getCoord()){
+        if(this->hisAnimals[i].getCoord() == actionDestinationCoord){
           this->hisAnimals.erase(this->hisAnimals.begin()+i);
         }
       }
-      movedAnimal->setCoord(*action.getCoord());
+      movedAnimal->setCoord(actionDestinationCoord);
       break;
     case JUMP :
-      movedAnimal->setCoord(*action.getCoord());
+      movedAnimal->setCoord(actionDestinationCoord);
       break;
     case SHIFT_TRAPPED :
-      movedAnimal->setCoord(*action.getCoord());
+      movedAnimal->setCoord(actionDestinationCoord);
       break;
     case SHIFT_VICTORY :
-      movedAnimal->setCoord(*action.getCoord());
+      movedAnimal->setCoord(actionDestinationCoord);
       break;
   }
   vertex->addChild(this);
+  /*cout << "       Ally team contains   : ";
+  for(auto& myAnimal : myAnimals){
+    cout << myAnimal.getName() << ", ";
+  }
+  cout << endl;
+  cout << "       Ennemy team contains : ";
+  for(auto& myAnimal : myAnimals){
+    cout << myAnimal.getName() << ", ";
+  }
+  cout << endl;
+  cout << "       There is now " << vertex->getChildren()->size() << " children vertex"<< endl;*/
 }
 
 
@@ -101,8 +112,8 @@ std::vector<Vertex*>* Vertex:: getChildren (){
   return &this->children;
 }
 
-Action* Vertex::getAction (){
-  return &this->action;
+Action Vertex::getAction (){
+  return this->action;
 }
 
 int Vertex::getPlaying (){
@@ -111,4 +122,8 @@ int Vertex::getPlaying (){
 
 void Vertex::setAction(ai::Action newaction){
    this->action = newaction;
+}
+
+void Vertex::setActionScore(double score){
+   this->action.setScore(score);
 }
