@@ -48,7 +48,7 @@ Vertex::Vertex(Vertex* vertex, Action action){
       movedAnimal->setCoord(*action.getCoord());
       break;
     case ATTACK :
-      for(int i; i<(int)this->hisAnimals.size();i++){
+      for(int i=0; i<(int)this->hisAnimals.size();i++){
         if(this->hisAnimals[i].getCoord() == *action.getCoord()){
           this->hisAnimals.erase(this->hisAnimals.begin()+i);
         }
