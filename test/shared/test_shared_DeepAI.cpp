@@ -10,6 +10,6 @@ BOOST_AUTO_TEST_CASE(TestDeepAI){
   engine::Engine engine;
   engine::Engine* ptr_engine = &engine;
 
-  DeepAI deepTest = DeepAI(0, ptr_engine);
+  DeepAI deepTest = DeepAI(0, ptr_engine, 2);
   deepTest.play(ptr_engine);
 }

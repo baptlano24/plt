@@ -92,6 +92,12 @@ void RenderLayer::updateInfos(){
   }
 }
 
+void RenderLayer::updateAnimals(){
+  cout << "{ Réaffichage des animaux }"<< endl;
+  this->animalsSpriteJ1 = vectToSprites(this->renderingState.getPlayer1().getAnimals(), this->renderingState.getPlayer1().getColor());
+  this->animalsSpriteJ2 = vectToSprites(this->renderingState.getPlayer2().getAnimals(), this->renderingState.getPlayer2().getColor());
+}
+
 void RenderLayer::updateHighlights(){
   cout << "{ Réaffichage des cases en surbrillance }"<< endl;
   std::vector<std::pair<state::Coord,engine::ActionID>> newHighlights = this->renderingState.getHighlights();
@@ -124,12 +130,6 @@ void RenderLayer::updateHighlights(){
      }
 
   }
-}
-
-void RenderLayer::updateAnimals(){
-  cout << "{ Réaffichage des animaux }"<< endl;
-  this->animalsSpriteJ1 = vectToSprites(this->renderingState.getPlayer1().getAnimals(), this->renderingState.getPlayer1().getColor());
-  this->animalsSpriteJ2 = vectToSprites(this->renderingState.getPlayer2().getAnimals(), this->renderingState.getPlayer2().getColor());
 }
 
 vector<Sprite> RenderLayer::vectToSprites(vector<state::Animal>& animalsMap, int color) {

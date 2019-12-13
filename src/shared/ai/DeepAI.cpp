@@ -14,25 +14,23 @@ using namespace state;
 using namespace engine;
 using namespace ai;
 
-DeepAI::DeepAI(int color, engine::Engine* engine){
+DeepAI::DeepAI(int color, engine::Engine* engine, int depth_in){
   this->color = color;
   this->map = &engine->getState().getGrid();
+  if(depth_in>=1 && depth_in<=4){
+    this->depth = depth_in;
+  } else {
+    this->depth = 1;
+  }
 }
 
 void DeepAI::play(engine::Engine* engine) {
+  int depth = this->depth;
 
   State& state = engine->getState();
 
-  StateEvent animalChangedEvent(ANIMALS_CHANGED);
-  StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  StateEvent infosChangedEvent(INFOS_CHANGED);
-  StateEvent& refInfosChangedEvent = infosChangedEvent;
-
   cout << "\033[1;35m   DeepAI building the tree... \033[0m" << endl;
   Vertex parentVertex(state);
-  int depth = 3;
 
   Action bestAction = minmax(&parentVertex, depth, true, depth);
   Animal* selectedAnimal = state.getSelection(bestAction.getAnimal().getCoord()).first;
@@ -41,10 +39,6 @@ void DeepAI::play(engine::Engine* engine) {
   cout << "\033[1;33m  DeepIA : I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << "\033[0m"<< endl;
   Move moveDeepIA(selectedAnimal,selectedCoord);
   moveDeepIA.execute(engine);
-
-  state.notifyObservers(refAnimalChangedEvent, state);
-  state.notifyObservers(refHighlightsChangedEvent, state);
-  state.notifyObservers(refInfosChangedEvent, state);
 }
 
 Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDepth){

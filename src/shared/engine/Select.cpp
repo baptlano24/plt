@@ -15,6 +15,7 @@ Select::Select(Animal* targetAnimal, Coord& targetCoord):targetAnimal(targetAnim
 
 void Select::execute(Engine* engine)
 {
+  State& state = engine->getState();
   cout<<"Début du tour numéro : " << engine->getState().getTurn() << endl;
   cout<<"Case SELECT : (" << this->targetCoord.getX()<< "," << this->targetCoord.getY() << ")"<< endl;
 
@@ -29,4 +30,7 @@ void Select::execute(Engine* engine)
   for (int i =0 ;i<=3 ;i++) {
     cout<<"  Case voisine: (" << authorisedActions[i].first.getX()<< "," << authorisedActions[i].first.getY() << ") avec action " << authorisedActions[i].second << endl;
   }
+  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+  state.notifyObservers(refHighlightsChangedEvent, state);
 }
