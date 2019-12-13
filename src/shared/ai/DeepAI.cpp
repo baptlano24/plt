@@ -41,7 +41,7 @@ void DeepAI::play(engine::Engine* engine) {
     cout << hisAnimal.getName() << " (" << hisAnimal.getCoord().getX() << "," << hisAnimal.getCoord().getY() << "),";
   }
   cout << endl;*/
-  int depth = 3; //ONE GENERATION
+  int depth = 3;
   Action bestAction = minmax(&parentVertex, depth, true, depth);
   Animal* selectedAnimal = state.getSelection(bestAction.getAnimal().getCoord()).first;
   Coord selectedCoord = bestAction.getCoord();
@@ -69,6 +69,7 @@ Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDept
     for(auto action : listActions){
       Vertex child = Vertex(vertex, action);
       Action action_minmax = DeepAI::minmax(&child,depth-1,false,totalDepth);
+      cout << "   Possible action " << action_minmax.getAnimal().getName() << " go in (" << action_minmax.getCoord().getX() << "," << action_minmax.getCoord().getY() << ")" << endl;
       action_vertex = DeepAI::max(action_vertex, action_minmax);
     }
     return action_vertex;
@@ -143,10 +144,14 @@ double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal){
 }
 
 void DeepAI::calculateVertexScore(Vertex* vertex){
+  int nombreActions = (int)enumerateActions(vertex).size();
   double score = 0;
   for (auto& myAnimal : *vertex->getMyAnimals()){
-    score += calculateAnimalScore(vertex, &myAnimal);
+    //score += calculateAnimalScore(vertex, &myAnimal);
+    score += myAnimal.getID()*100;
   }
+  score += (8-(int)vertex->getHisAnimals()->size())*1000;
+  score += nombreActions*10;
   vertex->setActionScore(score);
 }
 
