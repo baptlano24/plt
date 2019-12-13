@@ -34,13 +34,13 @@ void DeepAI::play(engine::Engine* engine) {
 
   int depth = 1; //ONE GENERATION
   createChildren(&parentVertex, depth);
-  /*Action bestAction = minmax(&parentVertex, depth, true);
+  Action bestAction = minmax(&parentVertex, depth, true);
   Animal* selectedAnimal = bestAction.getAnimal();
   Coord* selectedCoord = bestAction.getCoord();
   cout << "___DeepIA___ I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord->getX() << "," << selectedCoord->getY() << ")";
-  Move moveDeepIA(selectedAnimal,*selectedCoord);
-  moveDeepIA.execute(engine);
-  */
+  //Move moveDeepIA(selectedAnimal,*selectedCoord);
+  //moveDeepIA.execute(engine);
+
   state.notifyObservers(refAnimalChangedEvent, state);
   state.notifyObservers(refHighlightsChangedEvent, state);
   state.notifyObservers(refInfosChangedEvent, state);
@@ -263,8 +263,9 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
             }
           } //end for
     } else if(myAnimal.getID() == TIGER || myAnimal.getID() == LEOPARD || myAnimal.getID() == LION) {
-
+        int j = -1;
         for (auto& coord : listCoord) {
+          j++;
           if (coord.getX()<=11 && coord.getX()>=0 && coord.getY()<= 12 && coord.getY()>=0){
           selectionList = getSelection(vertex,coord);
           squareId_list = map1[coord.getX()][coord.getY()].getID();
@@ -309,7 +310,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
               }else{
                 if(j == 0){
                   int compteur = 0;
-                  for(int n = 0; n<=3; n++){
+                  for(int n = 0; n<3; n++){
                     if(getSelection(vertex,Coord(coord.getX()+n, coord.getY())).first==NULL){
                       compteur += 1;
                     if (compteur == 4){
@@ -323,7 +324,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                 //Jump
               } else if (j==1){
                 int compteur = 0;
-                for(int n = 0; n<=3; n++){
+                for(int n = 0; n<3; n++){
                   if(getSelection(vertex,Coord(coord.getX()-n, coord.getY())).first==NULL){
                     compteur += 1;
                     if (compteur == 4){
@@ -335,7 +336,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                 }
               } else if(j==2){
                 int compteur = 0;
-                for(int n = 0; n<=3; n++){
+                for(int n = 0; n<3; n++){
                   if(getSelection(vertex,Coord(coord.getX(), coord.getY()+n)).first==NULL){
                     compteur += 1;
                     if (compteur == 4){
@@ -348,7 +349,7 @@ std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
                 }
               } else{
                 int compteur = 0;
-                for(int n = 0; n<=3; n++){
+                for(int n = 0; n<3; n++){
                   if(getSelection(vertex,Coord(coord.getX(), coord.getY()-n)).first==NULL){
                     compteur += 1;
                     if (compteur == 4){

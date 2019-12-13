@@ -18,13 +18,13 @@ Vertex::Vertex(state::State& CurrentState){
   this->hisAnimals = std::vector<state::Animal>();
   this->playing = CurrentState.getPlaying();
   if(this->playing == 0){
-    for (int i =0; i<=(int)CurrentState.getPlayer1().getAnimals().size(); i++){
+    for (int i =0; i<(int)CurrentState.getPlayer1().getAnimals().size(); i++){
       if(CurrentState.getPlayer1().getAnimals()[i].getStatus()==NORMAL)
       {
         this->myAnimals.push_back(CurrentState.getPlayer1().getAnimals()[i]);
       }
     }
-    for (int j=0; j<=(int)CurrentState.getPlayer2().getAnimals().size();j++){
+    for (int j=0; j<(int)CurrentState.getPlayer2().getAnimals().size();j++){
       if(CurrentState.getPlayer2().getAnimals()[j].getStatus()==NORMAL)
       {
         this->hisAnimals.push_back(CurrentState.getPlayer2().getAnimals()[j]);
@@ -33,12 +33,12 @@ Vertex::Vertex(state::State& CurrentState){
   }
 
   else{
-    for (int i =0; i<=(int)CurrentState.getPlayer2().getAnimals().size(); i++){
+    for (int i =0; i<(int)CurrentState.getPlayer2().getAnimals().size(); i++){
       if(CurrentState.getPlayer2().getAnimals()[i].getStatus()==NORMAL)
       {
         this->myAnimals.push_back(CurrentState.getPlayer2().getAnimals()[i]);
       }}
-    for (int j=0; j<=(int)CurrentState.getPlayer1().getAnimals().size();j++)
+    for (int j=0; j<(int)CurrentState.getPlayer1().getAnimals().size();j++)
     {
       if(CurrentState.getPlayer1().getAnimals()[j].getStatus()==NORMAL)
       {
@@ -58,7 +58,7 @@ Vertex::Vertex(Vertex* vertex, Action action){
   this->action = action;
 
   Animal* movedAnimal;
-  for(int i; i<=(int)this->myAnimals.size();i++){
+  for(int i=0; i<(int)this->myAnimals.size();i++){
     if(this->myAnimals[i].getCoord() == action.getAnimal()->getCoord()){
       movedAnimal = &this->myAnimals[i];
     }
@@ -71,7 +71,7 @@ Vertex::Vertex(Vertex* vertex, Action action){
       movedAnimal->setCoord(*action.getCoord());
       break;
     case ATTACK :
-      for(int i; i<=(int)this->hisAnimals.size();i++){
+      for(int i; i<(int)this->hisAnimals.size();i++){
         if(this->hisAnimals[i].getCoord() == *action.getCoord()){
           this->hisAnimals.erase(this->hisAnimals.begin()+i);
         }
