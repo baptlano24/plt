@@ -565,7 +565,7 @@ void deepVSplayer(){
       if (event.type == Event::Closed){
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {
-        cout << endl << "         * Clic *" << endl;
+        cout << endl << "\033[1;36m         * Clic player *\033[0m" << endl;
         state.notifyObservers(refHighlightsChangedEvent, state);
         if (animalSelected == false && state.getGameover() != true && state.getPlaying() == 0) {
           cout << " Mouse clic pixel event : " << mouseX << " , "<< mouseY << endl;
@@ -598,11 +598,11 @@ void deepVSplayer(){
       }
     }
     if(state.getGameover() != true && state.getPlaying() == 1){
-      cout << endl << "         * IA deepAI1 is playing *" << endl;
+      cout << endl << "\033[1;36m         * IA deepAI1 is playing *\033[0m" << endl;
       cout<<"Tour numéro : " << state.getTurn() << endl;
       usleep(delai);
       deepAI1.play(ptr_engine);
-      cout << "         * IA deepAI1 turn ends  *" << endl;
+      cout << "         * IA deepAI1 turn ends  *\n Waiting for opponent player to play..." << endl;
     }
   }
 }

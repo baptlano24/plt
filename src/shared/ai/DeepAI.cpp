@@ -30,23 +30,15 @@ void DeepAI::play(engine::Engine* engine) {
   StateEvent infosChangedEvent(INFOS_CHANGED);
   StateEvent& refInfosChangedEvent = infosChangedEvent;
 
+  cout << "\033[1;35m   DeepAI building the tree... \033[0m" << endl;
   Vertex parentVertex(state);
-  /*cout << "       Ally team contains   : ";
-  for(auto& myAnimal : *parentVertex.getMyAnimals()){
-    cout << myAnimal.getName() << " (" << myAnimal.getCoord().getX() << "," << myAnimal.getCoord().getY() << "),";
-  }
-  cout << endl;
-  cout << "       Ennemy team contains : ";
-  for(auto& hisAnimal : *parentVertex.getHisAnimals()){
-    cout << hisAnimal.getName() << " (" << hisAnimal.getCoord().getX() << "," << hisAnimal.getCoord().getY() << "),";
-  }
-  cout << endl;*/
   int depth = 3;
+
   Action bestAction = minmax(&parentVertex, depth, true, depth);
   Animal* selectedAnimal = state.getSelection(bestAction.getAnimal().getCoord()).first;
   Coord selectedCoord = bestAction.getCoord();
 
-  cout << "   ___DeepIA___ I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << endl;
+  cout << "\033[1;33m  DeepIA : I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << "\033[0m"<< endl;
   Move moveDeepIA(selectedAnimal,selectedCoord);
   moveDeepIA.execute(engine);
 
@@ -60,36 +52,39 @@ Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDept
   double max = std::numeric_limits<double>::max();
   Action action_vertex = vertex->getAction();
 
+  //cout << " >> DEPTH = " << depth << endl;
   if (depth == 0){
     calculateVertexScore(vertex);
     return vertex->getAction();
-  }
-  if (depth == totalDepth){
+  } else if (depth == totalDepth){
     action_vertex.setScore(-max);
     for(auto action : listActions){
       Vertex child = Vertex(vertex, action);
       Action action_minmax = DeepAI::minmax(&child,depth-1,false,totalDepth);
-      cout << "   Possible action " << action_minmax.getAnimal().getName() << " go in (" << action_minmax.getCoord().getX() << "," << action_minmax.getCoord().getY() << ")" << endl;
       action_vertex = DeepAI::max(action_vertex, action_minmax);
     }
     return action_vertex;
-  }
-  if(maximizing){
-    action_vertex.setScore(-max);
-    for(auto action : listActions){
-      Vertex child = Vertex(vertex, action);
-      Action action_minmax = DeepAI::minmax(&child,depth-1,false,totalDepth);
-      action_vertex.setScore(DeepAI::max(action_vertex, action_minmax).getScore());
+  } else {
+    if(maximizing){
+      action_vertex.setScore(-max);
+      for(auto action : listActions){
+        Vertex child = Vertex(vertex, action);
+        Action action_minmax = DeepAI::minmax(&child,depth-1,false,totalDepth);
+        action_vertex.setScore(DeepAI::max(action_vertex, action_minmax).getScore());
+      }
+      return action_vertex;
+    }else{
+      action_vertex.setScore(max);
+      for(auto action : listActions){
+        Vertex child = Vertex(vertex, action);
+        Action action_minmax = DeepAI::minmax(&child,depth-1,true,totalDepth);
+        action_vertex.setScore(DeepAI::min(action_vertex, action_minmax).getScore());
+      }
+      if (depth == totalDepth-1){
+        cout << "   Possible action team "<< vertex->getPlaying() <<" with " << action_vertex.getAnimal().getName() << " go in (" << action_vertex.getCoord().getX() << "," << action_vertex.getCoord().getY() << ") with score "<< action_vertex.getScore() << endl;
+      }
+      return action_vertex;
     }
-    return action_vertex;
-  }else{
-    action_vertex.setScore(max);
-    for(auto action : listActions){
-      Vertex child = Vertex(vertex, action);
-      Action action_minmax = DeepAI::minmax(&child,depth-1,true,totalDepth);
-      action_vertex.setScore(DeepAI::min(action_vertex, action_minmax).getScore());
-    }
-    return action_vertex;
   }
 }
 
@@ -148,7 +143,7 @@ void DeepAI::calculateVertexScore(Vertex* vertex){
   double score = 0;
   for (auto& myAnimal : *vertex->getMyAnimals()){
     //score += calculateAnimalScore(vertex, &myAnimal);
-    score += myAnimal.getID()*100;
+    score += 100;
   }
   score += (8-(int)vertex->getHisAnimals()->size())*1000;
   score += nombreActions*10;

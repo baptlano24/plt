@@ -66,6 +66,8 @@ Vertex::Vertex(Vertex* vertex, Action& action):action(action){
       break;
   }
   vertex->addChild(this);
+  //cout << "       child vertex team "<< this->playing <<" - action " << this->action.getAnimal().getName() << " go in (" << this->action.getCoord().getX() << "," << this->action.getCoord().getY() << ") with score "<< this->action.getScore() << endl;
+
   /*cout << "       Ally team contains   : ";
   for(auto& myAnimal : myAnimals){
     cout << myAnimal.getName() << ", ";

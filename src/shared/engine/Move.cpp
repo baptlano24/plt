@@ -20,6 +20,7 @@ void engine::Move::execute(engine::Engine* engine)
   engine->getState().setHighlights(refNoHighlights);
 
   std::vector<std::pair<state::Coord,engine::ActionID>> authorisedActions = engine->authorisedActions(engine->getState(),this->targetAnimal->getCoord());
+  cout << "\n\033[1;37mEngine\033[0m" << endl;
   cout<<"Anciennes coord           :" << this->targetAnimal->getCoord().getX() <<","<< this->targetAnimal->getCoord().getY() <<endl;
   cout<<"Nouvelles coord demandées :" << this->targetCoord.getX() <<","<< this->targetCoord.getY() <<endl;
 
