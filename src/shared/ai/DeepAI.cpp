@@ -34,10 +34,10 @@ void DeepAI::play(engine::Engine* engine) {
 
   int depth = 1; //ONE GENERATION
   createChildren(&parentVertex, depth);
-  Action bestAction = minmax(&parentVertex, depth, true);
-  Animal* selectedAnimal = bestAction.getAnimal();
-  Coord* selectedCoord = bestAction.getCoord();
-  cout << "___DeepIA___ I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord->getX() << "," << selectedCoord->getY() << ")";
+  //Action bestAction = minmax(&parentVertex, depth, true);
+  //Animal* selectedAnimal = bestAction.getAnimal();
+  //Coord* selectedCoord = bestAction.getCoord();
+  //cout << "___DeepIA___ I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord->getX() << "," << selectedCoord->getY() << ")";
   //Move moveDeepIA(selectedAnimal,*selectedCoord);
   //moveDeepIA.execute(engine);
 

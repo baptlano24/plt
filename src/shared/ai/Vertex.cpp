@@ -18,34 +18,11 @@ Vertex::Vertex(state::State& CurrentState){
   this->hisAnimals = std::vector<state::Animal>();
   this->playing = CurrentState.getPlaying();
   if(this->playing == 0){
-    for (int i =0; i<(int)CurrentState.getPlayer1().getAnimals().size(); i++){
-      if(CurrentState.getPlayer1().getAnimals()[i].getStatus()==NORMAL)
-      {
-        this->myAnimals.push_back(CurrentState.getPlayer1().getAnimals()[i]);
-      }
-    }
-    for (int j=0; j<(int)CurrentState.getPlayer2().getAnimals().size();j++){
-      if(CurrentState.getPlayer2().getAnimals()[j].getStatus()==NORMAL)
-      {
-        this->hisAnimals.push_back(CurrentState.getPlayer2().getAnimals()[j]);
-      }
-    }
-  }
-
-  else{
-    for (int i =0; i<(int)CurrentState.getPlayer2().getAnimals().size(); i++){
-      if(CurrentState.getPlayer2().getAnimals()[i].getStatus()==NORMAL)
-      {
-        this->myAnimals.push_back(CurrentState.getPlayer2().getAnimals()[i]);
-      }}
-    for (int j=0; j<(int)CurrentState.getPlayer1().getAnimals().size();j++)
-    {
-      if(CurrentState.getPlayer1().getAnimals()[j].getStatus()==NORMAL)
-      {
-        this->hisAnimals.push_back(CurrentState.getPlayer1().getAnimals()[j]);
-      }
-
-    }
+    this->myAnimals = CurrentState.getPlayer1().getAliveAnimals();
+    this->hisAnimals = CurrentState.getPlayer2().getAliveAnimals();
+  } else {
+    this->myAnimals = CurrentState.getPlayer2().getAliveAnimals();
+    this->hisAnimals = CurrentState.getPlayer1().getAliveAnimals();
   }
 }
 
@@ -58,9 +35,9 @@ Vertex::Vertex(Vertex* vertex, Action action){
   this->action = action;
 
   Animal* movedAnimal;
-  for(int i=0; i<(int)this->myAnimals.size();i++){
-    if(this->myAnimals[i].getCoord() == action.getAnimal()->getCoord()){
-      movedAnimal = &this->myAnimals[i];
+  for(auto& myAnimal : myAnimals){
+    if(myAnimal.getCoord() == action.getAnimal()->getCoord()){
+      movedAnimal = &myAnimal;
     }
   }
   switch(action.getId())
@@ -98,8 +75,8 @@ Vertex::~Vertex(){
 
 void Vertex::killChildren(Vertex* vertex){
   if((int)this->children.size() == 0){
-    for(int i; i<=(int)this->children.size(); i++){
-      delete &this->children[i];
+    for(auto& child : this->children){
+      delete &child;
     }
   }
 }

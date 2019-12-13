@@ -58,6 +58,18 @@ std::vector<Animal>& Player::getAnimals()
     return this->animals;
 }
 
+std::vector<Animal> Player::getAliveAnimals()
+{
+  std::vector<Animal> aliveAnimals;
+  for (auto& animal : this->animals){
+    if(animal.getStatus()==NORMAL)
+    {
+      aliveAnimals.push_back(animal);
+    }
+  }
+  return aliveAnimals;
+}
+
 void Player::setName(string name)
 {
     this->name = name;
