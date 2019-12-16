@@ -17,7 +17,7 @@ using namespace ai;
 DeepAI::DeepAI(int color, engine::Engine* engine, int depth_in){
   this->color = color;
   this->map = &engine->getState().getGrid();
-  if(depth_in>=1 && depth_in<=3){
+  if(depth_in>=1 && depth_in<=4){
     this->depth = depth_in;
   } else {
     this->depth = 1;
@@ -36,34 +36,38 @@ void DeepAI::play(engine::Engine* engine) {
   Animal* selectedAnimal = state.getSelection(bestAction.getAnimal().getCoord()).first;
   Coord selectedCoord = bestAction.getCoord();
 
-  cout << "\033[1;33m  DeepIA : I decide to move my " << selectedAnimal->getName() << " in (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << "\033[0m"<< endl;
+  cout << "\033[1;33m  DeepIA (niveau " << depth << ") : I decide to move my " << selectedAnimal->getName() << " from (" << selectedAnimal->getCoord().getX() << "," << selectedAnimal->getCoord().getY() << ") to (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << "\033[0m"<< endl;
   Move moveDeepIA(selectedAnimal,selectedCoord);
   moveDeepIA.execute(engine);
 }
 
 Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDepth){
-  std::vector<Action> listActions = this->enumerateActions(vertex);
-  double max = std::numeric_limits<double>::max();
-  Action action_vertex = vertex->getAction();
 
-  //cout << " >> DEPTH = " << depth << endl;
   if (depth == 0){
-    calculateVertexScore(vertex);
+    calculateVertexScore(vertex, maximizing);
     return vertex->getAction();
   } else if (depth == totalDepth){
+    std::vector<Action> listActions = enumerateActions(vertex);
+    double max = std::numeric_limits<double>::max();
+    Action action_vertex = vertex->getAction();
     action_vertex.setScore(-max);
     for(auto action : listActions){
       Vertex child = Vertex(vertex, action);
       Action action_minmax = DeepAI::minmax(&child,depth-1,false,totalDepth);
+      cout << "\033[1;32m   -team "<< vertex->getPlaying() <<" with " << action_minmax.getAnimal().getName() << " (" << action_minmax.getAnimal().getCoord().getX() << "," << action_minmax.getAnimal().getCoord().getY() << ") go in (" << action_minmax.getCoord().getX() << "," << action_minmax.getCoord().getY() << ") to ID "<< action_minmax.getId() <<" with score "<< action_minmax.getScore() << "\033[0m" << endl;
       action_vertex = DeepAI::max(action_vertex, action_minmax);
     }
     return action_vertex;
   } else {
+    std::vector<Action> listActions = enumerateActions(vertex);
+    double max = std::numeric_limits<double>::max();
+    Action action_vertex = vertex->getAction();
     if(maximizing){
       action_vertex.setScore(-max);
       for(auto action : listActions){
         Vertex child = Vertex(vertex, action);
         Action action_minmax = DeepAI::minmax(&child,depth-1,false,totalDepth);
+        //cout << "\033[1;35m       -team "<< vertex->getPlaying() <<" with " << action_minmax.getAnimal().getName() << " (" << action_minmax.getAnimal().getCoord().getX() << "," << action_minmax.getAnimal().getCoord().getY() << ") go in (" << action_minmax.getCoord().getX() << "," << action_minmax.getCoord().getY() << ") to ID "<< action_minmax.getId() <<" with score "<< action_minmax.getScore() << "\033[0m" << endl;
         action_vertex.setScore(DeepAI::max(action_vertex, action_minmax).getScore());
       }
       return action_vertex;
@@ -72,18 +76,24 @@ Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDept
       for(auto action : listActions){
         Vertex child = Vertex(vertex, action);
         Action action_minmax = DeepAI::minmax(&child,depth-1,true,totalDepth);
+        //cout << "\033[1;34m     -team "<< vertex->getPlaying() <<" with " << action_minmax.getAnimal().getName() << " (" << action_minmax.getAnimal().getCoord().getX() << "," << action_minmax.getAnimal().getCoord().getY() << ") go in (" << action_minmax.getCoord().getX() << "," << action_minmax.getCoord().getY() << ") to ID "<< action_minmax.getId() <<" with score "<< action_minmax.getScore() << "\033[0m" << endl;
         action_vertex.setScore(DeepAI::min(action_vertex, action_minmax).getScore());
-      }
-      if (depth == totalDepth-1){
-        cout << "   Possible action team "<< vertex->getPlaying() <<" with " << action_vertex.getAnimal().getName() << " go in (" << action_vertex.getCoord().getX() << "," << action_vertex.getCoord().getY() << ") with score "<< action_vertex.getScore() << endl;
       }
       return action_vertex;
     }
   }
 }
 
-double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal){
-  vector<Animal>& hisAnimals = *vertex->getHisAnimals();
+double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal, bool maximizing){
+  std::vector<state::Animal>* myAnimals;;
+  std::vector<state::Animal>* hisAnimals;
+  if(maximizing){
+    myAnimals = vertex->getHisAnimals();
+    hisAnimals = vertex->getMyAnimals();
+  } else {
+    myAnimals = vertex->getHisAnimals();
+    hisAnimals = vertex->getMyAnimals();
+  }
   /****** PARAMETERS ******/
   Coord myObjective;
   Coord hisObjective;
@@ -115,42 +125,64 @@ double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal){
   double objectifScore = exp(-distanceObjectif/6+4.9);
   /****** END PARAMETERS ******/
 
-  for (auto& hisAnimal : hisAnimals){
+  for (auto& hisAnimal : *hisAnimals){
     hisAnimalID = hisAnimal.getID();
     hisCoord = hisAnimal.getCoord();
     distanceEnnemyWin = getDistance(hisObjective, hisCoord);
     if( hisAnimalID <= myAnimalID || (hisAnimalID==ELEPHANT && myAnimalID==RAT) || this->map->at(hisCoord.getX())[hisCoord.getY()].getID() == TRAPJ2 ){
       distancePrey = getDistance(myCoord, hisCoord);
-      preyScore += exp(-distancePrey/6+7.5)/distanceEnnemyWin;
+      preyScore += exp(-distancePrey/5+3)*hisAnimal.getID();
     } else if( hisAnimalID >= myAnimalID || (hisAnimal.getID()==RAT && myAnimalID==ELEPHANT) || this->map->at(myCoord.getX())[myCoord.getY()].getID() == TRAPJ1 ){
       distancePredator = getDistance(myCoord, hisCoord);
       predatorScore += (-200)*exp(-distancePredator/2);
     }
   }
 
-  double totalScore = preyScore + predatorScore + objectifScore;
+  double totalScore = preyScore;
   return totalScore;
 }
 
-void DeepAI::calculateVertexScore(Vertex* vertex){
-  int nombreActions = (int)enumerateActions(vertex).size();
+void DeepAI::calculateVertexScore(Vertex* vertex, bool maximizing){
   double score = 0;
-  for (auto& myAnimal : *vertex->getMyAnimals()){
-    //score += calculateAnimalScore(vertex, &myAnimal);
-    score += 100;
+  std::vector<state::Animal>* myAnimals;;
+  std::vector<state::Animal>* hisAnimals;
+
+  if(!maximizing){
+    myAnimals = vertex->getHisAnimals();
+    hisAnimals = vertex->getMyAnimals();
+  } else {
+    myAnimals = vertex->getMyAnimals();
+    hisAnimals = vertex->getHisAnimals();
   }
-  score += (8-(int)vertex->getHisAnimals()->size())*1000;
-  score += nombreActions*10;
+  for (auto& hisAnimal : *hisAnimals){
+    score -= 100*hisAnimal.getID();
+  }
+  for (auto& myAnimal : *myAnimals){
+    score += 100*myAnimal.getID();
+    score += calculateAnimalScore(vertex, &myAnimal, maximizing);
+  }
+
   vertex->setActionScore(score);
 }
 
 std::vector<Action> DeepAI:: enumerateActions (Vertex* vertex){
+  //cout << "  enumerateActions(vertex team " << vertex->getPlaying() << ")"<< endl;
+  /*cout << "  Ally team " << vertex->getPlaying() << " contains   : ";
+  for(auto& myAnimal : *vertex->getMyAnimals()){
+    cout << myAnimal.getName() << ", ";
+  }
+  cout << endl;
+  cout << "  Ennemy team contains : ";
+  for(auto& hisAnimal : *vertex->getHisAnimals()){
+    cout << hisAnimal.getName() << ", ";
+  }*/
   std::vector<Action> listAction;
   std::array<std::array<state::Square,13>,12>* map = getMap();
   std::array<std::array<state::Square,13>,12> map1 = *map;
   int playing = vertex->getPlaying();
 
   for(auto& myAnimal : *vertex->getMyAnimals()){
+    //cout << "\033[1;31m        animal team "<< vertex->getPlaying() <<" coord " << myAnimal.getName() << " (" << myAnimal.getCoord().getX() << "," << myAnimal.getCoord().getY() << ")\033[0m" << endl;
     std::vector<state::Coord> listCoord;
 
     Coord current_square = myAnimal.getCoord();
@@ -411,11 +443,11 @@ Action DeepAI::max(Action& action1,Action& action2){
 }
 
 Action DeepAI::min(Action& action1,Action& action2){
-  if(action1.getScore()>action2.getScore()){
-    return action2;
+  if(action1.getScore()<action2.getScore()){
+    return action1;
   }
   else{
-    return action1;
+    return action2;
   }
 }
 

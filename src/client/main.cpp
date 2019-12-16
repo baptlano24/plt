@@ -57,10 +57,10 @@ int main(int argc,char* argv[1]) {
     catch(const std::logic_error){
       cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de dVSp." << endl;
     }
-    if(depth_in>=1 && depth_in<=3){
+    if(depth_in>=1 && depth_in<=4){
       deepVSplayer(depth_in);
     } else {
-      cout << "   La profondeur doit être entre 1 et 3. Veuillez recommancer." << endl;
+      cout << "   La profondeur doit être entre 1 et 4. Veuillez recommancer." << endl;
     }
   } else {
     cout << "Veuillez dire une commande parmis les suivantes :" << endl;
