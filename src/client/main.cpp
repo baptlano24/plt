@@ -563,6 +563,10 @@ void deepVSplayer(int depth_in){
     mouseCoord.setY(mouseGridY);
 
     while (window.pollEvent(event)){
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+        {
+          engine.undo();
+        }
       if (event.type == Event::Closed){
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {

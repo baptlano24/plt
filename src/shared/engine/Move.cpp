@@ -15,6 +15,7 @@ Move::Move(state::Animal* targetAnimal, state::Coord& targetCoord): targetAnimal
 void engine::Move::execute(engine::Engine* engine)
 {
   State& state = engine->getState();
+  engine->addState(state);
   std::vector<std::pair<state::Coord,engine::ActionID>> noHighlights; //clean all the highlights with one NONE highlight
   noHighlights.push_back(make_pair(Coord {0,0},ActionID{NONE}));
   std::vector<std::pair<state::Coord,engine::ActionID>>& refNoHighlights = noHighlights;

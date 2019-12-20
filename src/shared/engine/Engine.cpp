@@ -10,6 +10,7 @@ using namespace engine;
 
 Engine::Engine(): currentState(){
   this->switchTurn = 0;
+  this->stateHistoric.push_back(this->currentState);
 }
 
 state::State& Engine::getState(){
@@ -17,8 +18,36 @@ state::State& Engine::getState(){
   	return refEtat;
 }
 
+void Engine::setState (state::State& state){
+  this->currentState = state;
+}
+
 void Engine::playerRequest(RenderEvent& event){
 
+}
+
+void Engine::undo (){
+  if((int)this->stateHistoric.size()>1){
+  setState(this->stateHistoric[int(this->stateHistoric.size()-1)]);
+
+  this->stateHistoric.pop_back();
+}
+  State& state = getState();
+  StateEvent animalChangedEvent(ANIMALS_CHANGED);
+  StateEvent& refAnimalChangedEvent = animalChangedEvent;
+  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+  StateEvent infosChangedEvent(INFOS_CHANGED);
+  StateEvent& refInfosChangedEvent = infosChangedEvent;
+  state.notifyObservers(refAnimalChangedEvent, state);
+  state.notifyObservers(refHighlightsChangedEvent, state);
+  state.notifyObservers(refInfosChangedEvent, state);
+
+}
+
+
+void Engine::addState (state::State newState){
+  this->stateHistoric.push_back(newState);
 }
 
 void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
