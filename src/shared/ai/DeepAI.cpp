@@ -87,31 +87,44 @@ Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDept
 double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal, bool maximizing){
   std::vector<state::Animal>* myAnimals;;
   std::vector<state::Animal>* hisAnimals;
+  Coord myObjective;
+  Coord hisObjective;
   if(maximizing){
     myAnimals = vertex->getHisAnimals();
     hisAnimals = vertex->getMyAnimals();
+    if (vertex->getPlaying()==0){
+      myObjective.setX(6);
+      myObjective.setY(12);
+      hisObjective.setX(5);
+      hisObjective.setY(0);
+    } else {
+      myObjective.setX(5);
+      myObjective.setY(0);
+      hisObjective.setX(6);
+      hisObjective.setY(12);
+    }
   } else {
     myAnimals = vertex->getHisAnimals();
     hisAnimals = vertex->getMyAnimals();
+    if (vertex->getPlaying()==0){
+      myObjective.setX(5);
+      myObjective.setY(0);
+      hisObjective.setX(6);
+      hisObjective.setY(12);
+    } else {
+      myObjective.setX(6);
+      myObjective.setY(12);
+      hisObjective.setX(5);
+      hisObjective.setY(0);
+    }
   }
   /****** PARAMETERS ******/
-  Coord myObjective;
-  Coord hisObjective;
+
 
   Coord myCoord = myAnimal->getCoord();
   Coord hisCoord;
 
-  if (vertex->getPlaying()==0){
-    myObjective.setX(6);
-    myObjective.setY(12);
-    hisObjective.setX(5);
-    hisObjective.setY(0);
-  } else {
-    myObjective.setX(5);
-    myObjective.setY(0);
-    hisObjective.setX(6);
-    hisObjective.setY(12);
-  }
+
 
   int distancePrey;
   int distancePredator;
@@ -122,7 +135,7 @@ double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal, bool maxim
 
   double preyScore = 0;
   double predatorScore = 0;
-  double objectifScore = exp(-distanceObjectif+8.4);
+  double objectifScore = 1000/(distanceObjectif+0.0001);
   /****** END PARAMETERS ******/
 
   for (auto& hisAnimal : *hisAnimals){
