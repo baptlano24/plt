@@ -35,12 +35,9 @@ void Engine::undo (){
   State& state = getState();
   StateEvent animalChangedEvent(ANIMALS_CHANGED);
   StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
   StateEvent infosChangedEvent(INFOS_CHANGED);
   StateEvent& refInfosChangedEvent = infosChangedEvent;
   state.notifyObservers(refAnimalChangedEvent, state);
-  state.notifyObservers(refHighlightsChangedEvent, state);
   state.notifyObservers(refInfosChangedEvent, state);
 
 }
