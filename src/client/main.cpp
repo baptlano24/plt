@@ -27,8 +27,10 @@ void heuristicVSnovice();
 void heuristicVSheuristic();
 void heuristicVSplayer();
 void deepVSplayer(int depth_in);
+void deepVSdeep(int depth_inJ1, int depth_inJ2);
+void heuristicVSdeep(int depth_inJ);
 
-int delai = 200000 ; //temps de jeu des IA
+int delai = 300000 ; //temps de jeu des IA en micro seconde
 
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
@@ -55,10 +57,36 @@ int main(int argc,char* argv[1]) {
         depth_in = stoi(argv[2]);
     }
     catch(const std::logic_error){
-      cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de dVSp." << endl;
+      cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de " << argv[1] << endl;
     }
     if(depth_in>=1 && depth_in<=4){
       deepVSplayer(depth_in);
+    } else {
+      cout << "   La profondeur doit être entre 1 et 4. Veuillez recommancer." << endl;
+    }
+  } else if (argc>=2 && string(argv[1])=="dVSd") {
+    int depth_in;
+    try {
+        depth_in = stoi(argv[2]);
+    }
+    catch(const std::logic_error){
+      cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de " << argv[1] << endl;
+    }
+    if(depth_in>=1 && depth_in<=4){
+      deepVSdeep(depth_in, depth_in);
+    } else {
+      cout << "   La profondeur doit être entre 1 et 4. Veuillez recommancer." << endl;
+    }
+  } else if (argc>=2 && string(argv[1])=="hVSd") {
+    int depth_in;
+    try {
+        depth_in = stoi(argv[2]);
+    }
+    catch(const std::logic_error){
+      cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de " << argv[1] << endl;
+    }
+    if(depth_in>=1 && depth_in<=4){
+      heuristicVSdeep(depth_in);
     } else {
       cout << "   La profondeur doit être entre 1 et 4. Veuillez recommancer." << endl;
     }
@@ -527,6 +555,7 @@ void heuristicVSplayer(){
     }
   }
 }
+
 void deepVSplayer(int depth_in){
   Engine engine;
   Engine* ptr_engine = &engine;
@@ -601,6 +630,80 @@ void deepVSplayer(int depth_in){
       usleep(delai);
       deepAI1.play(ptr_engine);
       cout << "         * IA deepAI1 turn ends  *\n Waiting for opponent player to play..." << endl;
+    }
+  }
+}
+
+void deepVSdeep(int depth_inJ1, int depth_inJ2){
+  Engine engine;
+  Engine* ptr_engine = &engine;
+  sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
+  RenderLayer stateLayer(engine.getState(), window);
+  RenderLayer* ptr_stateLayer = &stateLayer;
+  DeepAI deepAI0(0, ptr_engine, depth_inJ1);
+  DeepAI deepAI1(1, ptr_engine, depth_inJ2);
+
+  stateLayer.registerObserver(ptr_engine);
+  engine.getState().registerObserver(ptr_stateLayer);
+  stateLayer.draw(window);
+  srand (time(NULL));
+
+  while (window.isOpen()){
+    Event event;
+    while (window.pollEvent(event)){
+      if (event.type == Event::Closed){
+        window.close();
+      }
+    }
+    if(engine.getState().getGameover() != true){
+      if(engine.getState().getPlaying() == 0) {
+        cout << endl << "         * IA DeepAI0 is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        deepAI0.play(ptr_engine);
+      } else {
+        cout << endl << "         * IA DeepAI1 is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        deepAI1.play(ptr_engine);
+      }
+    }
+  }
+
+}
+void heuristicVSdeep(int depth_in){
+  Engine engine;
+  Engine* ptr_engine = &engine;
+  sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
+  RenderLayer stateLayer(engine.getState(), window);
+  RenderLayer* ptr_stateLayer = &stateLayer;
+  DeepAI deepAI(0, ptr_engine, depth_in);
+  HeuristicAI HeuristicAI(1);
+
+  stateLayer.registerObserver(ptr_engine);
+  engine.getState().registerObserver(ptr_stateLayer);
+  stateLayer.draw(window);
+  srand (time(NULL));
+
+  while (window.isOpen()){
+    Event event;
+    while (window.pollEvent(event)){
+      if (event.type == Event::Closed){
+        window.close();
+      }
+    }
+    if(engine.getState().getGameover() != true){
+      if(engine.getState().getPlaying() == 0) {
+        cout << endl << "         * IA DeepAI is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        if(depth_in<=2){
+          usleep(delai);
+        }
+        deepAI.play(ptr_engine);
+      } else {
+        cout << endl << "         * IA HeuristicAI is playing *" << endl;
+        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        usleep(delai);
+        HeuristicAI.play(ptr_engine);
+      }
     }
   }
 }

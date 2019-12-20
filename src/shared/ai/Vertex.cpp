@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <iostream>
 #include "Action.h"
+#include <algorithm>
+#include <random>
 
 using namespace ai;
 using namespace engine;
@@ -20,6 +22,9 @@ Vertex::Vertex(state::State& CurrentState){
     this->myAnimals = CurrentState.getPlayer2().getAliveAnimals();
     this->hisAnimals = CurrentState.getPlayer1().getAliveAnimals();
   }
+  auto rng = std::default_random_engine {};
+  std::shuffle(std::begin(this->myAnimals), std::end(this->myAnimals), rng);
+  std::shuffle(std::begin(this->hisAnimals), std::end(this->hisAnimals), rng);
   /*cout << "  Ally team contains   : ";
   for(auto& myAnimal : this->myAnimals){
     cout << myAnimal.getName() << ", ";
@@ -74,6 +79,9 @@ Vertex::Vertex(Vertex* vertex, Action& action):action(action){
       movedAnimal->setCoord(actionDestinationCoord);
       break;
   }
+  auto rng = std::default_random_engine {};
+  std::shuffle(std::begin(this->myAnimals), std::end(this->myAnimals), rng);
+  std::shuffle(std::begin(this->hisAnimals), std::end(this->hisAnimals), rng);
   vertex->addChild(this);
 
   /*cout << "  Ally team contains   : ";

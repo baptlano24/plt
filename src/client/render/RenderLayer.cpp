@@ -100,35 +100,37 @@ void RenderLayer::updateAnimals(){
 
 void RenderLayer::updateHighlights(){
   cout << "{ Réaffichage des cases en surbrillance }"<< endl;
+  this->spritesHighlights.clear();
   std::vector<std::pair<state::Coord,engine::ActionID>> newHighlights = this->renderingState.getHighlights();
-  for (int i = 0; i < 6; i++) {
-      Texture& refTexture = this->texturesInfos[2];
-      this->spritesHighlights.push_back(Sprite {refTexture});
-      this->spritesHighlights[i].setScale(0.3333,0.3333);
-      this->spritesHighlights[i].setPosition(this->gridOrigin.getX() + 73*newHighlights[i].first.getX(),
-                                             this->gridOrigin.getY() + 73*newHighlights[i].first.getY());
-     switch(newHighlights[i].second)
-     {
-       case NONE :
-         this->spritesHighlights[i].setColor(Color(255, 255, 255, 0));
-         break;
-       case SHIFT :
-         this->spritesHighlights[i].setColor(Color(200, 255, 200, 255));
-         break;
-       case ATTACK :
-         this->spritesHighlights[i].setColor(Color(255, 0, 0, 255));
-         break;
-       case JUMP :
-         this->spritesHighlights[i].setColor(Color(255, 255, 180, 255));
-         break;
-       case SHIFT_TRAPPED :
-         this->spritesHighlights[i].setColor(Color(255, 200, 180, 255));
-         break;
-       case SHIFT_VICTORY :
-         this->spritesHighlights[i].setColor(Color(200, 200, 255, 255));
-         break;
-     }
-
+  int index = 0;
+  for(auto& highlight : newHighlights){
+    Texture& refTexture = this->texturesInfos[2];
+    this->spritesHighlights.push_back(Sprite {refTexture});
+    this->spritesHighlights[index].setScale(0.3333,0.3333);
+    this->spritesHighlights[index].setPosition(this->gridOrigin.getX() + 73*highlight.first.getX(),
+                                               this->gridOrigin.getY() + 73*highlight.first.getY());
+    switch(highlight.second)
+    {
+      case NONE :
+      this->spritesHighlights[index].setColor(Color(255, 255, 255, 0));
+      break;
+      case SHIFT :
+      this->spritesHighlights[index].setColor(Color(200, 255, 200, 255));
+      break;
+      case ATTACK :
+      this->spritesHighlights[index].setColor(Color(255, 0, 0, 255));
+      break;
+      case JUMP :
+      this->spritesHighlights[index].setColor(Color(255, 255, 180, 255));
+      break;
+      case SHIFT_TRAPPED :
+      this->spritesHighlights[index].setColor(Color(255, 200, 180, 255));
+      break;
+      case SHIFT_VICTORY :
+      this->spritesHighlights[index].setColor(Color(200, 200, 255, 255));
+      break;
+    }
+    index++;
   }
 }
 
@@ -160,8 +162,8 @@ void RenderLayer::draw(RenderWindow &window) {
   window.clear();
   if (this->renderingState.getMenu() == GAME_MENU){
     window.draw(this->spriteGrid);
-    for(int index = 0; index < 6; index++) {
-      window.draw(this->spritesHighlights[index]);
+    for(auto& sprite : this->spritesHighlights) {
+      window.draw(sprite);
     }
     for(int index = 0; index < 8; index++) {
       window.draw(this->animalsSpriteJ1[index]);
