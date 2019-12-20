@@ -151,6 +151,8 @@ void playerVSplayer(){
     mouseCoord.setY(mouseGridY);
 
     while (window.pollEvent(event)){
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+          engine.undo();
       if (event.type == Event::Closed){
         window.close();
       }
@@ -271,7 +273,6 @@ void noviceVSplayer(){
   RenderLayer* ptr_stateLayer = &stateLayer;
   NoviceAI noviceAI0(0);
 
-
   stateLayer.registerObserver(ptr_engine);
   engine.getState().registerObserver(ptr_stateLayer);
   stateLayer.draw(window);
@@ -309,6 +310,8 @@ void noviceVSplayer(){
     mouseCoord.setY(mouseGridY);
 
     while (window.pollEvent(event)){
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+          engine.undo();
       if (event.type == Event::Closed){
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {
@@ -593,9 +596,7 @@ void deepVSplayer(int depth_in){
 
     while (window.pollEvent(event)){
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-        {
           engine.undo();
-        }
       if (event.type == Event::Closed){
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {
