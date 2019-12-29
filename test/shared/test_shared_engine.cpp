@@ -18,6 +18,10 @@ BOOST_AUTO_TEST_CASE(TestEngine)
   Engine engine;
   //Engine* ptr_engine = &engine;
   state::State& ref_state = engine.getState();
+  state::State newState = State("Bob","Bib");
+  engine.addState(newState);
+  engine.undo();
+
 
   //engine.getState().getPlayer1().getAnimals()[7].setCoord(Coord(10,10));
   //engine.getState().getPlayer1().getAnimals()[5].setCoord(Coord(5,5));
