@@ -3,6 +3,7 @@
 #include "Move.h"
 #include <iostream>
 #include <utility>
+#include <json/json.h>
 using namespace std;
 using namespace state;
 using namespace engine;
@@ -11,6 +12,8 @@ using namespace engine;
 Engine::Engine(): currentState(){
   this->switchTurn = 0;
   this->stateHistoric.push_back(this->currentState);
+  Record["length"] = 0;
+  Record["commands"][0] = "";
 }
 
 state::State& Engine::getState(){
@@ -42,6 +45,15 @@ void Engine::undo (){
 
 }
 
+
+void Engine::setEnableRecord(bool enableRecord){
+    this->enableRecord = enableRecord;
+}
+
+Json::Value Engine::getRecord()
+{
+	return Record;
+}
 
 void Engine::addState (state::State newState){
   this->stateHistoric.push_back(newState);

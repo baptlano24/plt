@@ -2,13 +2,24 @@
 #include "engine.h"
 #include "Order.h"
 #include "Move.h"
+#include <json/json.h>
 #include <iostream>
 using namespace std;
 using namespace state;
 using namespace engine;
 
+
+
 Move::Move(state::Animal* targetAnimal, state::Coord& targetCoord): targetAnimal(targetAnimal),targetCoord(targetCoord){}
 
+Json::Value Move::serialize (){
+  Json::Value newCommand;
+	newCommand["animal"] = targetAnimal;
+  newCommand["xDestination"] = targetCoord.getX();
+  newCommand["yDestination"] = targetCoord.getY();
+
+	return newCommand;
+}
 void engine::Move::execute(engine::Engine* engine)
 {
   State& state = engine->getState();

@@ -99,7 +99,7 @@ if(${MACHINE_ENSEA})
 endif()
 find_package(SFML 2 COMPONENTS graphics network window system)
 if(NOT ${MACHINE_ENSEA})
-  set(SFML_LIBRARIES sfml-graphics sfml-network sfml-window sfml-system)
+  set(SFML_LIBRARIES sfml-graphics sfml-network sfml-audio sfml-window sfml-system)
 endif()
 
 # Find library libmicrohttpd
@@ -109,7 +109,7 @@ find_library(
   DOC "microhttpd library"
 )
 
-# Add source subdirectories
+# Add source subdirectories
 add_subdirectory(src/shared)
 add_subdirectory(src/client)
 #add_subdirectory(src/server)
@@ -127,4 +127,3 @@ if(BUILD_TESTING)
 endif()
 
 # vim: set sw=2 sts=2 et:
-
