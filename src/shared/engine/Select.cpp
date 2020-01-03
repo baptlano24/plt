@@ -12,6 +12,14 @@ Select::Select(Animal* targetAnimal, Coord& targetCoord):targetAnimal(targetAnim
     this->ID = SELECT;
     this->player = 0;
 }
+Json::Value Select::serialize (){
+  Json::Value newCommand;
+  newCommand["animal"] = targetAnimal;
+  newCommand["xDestination"] = targetCoord.getX();
+  newCommand["yDestination"] = targetCoord.getY();
+
+  return newCommand;
+}
 
 void Select::execute(Engine* engine)
 {

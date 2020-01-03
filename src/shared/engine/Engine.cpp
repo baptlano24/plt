@@ -60,7 +60,33 @@ void Engine::addState (state::State newState){
 }
 
 void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
+
+  if (enableRecord){
+		Json::Value newCmd = ptr_cmd->serialize();
+		Record["commands"][Record["length"].asUInt()] = newCmd;
+		Record["length"] = Record["commands"].asUInt() + 1;
+	}
 	currentOrder[priorite]=move(ptr_cmd);
+}
+
+void Engine::update(){
+
+	map<int, std::unique_ptr<Order>>::iterator it;
+
+	for(size_t i=0; i<currentOrder.size();i++){
+
+		if (currentOrder[i]->player == activePlayer){
+      /*appeler soi-même pour le execute ?*/
+			currentOrder[i]->execute(this);
+
+		}
+	}
+	for(it=currentOrder.begin(); it!=currentOrder.end(); it++){
+		currentOrder.erase(it);
+	}
+	currentOrder.clear();
+
+
 }
 
 std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(State& state, Coord& current_square){
