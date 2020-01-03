@@ -119,12 +119,8 @@ double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal, bool maxim
     }
   }
   /****** PARAMETERS ******/
-
-
   Coord myCoord = myAnimal->getCoord();
   Coord hisCoord;
-
-
 
   int distancePrey;
   int distancePredator;
@@ -135,7 +131,7 @@ double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal, bool maxim
 
   double preyScore = 0;
   double predatorScore = 0;
-  double objectifScore = 1000/(distanceObjectif+0.0001);
+  double objectifScore = 1000/(distanceObjectif+0.1);
   /****** END PARAMETERS ******/
 
   for (auto& hisAnimal : *hisAnimals){
@@ -144,7 +140,7 @@ double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal, bool maxim
     distanceEnnemyWin = getDistance(hisObjective, hisCoord);
     if( hisAnimalID <= myAnimalID || (hisAnimalID==ELEPHANT && myAnimalID==RAT) || this->map->at(hisCoord.getX())[hisCoord.getY()].getID() == TRAPJ2 ){
       distancePrey = getDistance(myCoord, hisCoord);
-      preyScore += exp(-distancePrey/5+2.5)*hisAnimal.getID();
+      preyScore += exp(-distancePrey/5+2.5)*hisAnimal.getID()/(distanceEnnemyWin+0.1);
     } else if( hisAnimalID >= myAnimalID || (hisAnimal.getID()==RAT && myAnimalID==ELEPHANT) || this->map->at(myCoord.getX())[myCoord.getY()].getID() == TRAPJ1 ){
       distancePredator = getDistance(myCoord, hisCoord);
       predatorScore += (-200)*exp(-distancePredator/2);

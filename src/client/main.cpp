@@ -102,6 +102,8 @@ int main(int argc,char* argv[1]) {
     cout << "-->  hVSh   - jouer ordinateur heuristique contre ordinateur heuristique" << endl;
     cout << "-->  hVSp   - jouer ordinateur heuristique contre joueur" << endl;
     cout << "-->  dVSp N - jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre joueur" << endl;
+    cout << "-->  dVSd N - jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre ordinateur avancé" << endl;
+    cout << "-->  hVSd N - jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre ordinateur heuristique" << endl;
   }
   return 0;
 }
@@ -660,10 +662,16 @@ void deepVSdeep(int depth_inJ1, int depth_inJ2){
       if(engine.getState().getPlaying() == 0) {
         cout << endl << "         * IA DeepAI0 is playing *" << endl;
         cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        if(depth_inJ1<=2){
+          usleep(delai);
+        }
         deepAI0.play(ptr_engine);
       } else {
         cout << endl << "         * IA DeepAI1 is playing *" << endl;
         cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        if(depth_inJ2<=2){
+          usleep(delai);
+        }
         deepAI1.play(ptr_engine);
       }
     }
