@@ -24,6 +24,7 @@ Json::Value Move::serialize (){
 
 	return newCommand;
 }
+
 void engine::Move::execute(engine::Engine* engine)
 {
   State& state = engine->getState();

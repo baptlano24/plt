@@ -12,6 +12,7 @@ Select::Select(Animal* targetAnimal, Coord& targetCoord, bool player):targetAnim
     this->ID = SELECT;
     this->player = player;
 }
+
 Json::Value Select::serialize (){
   Json::Value newCommand;
   cout << endl << "select" << endl;
