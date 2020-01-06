@@ -10,11 +10,15 @@ using namespace engine;
 
 
 
-Move::Move(state::Animal* targetAnimal, state::Coord& targetCoord): targetAnimal(targetAnimal),targetCoord(targetCoord){}
+Move::Move(state::Animal* targetAnimal, state::Coord& targetCoord, bool player): targetAnimal(targetAnimal),targetCoord(targetCoord){
+  this->ID = MOVE;
+  this->player = player;
+}
 
 Json::Value Move::serialize (){
   Json::Value newCommand;
-	newCommand["animal"] = targetAnimal;
+	/*newCommand["animal"] = (int)targetAnimal;*/
+  cout << endl << "Move" << endl;
   newCommand["xDestination"] = targetCoord.getX();
   newCommand["yDestination"] = targetCoord.getY();
 

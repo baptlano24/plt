@@ -8,15 +8,16 @@ using namespace state;
 using namespace engine;
 
 
-Select::Select(Animal* targetAnimal, Coord& targetCoord):targetAnimal(targetAnimal), targetCoord(targetCoord){
+Select::Select(Animal* targetAnimal, Coord& targetCoord, bool player):targetAnimal(targetAnimal), targetCoord(targetCoord){
     this->ID = SELECT;
-    this->player = 0;
+    this->player = player;
 }
 Json::Value Select::serialize (){
   Json::Value newCommand;
-  newCommand["animal"] = targetAnimal;
-  newCommand["xDestination"] = targetCoord.getX();
-  newCommand["yDestination"] = targetCoord.getY();
+  cout << endl << "select" << endl;
+  /*newCommand["animal"] = targetAnimal;*/
+  /*newCommand["xDestination"] = (int)targetCoord.getX();
+  /*newCommand["yDestination"] = (int)targetCoord.getY();*/
 
   return newCommand;
 }

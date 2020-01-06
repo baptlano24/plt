@@ -12,7 +12,8 @@ using namespace engine;
 Engine::Engine(): currentState(){
   this->switchTurn = 0;
   this->stateHistoric.push_back(this->currentState);
-  Record["length"] = 0;
+  this->activePlayer = this->currentState.getPlaying();
+  Record["length"] = (int)0;
   Record["commands"][0] = "";
 }
 
@@ -54,6 +55,9 @@ Json::Value Engine::getRecord()
 {
 	return Record;
 }
+bool Engine::getEnableRecord() {
+  return enableRecord;
+}
 
 void Engine::addState (state::State newState){
   this->stateHistoric.push_back(newState);
@@ -62,9 +66,14 @@ void Engine::addState (state::State newState){
 void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 
   if (enableRecord){
+    cout << endl << "record" << endl;
 		Json::Value newCmd = ptr_cmd->serialize();
+
+    cout << endl << "serialize!" << endl;
 		Record["commands"][Record["length"].asUInt()] = newCmd;
-		Record["length"] = Record["commands"].asUInt() + 1;
+    cout << endl << "newCmd!" << endl;
+		Record["length"] = Record["length"].asUInt() + 1;
+    cout << endl << "new length!" << endl;
 	}
 	currentOrder[priorite]=move(ptr_cmd);
 }
@@ -73,19 +82,24 @@ void Engine::update(){
 
 	map<int, std::unique_ptr<Order>>::iterator it;
 
-	for(size_t i=0; i<currentOrder.size();i++){
-
-		if (currentOrder[i]->player == activePlayer){
+  for(auto& order : currentOrder){
+		if (order.second->player == activePlayer){
+      cout << endl << "good player : "<< activePlayer << endl;
+      cout << endl << "order key : "<< order.first << endl;
       /*appeler soi-même pour le execute ?*/
-			currentOrder[i]->execute(this);
+			order.second->execute(this);
 
 		}
-	}
-	for(it=currentOrder.begin(); it!=currentOrder.end(); it++){
-		currentOrder.erase(it);
-	}
-	currentOrder.clear();
+    cout << endl << "execute done" << endl;
+  }
 
+	for(it=currentOrder.begin(); it!=currentOrder.end(); it++){
+
+		currentOrder.erase(it);
+    cout << endl << "extermination" << endl;
+	}
+	this->currentOrder.clear();
+  cout << endl << "extermination2" << endl;
 
 }
 

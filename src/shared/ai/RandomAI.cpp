@@ -31,7 +31,7 @@ void RandomAI::play(Engine* engine) {
     cout << "Selection IA:" << endl;
     pair<Animal*, int> selectionIA = this->selectRandomAnimal(engine);
     selectedAnimal = selectionIA.first;
-    Select selectIA(selectedAnimal, selectedAnimal->getCoord());
+    Select selectIA(selectedAnimal, selectedAnimal->getCoord(), this->color);
     selectIA.execute(engine);
     engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
     animalSelectedIA = true;
@@ -42,7 +42,7 @@ void RandomAI::play(Engine* engine) {
     pair<Coord,ActionID> randAction = this->randomAction(engine, selectedAnimal->getCoord());
     targetCoord.setX(randAction.first.getX());
     targetCoord.setY(randAction.first.getY());
-    Move moveIA(selectedAnimal, refTargetCoord);
+    Move moveIA(selectedAnimal, refTargetCoord, this->color);
     moveIA.execute(engine);
 
     engine->getState().notifyObservers(refAnimalChangedEvent, engine->getState());

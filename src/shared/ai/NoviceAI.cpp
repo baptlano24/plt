@@ -34,7 +34,7 @@ void NoviceAI::play(engine::Engine* engine) {
     cout << "Selection IA:" << endl;
     pair<Animal*, int> selectionIA = this->selectAnimal(engine);
     selectedAnimal = selectionIA.first;
-    Select selectIA(selectedAnimal, selectedAnimal->getCoord());
+    Select selectIA(selectedAnimal, selectedAnimal->getCoord(), this->color);
     selectIA.execute(engine);
     engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
     animalSelectedIA = true;
@@ -45,7 +45,7 @@ void NoviceAI::play(engine::Engine* engine) {
     std::pair<state::Coord,engine::ActionID> action = this->selectAction(engine, selectedAnimal->getCoord());
     targetCoord.setX(action.first.getX());
     targetCoord.setY(action.first.getY());
-    engine::Move moveIA(selectedAnimal, refTargetCoord);
+    engine::Move moveIA(selectedAnimal, refTargetCoord, this->color);
     moveIA.execute(engine);
 
     engine->getState().notifyObservers(refAnimalChangedEvent, engine->getState());

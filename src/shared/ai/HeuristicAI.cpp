@@ -2,6 +2,8 @@
 #include "HeuristicAI.h"
 #include "RandomAI.h"
 #include "engine.h"
+
+
 #include <unistd.h>
 #include <iostream>
 #include <math.h>
@@ -33,8 +35,13 @@ void HeuristicAI::play(engine::Engine* engine) {
   if (animalSelectedIA == false) {
     pair<Animal*, int> selectionIA = this->selectAnimal(engine);
     selectedAnimal = selectionIA.first;
-    Select selectIA(selectedAnimal, selectedAnimal->getCoord());
-    selectIA.execute(engine);
+    engine::Select selectIA(selectedAnimal, selectedAnimal->getCoord(), this->color);
+    unique_ptr<Order> ptr_slc (&selectIA);
+    if(engine->getEnableRecord() == true){
+      engine->addOrder(1,move(ptr_slc));
+    }
+    //selectIA.execute(engine);
+    engine->update();
     engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
     animalSelectedIA = true;
   }
@@ -44,8 +51,13 @@ void HeuristicAI::play(engine::Engine* engine) {
     std::pair<state::Coord,engine::ActionID> action = this->selectAction(engine, selectedAnimal->getCoord());
     targetCoord.setX(action.first.getX());
     targetCoord.setY(action.first.getY());
-    engine::Move moveIA(selectedAnimal, refTargetCoord);
-    moveIA.execute(engine);
+    engine::Move moveIA(selectedAnimal, refTargetCoord, this->color);
+    unique_ptr<Order> ptr_move (&moveIA);
+    if(engine->getEnableRecord() == true){
+      engine->addOrder(2,move(ptr_move));
+    }
+    engine->update();
+    /*moveIA.execute(engine);*/
     cout << "               [State score after  : " << calculateScoreState(engine->getState(), this->color) << " ]" << endl;
 
     engine->getState().notifyObservers(refAnimalChangedEvent, engine->getState());

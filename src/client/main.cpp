@@ -167,7 +167,7 @@ void playerVSplayer(){
           pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
           selectedAnimal = selection.first;
           if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
-            Select select1(selectedAnimal, mouseCoord);
+            Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
             select1.execute(ptr_engine);
             StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
             StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
@@ -182,7 +182,7 @@ void playerVSplayer(){
           newY = mouseGridY;
           targetCoord.setX(newX);
           targetCoord.setY(newY);
-          Move move1(selectedAnimal, refTargetCoord);
+          Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
           move1.execute(ptr_engine);
           engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
           engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
@@ -324,7 +324,7 @@ void noviceVSplayer(){
           pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
           selectedAnimal = selection.first;
           if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
-            Select select1(selectedAnimal, mouseCoord);
+            Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
             select1.execute(ptr_engine);
             StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
             StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
@@ -339,7 +339,7 @@ void noviceVSplayer(){
           newY = mouseGridY;
           targetCoord.setX(newX);
           targetCoord.setY(newY);
-          Move move1(selectedAnimal, refTargetCoord);
+          Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
           move1.execute(ptr_engine);
           engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
           engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
@@ -525,7 +525,7 @@ void heuristicVSplayer(){
           pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
           selectedAnimal = selection.first;
           if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
-            Select select1(selectedAnimal, mouseCoord);
+            Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
             select1.execute(ptr_engine);
             StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
             StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
@@ -539,7 +539,7 @@ void heuristicVSplayer(){
           newY = mouseGridY;
           targetCoord.setX(newX);
           targetCoord.setY(newY);
-          Move move1(selectedAnimal, refTargetCoord);
+          Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
           move1.execute(ptr_engine);
           engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
           engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
@@ -607,7 +607,7 @@ void deepVSplayer(int depth_in){
           pair<Animal*, int> selection = state.getSelection(mouseCoord);
           selectedAnimal = selection.first;
           if (selection.first != 0 && state.getPlaying() == selection.second){
-            Select select1(selectedAnimal, mouseCoord);
+            Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
             select1.execute(ptr_engine);
             animalSelected = true;
           }
@@ -618,7 +618,7 @@ void deepVSplayer(int depth_in){
           newY = mouseGridY;
           targetCoord.setX(newX);
           targetCoord.setY(newY);
-          Move move1(selectedAnimal, refTargetCoord);
+          Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
           move1.execute(ptr_engine);
           animalSelected = false;
           cout << "-- End of the move --" << endl;

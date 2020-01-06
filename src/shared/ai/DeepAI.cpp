@@ -37,7 +37,7 @@ void DeepAI::play(engine::Engine* engine) {
   Coord selectedCoord = bestAction.getCoord();
 
   cout << "\033[1;33m  DeepIA (niveau " << depth << ") : I decide to move my " << selectedAnimal->getName() << " from (" << selectedAnimal->getCoord().getX() << "," << selectedAnimal->getCoord().getY() << ") to (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << "\033[0m"<< endl;
-  Move moveDeepIA(selectedAnimal,selectedCoord);
+  Move moveDeepIA(selectedAnimal,selectedCoord,this->color);
   moveDeepIA.execute(engine);
 }
 
