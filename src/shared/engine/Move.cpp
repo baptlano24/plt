@@ -19,6 +19,9 @@ Json::Value Move::serialize (){
   Json::Value newCommand;
 	/*newCommand["animal"] = (int)targetAnimal;*/
   cout << endl << "Move" << endl;
+  newCommand["player"] = player;
+  newCommand["orderID"] = getOrderID();
+  newCommand["animalID"] = targetAnimal->getID();
   newCommand["xDestination"] = targetCoord.getX();
   newCommand["yDestination"] = targetCoord.getY();
 

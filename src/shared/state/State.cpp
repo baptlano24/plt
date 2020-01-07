@@ -133,3 +133,18 @@ pair<Animal*, int> State::getSelection(Coord coord)
   }
   return selection;
 }
+
+Animal* State::getAnimal(int id, bool player)
+{
+  if (player == 0){
+    for (int i = 0; i<=7 ;i++) {
+      if (this->player1.getAnimals()[i].getID() == id){
+        return(&this->player1.getAnimals()[i]);
+      }
+    }
+  }else{
+    for (int i = 0; i<=7 ;i++) {
+      if (this->player2.getAnimals()[i].getID() == id){
+        return(&this->player2.getAnimals()[i]);
+      }
+}}}

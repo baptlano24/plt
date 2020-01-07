@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string> //pour utiliser string::compare
 #include <utility>
 #include <unistd.h>
@@ -27,6 +28,7 @@ void noviceVSplayer();
 void heuristicVSnovice();
 void heuristicVSheuristic();
 void heuristicVSplayer();
+void playRecord();
 void deepVSplayer(int depth_in);
 void deepVSdeep(int depth_inJ1, int depth_inJ2);
 void heuristicVSdeep(int depth_inJ);
@@ -50,6 +52,8 @@ int main(int argc,char* argv[1]) {
     heuristicVSnovice();
   } else if (argc>=2 && string(argv[1])=="hVSh") {
     heuristicVSheuristic();
+  } else if (argc>=2 && string(argv[1])=="play") {
+    playRecord();
   } else if (argc>=2 && string(argv[1])=="hVSp") {
     heuristicVSplayer();
   } else if (argc>=2 && string(argv[1])=="dVSp") {
@@ -719,3 +723,71 @@ void heuristicVSdeep(int depth_in){
     }
   }
 }
+
+void playRecord(){
+  Json::Value root;
+  std::string commandsPath = "../res/replay.txt";
+  Engine engine;
+  Engine* ptr_engine = &engine;
+  sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
+  RenderLayer stateLayer(engine.getState(), window);
+  RenderLayer* ptr_stateLayer = &stateLayer;
+  stateLayer.registerObserver(ptr_engine);
+  engine.getState().registerObserver(ptr_stateLayer);
+  stateLayer.draw(window);
+  StateEvent animalChangedEvent(ANIMALS_CHANGED);
+  StateEvent& refAnimalChangedEvent = animalChangedEvent;
+  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
+  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
+  StateEvent infosChangedEvent(INFOS_CHANGED);
+  StateEvent& refInfosChangedEvent = infosChangedEvent;
+
+  while (window.isOpen()){
+    std::ifstream commandsFile(commandsPath);
+    if (commandsFile){
+      Json::Value root;
+      Json::Reader reader;
+      if (!reader.parse(commandsFile, root)){
+          cout << "Failed to parse commands\n"
+               << reader.getFormattedErrorMessages();
+        break;
+      }
+      commandsFile.close();
+      Coord Coord(0, 0);
+      for (unsigned int i = 0; i < root["commands"].size(); i++)
+      {
+          if (root["commands"][i]["orderID"].asUInt() == engine::MOVE)
+          {
+
+              Coord.setX(root["commands"][i]["xDestination"].asUInt());
+              Coord.setY(root["commands"][i]["yDestination"].asUInt());
+              int id = root["commands"][i]["animalID"].asUInt();
+              bool player = root["commands"][i]["animalID"].asBool();
+              //state::Animal* targetAnimal, state::Coord& targetCoord, bool player
+              engine::Move Move(engine.getState().getAnimal(id,player),Coord,player);
+              engine::Order* ptr_move = &Move;
+              engine.addOrder(1,move(ptr_move));
+              engine.update();
+              usleep(delai);
+              engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
+              engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
+              engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
+          }
+          // Cas de l'attaque
+          else if (root["commands"][i]["orderID"].asUInt() == engine::SELECT)
+          {
+            Coord.setX(root["commands"][i]["xDestination"].asUInt());
+            Coord.setY(root["commands"][i]["yDestination"].asUInt());
+            int id = root["commands"][i]["animalID"].asUInt();
+            bool player = root["commands"][i]["animalID"].asBool();
+            //state::Animal* targetAnimal, state::Coord& targetCoord, bool player
+            engine::Select Select(engine.getState().getAnimal(id,player),Coord,player);
+            engine::Order* ptr_slc = &Select;
+            engine.addOrder(0,move(ptr_slc));
+            engine.update();
+            usleep(delai);
+            engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
+          }
+        } break;
+
+}}}
