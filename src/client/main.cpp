@@ -11,6 +11,7 @@
 #include <engine.h>
 #include "engine.h"
 #include "ai.h"
+#include <thread>
 using namespace std;
 using namespace state;
 using namespace sf;
@@ -685,7 +686,7 @@ void heuristicVSdeep(int depth_in){
   RenderLayer stateLayer(engine.getState(), window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   DeepAI deepAI(0, ptr_engine, depth_in);
-  HeuristicAI HeuristicAI(1);
+  HeuristicAI heuristicAI(1);
 
   stateLayer.registerObserver(ptr_engine);
   engine.getState().registerObserver(ptr_stateLayer);
@@ -706,12 +707,14 @@ void heuristicVSdeep(int depth_in){
         if(depth_in<=2){
           usleep(delai);
         }
-        deepAI.play(ptr_engine);
+        std::thread t1(&DeepAI::play, deepAI, ptr_engine);
+        t1.join();
       } else {
         cout << endl << "         * IA HeuristicAI is playing *" << endl;
         cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
         usleep(delai);
-        HeuristicAI.play(ptr_engine);
+        std::thread t2(&HeuristicAI::play, heuristicAI, ptr_engine);
+        t2.join();
       }
     }
   }

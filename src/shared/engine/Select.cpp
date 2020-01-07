@@ -16,7 +16,7 @@ Select::Select(Animal* targetAnimal, Coord& targetCoord, bool player):targetAnim
 Json::Value Select::serialize (){
   Json::Value newCommand;
   cout << endl << "select" << endl;
-  /*newCommand["animal"] = targetAnimal;*/
+  /*newCommand["animal"] = targetAnimal.getName();*/
   /*newCommand["xDestination"] = (int)targetCoord.getX();
   /*newCommand["yDestination"] = (int)targetCoord.getY();*/
 

@@ -95,8 +95,8 @@ void recordheuristicVSheuristic(){
           else{
             cerr << "Impossible d'ouvrir le fichier des commandes enregistrées pour l'ecriture" << endl;
           }
-
+          break;
       }
-    
+
     }
   }

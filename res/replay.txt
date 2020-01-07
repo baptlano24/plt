@@ -1,0 +1,36 @@
+{
+	"commands" : 
+	[
+		null,
+		{
+			"xDestination" : 2,
+			"yDestination" : 1
+		},
+		null,
+		{
+			"xDestination" : 2,
+			"yDestination" : 11
+		},
+		null,
+		{
+			"xDestination" : 9,
+			"yDestination" : 3
+		},
+		null,
+		{
+			"xDestination" : 8,
+			"yDestination" : 12
+		},
+		null,
+		{
+			"xDestination" : 7,
+			"yDestination" : 3
+		},
+		null,
+		{
+			"xDestination" : 4,
+			"yDestination" : 9
+		}
+	],
+	"length" : 12
+}

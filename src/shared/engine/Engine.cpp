@@ -63,7 +63,7 @@ void Engine::addState (state::State newState){
   this->stateHistoric.push_back(newState);
 }
 
-void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
+void Engine::addOrder (int priorite, Order* ptr_cmd){
 
   if (enableRecord){
     cout << endl << "record" << endl;
@@ -75,31 +75,28 @@ void Engine::addOrder (int priorite, std::unique_ptr<Order> ptr_cmd){
 		Record["length"] = Record["length"].asUInt() + 1;
     cout << endl << "new length!" << endl;
 	}
-	currentOrder[priorite]=move(ptr_cmd);
+	currentOrder[priorite] = ptr_cmd;
 }
 
 void Engine::update(){
 
-	map<int, std::unique_ptr<Order>>::iterator it;
+	map<int, Order*>::iterator it;
 
   for(auto& order : currentOrder){
-		if (order.second->player == activePlayer){
       cout << endl << "good player : "<< activePlayer << endl;
       cout << endl << "order key : "<< order.first << endl;
       /*appeler soi-même pour le execute ?*/
 			order.second->execute(this);
-
-		}
-    cout << endl << "execute done" << endl;
+      cout << endl << "execute done" << endl;
   }
 
 	for(it=currentOrder.begin(); it!=currentOrder.end(); it++){
 
 		currentOrder.erase(it);
-    cout << endl << "extermination" << endl;
+    cout << endl << "erase done" << endl;
 	}
 	this->currentOrder.clear();
-  cout << endl << "extermination2" << endl;
+  cout << endl << "clear done" << endl;
 
 }
 

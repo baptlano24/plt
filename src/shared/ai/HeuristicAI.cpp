@@ -36,9 +36,9 @@ void HeuristicAI::play(engine::Engine* engine) {
     pair<Animal*, int> selectionIA = this->selectAnimal(engine);
     selectedAnimal = selectionIA.first;
     engine::Select selectIA(selectedAnimal, selectedAnimal->getCoord(), this->color);
-    unique_ptr<Order> ptr_slc (&selectIA);
+    Order* orderIA = &selectIA;
     if(engine->getEnableRecord() == true){
-      engine->addOrder(1,move(ptr_slc));
+      engine->addOrder(1,orderIA);
     }
     //selectIA.execute(engine);
     engine->update();
@@ -52,9 +52,9 @@ void HeuristicAI::play(engine::Engine* engine) {
     targetCoord.setX(action.first.getX());
     targetCoord.setY(action.first.getY());
     engine::Move moveIA(selectedAnimal, refTargetCoord, this->color);
-    unique_ptr<Order> ptr_move (&moveIA);
+    Order* ptr_move = &moveIA;
     if(engine->getEnableRecord() == true){
-      engine->addOrder(2,move(ptr_move));
+      engine->addOrder(2,ptr_move);
     }
     engine->update();
     /*moveIA.execute(engine);*/
