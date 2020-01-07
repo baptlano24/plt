@@ -76,7 +76,7 @@ void recordheuristicVSheuristic(){
 
         }
       }
-      if(engine.getState().getTurn()> 6) {
+      if(engine.getState().getTurn()> 1) {
         std::ofstream files_writte(files_order, ios::out|ios::trunc);
           if(files_writte){
             cout << "--> Debut de l'enregistrement dans le fichier <--" << endl;

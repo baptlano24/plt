@@ -3,6 +3,7 @@
 #include "Move.h"
 #include <iostream>
 #include <utility>
+#include <unistd.h>
 #include <json/json.h>
 using namespace std;
 using namespace state;
@@ -90,13 +91,14 @@ void Engine::update(){
       cout << endl << "execute done" << endl;
   }
 
-	for(it=currentOrder.begin(); it!=currentOrder.end(); it++){
+	for(auto it=currentOrder.begin(); it!=currentOrder.end(); it++){
 
 		currentOrder.erase(it);
     cout << endl << "erase done" << endl;
 	}
 	this->currentOrder.clear();
   cout << endl << "clear done" << endl;
+
 
 }
 
