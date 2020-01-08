@@ -670,6 +670,8 @@ void deepVSdeep(int depth_inJ1, int depth_inJ2){
         if(depth_inJ1<=2){
           usleep(delai);
         }
+        //std::thread t1(&DeepAI::play, deepAI0, ptr_engine);
+        //t1.join();
         deepAI0.play(ptr_engine);
       } else {
         cout << endl << "         * IA DeepAI1 is playing *" << endl;
@@ -677,6 +679,8 @@ void deepVSdeep(int depth_inJ1, int depth_inJ2){
         if(depth_inJ2<=2){
           usleep(delai);
         }
+        //std::thread t2(&DeepAI::play, deepAI1, ptr_engine);
+        //t2.join();
         deepAI1.play(ptr_engine);
       }
     }
@@ -711,14 +715,16 @@ void heuristicVSdeep(int depth_in){
         if(depth_in<=2){
           usleep(delai);
         }
-        std::thread t1(&DeepAI::play, deepAI, ptr_engine);
-        t1.join();
+        //std::thread t1(&DeepAI::play, deepAI, ptr_engine);
+        //t1.join();
+        deepAI.play(ptr_engine);
       } else {
         cout << endl << "         * IA HeuristicAI is playing *" << endl;
         cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
         usleep(delai);
-        std::thread t2(&HeuristicAI::play, heuristicAI, ptr_engine);
-        t2.join();
+        //std::thread t2(&HeuristicAI::play, heuristicAI, ptr_engine);
+        //t2.join();
+        heuristicAI.play(ptr_engine);
       }
     }
   }

@@ -30,18 +30,18 @@
 			"yDestination" : 10
 		},
 		{
-			"animalID" : 4,
+			"animalID" : 3,
 			"orderID" : 2,
 			"player" : false,
-			"xDestination" : 4,
-			"yDestination" : 2
+			"xDestination" : 3,
+			"yDestination" : 1
 		},
 		{
-			"animalID" : 4,
+			"animalID" : 3,
 			"orderID" : 1,
 			"player" : false,
-			"xDestination" : 5,
-			"yDestination" : 2
+			"xDestination" : 4,
+			"yDestination" : 1
 		},
 		{
 			"animalID" : 7,
