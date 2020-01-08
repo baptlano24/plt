@@ -13,7 +13,7 @@ using namespace engine;
 Engine::Engine(): currentState(){
   this->switchTurn = 0;
   this->stateHistoric.push_back(this->currentState);
-  this->activePlayer = this->currentState.getPlaying();
+  this->activePlayer = this->getState().getPlaying();
   Record["length"] = (int)0;
   Record["commands"][0] = "";
 }
@@ -85,10 +85,13 @@ void Engine::update(){
 
   for(auto& order : currentOrder){
       cout << endl << "good player : "<< activePlayer << endl;
+      cout << endl << "player order :"<< order.second->player <<endl;
       cout << endl << "order key : "<< order.first << endl;
-      /*appeler soi-même pour le execute ?*/
+    /*appeler soi-même pour le execute ?*/
 			order.second->execute(this);
       cout << endl << "execute done" << endl;
+
+
   }
 
 	for(auto it=currentOrder.begin(); it!=currentOrder.end(); it++){

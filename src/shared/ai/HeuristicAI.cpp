@@ -37,9 +37,8 @@ void HeuristicAI::play(engine::Engine* engine) {
     selectedAnimal = selectionIA.first;
     engine::Select selectIA(selectedAnimal, selectedAnimal->getCoord(), this->color);
     Order* orderIA = &selectIA;
-    if(engine->getEnableRecord() == true){
-      engine->addOrder(0,orderIA);
-    }
+    engine->addOrder(0,orderIA);
+    
     //selectIA.execute(engine);
     engine->update();
     engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
@@ -53,9 +52,7 @@ void HeuristicAI::play(engine::Engine* engine) {
     targetCoord.setY(action.first.getY());
     engine::Move moveIA(selectedAnimal, refTargetCoord, this->color);
     Order* ptr_move = &moveIA;
-    if(engine->getEnableRecord() == true){
-      engine->addOrder(1,ptr_move);
-    }
+    engine->addOrder(1,ptr_move);
     engine->update();
     //moveIA.execute(engine);
     cout << "               [State score after  : " << calculateScoreState(engine->getState(), this->color) << " ]" << endl;

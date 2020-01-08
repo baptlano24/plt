@@ -762,7 +762,7 @@ void playRecord(){
               Coord.setX(root["commands"][i]["xDestination"].asUInt());
               Coord.setY(root["commands"][i]["yDestination"].asUInt());
               int id = root["commands"][i]["animalID"].asUInt();
-              bool player = root["commands"][i]["animalID"].asBool();
+              bool player = root["commands"][i]["player"].asBool();
               //state::Animal* targetAnimal, state::Coord& targetCoord, bool player
               engine::Move Move(engine.getState().getAnimal(id,player),Coord,player);
               engine::Order* ptr_move = &Move;
@@ -779,7 +779,7 @@ void playRecord(){
             Coord.setX(root["commands"][i]["xDestination"].asUInt());
             Coord.setY(root["commands"][i]["yDestination"].asUInt());
             int id = root["commands"][i]["animalID"].asUInt();
-            bool player = root["commands"][i]["animalID"].asBool();
+            bool player = root["commands"][i]["player"].asBool();
             //state::Animal* targetAnimal, state::Coord& targetCoord, bool player
             engine::Select Select(engine.getState().getAnimal(id,player),Coord,player);
             engine::Order* ptr_slc = &Select;
