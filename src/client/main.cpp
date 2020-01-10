@@ -33,7 +33,7 @@ void deepVSplayer(int depth_in);
 void deepVSdeep(int depth_inJ1, int depth_inJ2);
 void heuristicVSdeep(int depth_inJ);
 
-int delai = 300000 ; //temps de jeu des IA en micro seconde
+int delai = 300000 ; //temps de jeu minimum des IA en micro seconde
 
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
@@ -138,16 +138,6 @@ void playerVSplayer(){
   bool animalSelected = false;
   Animal* selectedAnimal;
 
-  StateEvent animalChangedEvent(ANIMALS_CHANGED);
-  StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  StateEvent infosChangedEvent(INFOS_CHANGED);
-  StateEvent& refInfosChangedEvent = infosChangedEvent;
-  engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
-  engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
-  engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
-
   while (window.isOpen()){
     Event event;
     mouseX = Mouse::getPosition(window).x;
@@ -175,14 +165,13 @@ void playerVSplayer(){
           selectedAnimal = selection.first;
           if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
             Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
-            select1.execute(ptr_engine);
-            StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-            StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-            engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
+            Order* ptr_move = &select1;
+            engine.addOrder(2,ptr_move);
+            engine.update();
             animalSelected = true;
           }
 
-        } else if ((animalSelected == true)) {
+        } else if (animalSelected == true) {
           cout << "-- Beginning of the player move --" << endl;
           cout << "Animal selected id: " << selectedAnimal->getID() << endl;
           newX = mouseGridX;
@@ -190,10 +179,9 @@ void playerVSplayer(){
           targetCoord.setX(newX);
           targetCoord.setY(newY);
           Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
-          move1.execute(ptr_engine);
-          engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
-          engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
-          engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
+          Order* ptr_move = &move1;
+          engine.addOrder(1,ptr_move);
+          engine.update();
           animalSelected = false;
           cout << "-- End of the move --" << endl;
         }
@@ -297,16 +285,6 @@ void noviceVSplayer(){
   bool animalSelected = false;
   Animal* selectedAnimal;
 
-  StateEvent animalChangedEvent(ANIMALS_CHANGED);
-  StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  StateEvent infosChangedEvent(INFOS_CHANGED);
-  StateEvent& refInfosChangedEvent = infosChangedEvent;
-  engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
-  engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
-  engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
-
   while (window.isOpen()){
     Event event;
     mouseX = Mouse::getPosition(window).x;
@@ -332,10 +310,9 @@ void noviceVSplayer(){
           selectedAnimal = selection.first;
           if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
             Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
-            select1.execute(ptr_engine);
-            StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-            StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-            engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
+            Order* ptr_move = &select1;
+            engine.addOrder(2,ptr_move);
+            engine.update();
             animalSelected = true;
           }
 
@@ -347,10 +324,9 @@ void noviceVSplayer(){
           targetCoord.setX(newX);
           targetCoord.setY(newY);
           Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
-          move1.execute(ptr_engine);
-          engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
-          engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
-          engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
+          Order* ptr_move = &move1;
+          engine.addOrder(1,ptr_move);
+          engine.update();
           animalSelected = false;
           cout << "-- End of the move --" << endl;
         }
@@ -501,16 +477,6 @@ void heuristicVSplayer(){
   bool animalSelected = false;
   Animal* selectedAnimal;
 
-  StateEvent animalChangedEvent(ANIMALS_CHANGED);
-  StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  StateEvent infosChangedEvent(INFOS_CHANGED);
-  StateEvent& refInfosChangedEvent = infosChangedEvent;
-  engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
-  engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
-  engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
-
   while (window.isOpen()){
     Event event;
     mouseX = Mouse::getPosition(window).x;
@@ -525,7 +491,6 @@ void heuristicVSplayer(){
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {
         cout << endl << "         * Clic *" << endl;
-        engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
         if (animalSelected == false && engine.getState().getGameover() != true && engine.getState().getPlaying() == 0) {
           cout << " Mouse clic pixel event : " << mouseX << " , "<< mouseY << endl;
           cout << " Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl;
@@ -533,10 +498,9 @@ void heuristicVSplayer(){
           selectedAnimal = selection.first;
           if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
             Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
-            select1.execute(ptr_engine);
-            StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-            StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-            engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
+            Order* ptr_move = &select1;
+            engine.addOrder(2,ptr_move);
+            engine.update();
             animalSelected = true;
           }
 
@@ -547,10 +511,9 @@ void heuristicVSplayer(){
           targetCoord.setX(newX);
           targetCoord.setY(newY);
           Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
-          move1.execute(ptr_engine);
-          engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
-          engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
-          engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
+          Order* ptr_move = &move1;
+          engine.addOrder(1,ptr_move);
+          engine.update();
           animalSelected = false;
           cout << "-- End of the move --" << endl;
         }
@@ -741,12 +704,6 @@ void playRecord(){
   stateLayer.registerObserver(ptr_engine);
   engine.getState().registerObserver(ptr_stateLayer);
   stateLayer.draw(window);
-  StateEvent animalChangedEvent(ANIMALS_CHANGED);
-  StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  StateEvent infosChangedEvent(INFOS_CHANGED);
-  StateEvent& refInfosChangedEvent = infosChangedEvent;
 
   while (window.isOpen()){
     std::ifstream commandsFile(commandsPath);
@@ -769,15 +726,13 @@ void playRecord(){
               Coord.setY(root["commands"][i]["yDestination"].asUInt());
               int id = root["commands"][i]["animalID"].asUInt();
               bool player = root["commands"][i]["player"].asBool();
-              //state::Animal* targetAnimal, state::Coord& targetCoord, bool player
+
               engine::Move Move(engine.getState().getAnimal(id,player),Coord,player);
               engine::Order* ptr_move = &Move;
               engine.addOrder(1,move(ptr_move));
               engine.update();
               usleep(delai);
-              engine.getState().notifyObservers(refAnimalChangedEvent, engine.getState());
-              engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
-              engine.getState().notifyObservers(refInfosChangedEvent, engine.getState());
+
           }
           // Cas de l'attaque
           else if (root["commands"][i]["orderID"].asUInt() == engine::SELECT)
@@ -786,13 +741,11 @@ void playRecord(){
             Coord.setY(root["commands"][i]["yDestination"].asUInt());
             int id = root["commands"][i]["animalID"].asUInt();
             bool player = root["commands"][i]["player"].asBool();
-            //state::Animal* targetAnimal, state::Coord& targetCoord, bool player
             engine::Select Select(engine.getState().getAnimal(id,player),Coord,player);
             engine::Order* ptr_slc = &Select;
             engine.addOrder(0,move(ptr_slc));
             engine.update();
             usleep(delai);
-            engine.getState().notifyObservers(refHighlightsChangedEvent, engine.getState());
           }
         } break;
 

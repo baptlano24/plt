@@ -6,3 +6,5 @@ src/*/*.h
 src/*/*/*.h
 .idea
 *.autosave
+
+res/replay.txt

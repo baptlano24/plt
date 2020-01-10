@@ -31,14 +31,19 @@ void DeepAI::play(engine::Engine* engine) {
 
   cout << "\033[1;35m   DeepAI building the tree... \033[0m" << endl;
   Vertex parentVertex(state);
-
+  double max = std::numeric_limits<double>::max();
+  double min = -max;
+  //Action bestAction = minmaxAlphabeta(&parentVertex, depth, true, depth, min, max);
   Action bestAction = minmax(&parentVertex, depth, true, depth);
   Animal* selectedAnimal = state.getSelection(bestAction.getAnimal().getCoord()).first;
   Coord selectedCoord = bestAction.getCoord();
 
   cout << "\033[1;33m  DeepIA (niveau " << depth << ") : I decide to move my " << selectedAnimal->getName() << " from (" << selectedAnimal->getCoord().getX() << "," << selectedAnimal->getCoord().getY() << ") to (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << "\033[0m"<< endl;
-  Move moveDeepIA(selectedAnimal,selectedCoord,this->color);
-  moveDeepIA.execute(engine);
+
+  engine::Move moveIA(selectedAnimal, selectedCoord, this->color);
+  Order* ptr_move = &moveIA;
+  engine->addOrder(1,ptr_move);
+  engine->update();
 }
 
 Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDepth){
@@ -81,6 +86,85 @@ Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDept
       }
       return action_vertex;
     }
+  }
+
+}
+
+Action DeepAI::minmaxAlphabeta (Vertex* vertex, int depth, bool maximizing, int totalDepth, double alpha, double beta){
+  cout << endl <<"---Profondeur " << depth << " avec ab["<< alpha <<" ,"<< beta <<"]"<< endl;
+  if (depth == 0){
+    calculateVertexScore(vertex, maximizing);
+    cout << "     return score " << vertex->getAction().getScore() << endl;
+    return vertex->getAction();
+  } else if (depth == totalDepth){
+    cout << "ab1" << endl;
+    std::vector<Action> listActions = enumerateActions(vertex);
+    double max = std::numeric_limits<double>::max();
+    Action action_vertex = vertex->getAction();
+    action_vertex.setScore(-max);
+    for(auto action : listActions){
+      cout << "ab2" << endl;
+      Vertex child = Vertex(vertex, action);
+      Action action_minmax = DeepAI::minmaxAlphabeta(&child,depth-1,false,totalDepth, alpha, beta);
+      cout << " action_minmax MAX:" << action_minmax.getScore() << endl;
+      cout << "\033[1;32m   -team "<< vertex->getPlaying() <<" with " << action_minmax.getAnimal().getName() << " (" << action_minmax.getAnimal().getCoord().getX() << "," << action_minmax.getAnimal().getCoord().getY() << ") go in (" << action_minmax.getCoord().getX() << "," << action_minmax.getCoord().getY() << ") to ID "<< action_minmax.getId() <<" with score "<< action_minmax.getScore() << "\033[0m" << endl;
+      cout << " action_vertex    :" << action_vertex.getScore() << endl;
+      action_vertex = DeepAI::max(action_vertex, action_minmax);
+      if(action_vertex.getScore() >= beta){
+        cout << "ab3" << endl;
+        cout << "ELAGAGE" << endl;
+        return action_vertex;
+      }
+      alpha = std::max(alpha, action_vertex.getScore());
+      cout << "Modification de alpha:" << alpha << endl;
+    }
+    cout << "ab4" << endl;
+    return action_vertex;
+  } else {
+    cout << "ab5" << endl;
+    std::vector<Action> listActions = enumerateActions(vertex);
+    double max = std::numeric_limits<double>::max();
+    Action action_vertex = vertex->getAction();
+    if(maximizing){
+      cout << "ab6 maximise" << endl;
+      action_vertex.setScore(-max);
+      for(auto action : listActions){
+        Vertex child = Vertex(vertex, action);
+        Action action_minmax = DeepAI::minmaxAlphabeta(&child,depth-1,false,totalDepth, alpha, beta);
+        cout << "   action_minmax MAX:" << action_minmax.getScore() << endl;
+        double max_score = DeepAI::max(action_vertex, action_minmax).getScore();
+        cout << "   action_vertex    :" << action_vertex.getScore() << endl;
+        cout << "  maxscore:" << max_score << endl;
+        if(max_score >= beta){
+          cout << "ELAGAGE" << endl;
+          action_vertex.setScore(max_score);
+          return action_vertex;
+        }
+        alpha = std::max(alpha, max_score);
+        cout << "Modification de alpha:" << alpha << endl;
+      }
+    } else {
+      cout << "ab6 minimise" << endl;
+      action_vertex.setScore(max);
+      for(auto action : listActions){
+        Vertex child = Vertex(vertex, action);
+        Action action_minmax = DeepAI::minmaxAlphabeta(&child,depth-1,true,totalDepth, alpha, beta);
+        cout << "   action_minmax MIN:" << action_minmax.getScore() << endl;
+        double min_score = DeepAI::min(action_vertex, action_minmax).getScore();
+        cout << "   action_vertex    :" << action_vertex.getScore() << endl;
+        cout << "  minscore:" << min_score << endl;
+        if (alpha >= min_score){
+          cout << "ab7" << endl;
+          cout << "ELAGAGE" << endl;
+          action_vertex.setScore(min_score);
+          return action_vertex;
+        }
+        beta = std::min(beta,min_score);
+        cout << "Modification de beta:" << beta << endl;
+      }
+      cout << "ab8" << endl;
+    }
+    return action_vertex;
   }
 }
 
@@ -147,7 +231,7 @@ double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal, bool maxim
     }
   }
 
-  double totalScore = preyScore + objectifScore + predatorScore;
+  double totalScore = preyScore + objectifScore + predatorScore + rand() % 10;
   return totalScore;
 }
 
