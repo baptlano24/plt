@@ -28,7 +28,7 @@ void noviceVSplayer();
 void heuristicVSnovice();
 void heuristicVSheuristic();
 void heuristicVSplayer();
-void playRecord();
+void replayRecord();
 void deepVSplayer(int depth_in);
 void deepVSdeep(int depth_inJ1, int depth_inJ2);
 void heuristicVSdeep(int depth_inJ);
@@ -52,63 +52,43 @@ int main(int argc,char* argv[1]) {
     heuristicVSnovice();
   } else if (argc>=2 && string(argv[1])=="hVSh") {
     heuristicVSheuristic();
-  } else if (argc>=2 && string(argv[1])=="play") {
-    playRecord();
+  } else if (argc>=2 && string(argv[1])=="replay") {
+    replayRecord();
   } else if (argc>=2 && string(argv[1])=="hVSp") {
     heuristicVSplayer();
-  } else if (argc>=2 && string(argv[1])=="dVSp") {
-    int depth_in;
-    try {
-        depth_in = stoi(argv[2]);
-    }
-    catch(const std::logic_error){
-      cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de " << argv[1] << endl;
-    }
-    if(depth_in>=1 && depth_in<=4){
-      deepVSplayer(depth_in);
-    } else {
-      cout << "   La profondeur doit être entre 1 et 4. Veuillez recommancer." << endl;
-    }
-  } else if (argc>=2 && string(argv[1])=="dVSd") {
-    int depth_in;
-    try {
-        depth_in = stoi(argv[2]);
-    }
-    catch(const std::logic_error){
-      cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de " << argv[1] << endl;
-    }
-    if(depth_in>=1 && depth_in<=4){
-      deepVSdeep(depth_in, depth_in);
-    } else {
-      cout << "   La profondeur doit être entre 1 et 4. Veuillez recommancer." << endl;
-    }
-  } else if (argc>=2 && string(argv[1])=="hVSd") {
-    int depth_in;
-    try {
-        depth_in = stoi(argv[2]);
-    }
-    catch(const std::logic_error){
-      cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de " << argv[1] << endl;
-    }
-    if(depth_in>=1 && depth_in<=4){
-      heuristicVSdeep(depth_in);
-    } else {
-      cout << "   La profondeur doit être entre 1 et 4. Veuillez recommancer." << endl;
-    }
+  } else if (argc>=2 && (string(argv[1])=="dVSp" || string(argv[1])=="dVSd" || string(argv[1])=="hVSd")) {
+            int depth_in;
+            try {
+                depth_in = stoi(argv[2]);
+            }
+            catch(const std::logic_error){
+              cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de " << argv[1] << endl;
+            }
+            if(depth_in>=1 && depth_in<=4){
+                if(string(argv[1])=="dVSp")
+                  deepVSplayer(depth_in);
+                else if (string(argv[1])=="dVSd")
+                  deepVSdeep(depth_in, depth_in);
+                else if (string(argv[1])=="hVSd")
+                  heuristicVSdeep(depth_in);
+            } else {
+              cout << "   La profondeur doit être entre 1 et 4. Veuillez recommancer." << endl;
+            }
   } else {
     cout << "Veuillez dire une commande parmis les suivantes :" << endl;
-    cout << "-->  hello  - phrase d'accueil" << endl;
-    cout << "-->  pVSp   - jouer joueur contre joueur" << endl;
-    cout << "-->  rVSr   - jouer ordinateur aléatoire contre ordinateur aléatoire" << endl;
-    cout << "-->  rVSn   - jouer ordinateur aléatoire contre ordinateur novice" << endl;
-    cout << "-->  rVSh   - jouer ordinateur aléatoire contre ordinateur heuristique" << endl;
-    cout << "-->  nVSp   - jouer ordinateur novice contre joueur" << endl;
-    cout << "-->  hVSn   - jouer ordinateur heuristique contre ordinateur novice" << endl;
-    cout << "-->  hVSh   - jouer ordinateur heuristique contre ordinateur heuristique" << endl;
-    cout << "-->  hVSp   - jouer ordinateur heuristique contre joueur" << endl;
-    cout << "-->  dVSp N - jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre joueur" << endl;
-    cout << "-->  dVSd N - jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre ordinateur avancé" << endl;
-    cout << "-->  hVSd N - jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre ordinateur heuristique" << endl;
+    cout << "-->  hello  : phrase d'accueil" << endl;
+    cout << "-->  pVSp   : jouer joueur contre joueur" << endl;
+    cout << "-->  rVSr   : jouer ordinateur aléatoire contre ordinateur aléatoire" << endl;
+    cout << "-->  rVSn   : jouer ordinateur aléatoire contre ordinateur novice" << endl;
+    cout << "-->  rVSh   : jouer ordinateur aléatoire contre ordinateur heuristique" << endl;
+    cout << "-->  nVSp   : jouer ordinateur novice contre joueur" << endl;
+    cout << "-->  hVSn   : jouer ordinateur heuristique contre ordinateur novice" << endl;
+    cout << "-->  hVSh   : jouer ordinateur heuristique contre ordinateur heuristique" << endl;
+    cout << "-->  hVSp   : jouer ordinateur heuristique contre joueur" << endl;
+    cout << "-->  dVSp N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre joueur" << endl;
+    cout << "-->  dVSd N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre ordinateur avancé" << endl;
+    cout << "-->  hVSd N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre ordinateur heuristique" << endl;
+    cout << "-->  replay : rejoue la séquence de jeu enregistrée précédement dans un fichier texte (./server record pour enregistrer une partie)" << endl;
   }
   return 0;
 }
@@ -693,7 +673,7 @@ void heuristicVSdeep(int depth_in){
   }
 }
 
-void playRecord(){
+void replayRecord(){
   Json::Value root;
   std::string commandsPath = "../res/replay.txt";
   Engine engine;
