@@ -558,7 +558,9 @@ void deepVSplayer(int depth_in){
           selectedAnimal = selection.first;
           if (selection.first != 0 && state.getPlaying() == selection.second){
             Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
-            select1.execute(ptr_engine);
+            Order* ptr_move = &select1;
+            engine.addOrder(2,ptr_move);
+            engine.update();
             animalSelected = true;
           }
 
@@ -569,7 +571,9 @@ void deepVSplayer(int depth_in){
           targetCoord.setX(newX);
           targetCoord.setY(newY);
           Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
-          move1.execute(ptr_engine);
+          Order* ptr_move = &move1;
+          engine.addOrder(1,ptr_move);
+          engine.update();
           animalSelected = false;
           cout << "-- End of the move --" << endl;
         }
@@ -588,6 +592,7 @@ void deepVSplayer(int depth_in){
 void deepVSdeep(int depth_inJ1, int depth_inJ2){
   Engine engine;
   Engine* ptr_engine = &engine;
+
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
   RenderLayer stateLayer(engine.getState(), window);
   RenderLayer* ptr_stateLayer = &stateLayer;

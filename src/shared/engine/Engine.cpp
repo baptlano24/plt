@@ -65,7 +65,6 @@ void Engine::addState (state::State newState){
 }
 
 void Engine::addOrder (int priorite, Order* ptr_cmd){
-
   if (enableRecord){
     cout << endl << "record" << endl;
 		Json::Value newCmd = ptr_cmd->serialize();
@@ -80,9 +79,7 @@ void Engine::addOrder (int priorite, Order* ptr_cmd){
 }
 
 void Engine::update(){
-
 	map<int, Order*>::iterator it;
-
   for(auto& order : currentOrder){
       cout << endl << "good player : "<< activePlayer << endl;
       cout << endl << "player order :"<< order.second->player <<endl;
@@ -90,19 +87,14 @@ void Engine::update(){
     /*appeler soi-même pour le execute ?*/
 			order.second->execute(this);
       cout << endl << "execute done" << endl;
-
-
   }
 
 	for(auto it=currentOrder.begin(); it!=currentOrder.end(); it++){
-
 		currentOrder.erase(it);
     cout << endl << "erase done" << endl;
 	}
 	this->currentOrder.clear();
   cout << endl << "clear done" << endl;
-
-
 }
 
 std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(State& state, Coord& current_square){

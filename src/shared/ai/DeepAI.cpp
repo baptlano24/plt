@@ -8,6 +8,7 @@
 #include <iostream>
 #include <limits>
 #include <math.h>
+#include <thread>
 
 using namespace std;
 using namespace state;
@@ -42,6 +43,10 @@ void DeepAI::play(engine::Engine* engine) {
 
   engine::Move moveIA(selectedAnimal, selectedCoord, this->color);
   Order* ptr_move = &moveIA;
+  /*std::thread threadEngineAdd(&Engine::addOrder, engine, 1, ptr_move);
+  threadEngineAdd.join();
+  std::thread threadEngineUpt(&Engine::update, engine);
+  threadEngineUpt.join();*/
   engine->addOrder(1,ptr_move);
   engine->update();
 }
