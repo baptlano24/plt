@@ -64,7 +64,7 @@ int main(int argc,char* argv[1]) {
             catch(const std::logic_error){
               cout << "   -> Vous avez oublié le dernier argument qui précise la difficulté de l'ordinateur (la profondeur du MinMax).\nElle doit être précisée après l'appel de " << argv[1] << endl;
             }
-            if(depth_in>=1 && depth_in<=4){
+            if(depth_in>=1 && depth_in<=5){
                 if(string(argv[1])=="dVSp")
                   deepVSplayer(depth_in);
                 else if (string(argv[1])=="dVSd")
@@ -85,9 +85,9 @@ int main(int argc,char* argv[1]) {
     cout << "-->  hVSn   : jouer ordinateur heuristique contre ordinateur novice" << endl;
     cout << "-->  hVSh   : jouer ordinateur heuristique contre ordinateur heuristique" << endl;
     cout << "-->  hVSp   : jouer ordinateur heuristique contre joueur" << endl;
-    cout << "-->  dVSp N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre joueur" << endl;
-    cout << "-->  dVSd N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre ordinateur avancé" << endl;
-    cout << "-->  hVSd N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 4) contre ordinateur heuristique" << endl;
+    cout << "-->  dVSp N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 5) contre joueur" << endl;
+    cout << "-->  dVSd N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 5) contre ordinateur avancé" << endl;
+    cout << "-->  hVSd N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 5) contre ordinateur heuristique" << endl;
     cout << "-->  replay : rejoue la séquence de jeu enregistrée précédement dans un fichier texte (./server record pour enregistrer une partie)" << endl;
   }
   return 0;
@@ -512,6 +512,9 @@ void heuristicVSplayer(){
 void deepVSplayer(int depth_in){
   Engine engine;
   Engine* ptr_engine = &engine;
+  std::string files_order = "../res/replay.txt";
+  std::ofstream files_writte(files_order, ios::out|ios::trunc);
+  engine.setEnableRecord(true);
   State& state = engine.getState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
   RenderLayer stateLayer(state, window);
@@ -585,6 +588,27 @@ void deepVSplayer(int depth_in){
       usleep(delai);
       deepAI1.play(ptr_engine);
       cout << "         * IA deepAI1 turn ends  *\n Waiting for opponent player to play..." << endl;
+    }
+    if(state.getGameover() == true) {
+      std::ofstream files_writte(files_order, ios::out|ios::trunc);
+        if(files_writte){
+          cout << "--> Debut de l'enregistrement dans le fichier <--" << endl;
+
+          Json::Value root = engine.getRecord();
+          cout << root << endl;
+
+          // Ecriture dans le fichier du tableau de commandes de cette partie
+          files_writte << root;
+
+          // Fermeture du fichier
+          files_writte.close();
+
+          cout << "--> Fin de l'enregistrement dans le fichier <--" << endl;
+        }
+        else{
+          cerr << "Impossible d'ouvrir le fichier des commandes enregistrées pour l'ecriture" << endl;
+        }
+        break;
     }
   }
 }
