@@ -32,8 +32,10 @@ void replayRecord();
 void deepVSplayer(int depth_in);
 void deepVSdeep(int depth_inJ1, int depth_inJ2);
 void heuristicVSdeep(int depth_inJ);
+void saveEngineRecord(Engine* engine);
 
-int delai = 300000 ; //temps de jeu minimum des IA en micro seconde
+
+int delai = 30000; //temps de jeu minimum des IA en micro seconde
 
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
@@ -131,6 +133,7 @@ void playerVSplayer(){
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
           engine.undo();
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       }
 
@@ -166,6 +169,10 @@ void playerVSplayer(){
           cout << "-- End of the move --" << endl;
         }
       }
+      if(engine.getState().getGameover() == true) {
+        saveEngineRecord(ptr_engine);
+        break;
+      }
     }
   }
 }
@@ -188,6 +195,7 @@ void randomVSrandom(){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       }
     }
@@ -201,6 +209,10 @@ void randomVSrandom(){
         usleep(delai);
         randomAI1.play(ptr_engine);
       }
+    }
+    if(engine.getState().getGameover() == true) {
+      saveEngineRecord(ptr_engine);
+      break;
     }
   }
 }
@@ -223,6 +235,7 @@ void randomVSnovice(){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       }
     }
@@ -236,6 +249,10 @@ void randomVSnovice(){
         usleep(delai);
         noviceAI.play(ptr_engine);
       }
+   }
+   if(engine.getState().getGameover() == true) {
+     saveEngineRecord(ptr_engine);
+     break;
    }
   }
 }
@@ -278,6 +295,7 @@ void noviceVSplayer(){
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
           engine.undo();
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {
         cout << endl << "         * Clic *" << endl;
@@ -318,6 +336,10 @@ void noviceVSplayer(){
       usleep(delai);
       noviceAI0.play(ptr_engine);
     }
+    if(engine.getState().getGameover() == true) {
+      saveEngineRecord(ptr_engine);
+      break;
+    }
   }
 }
 
@@ -339,6 +361,7 @@ void heuristicVSnovice(){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       }
     }
@@ -354,6 +377,10 @@ void heuristicVSnovice(){
         usleep(delai);
         noviceAI.play(ptr_engine);
       }
+    }
+    if(engine.getState().getGameover() == true) {
+      saveEngineRecord(ptr_engine);
+      break;
     }
   }
 }
@@ -376,6 +403,7 @@ void randomVSheuristic(){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       }
     }
@@ -391,6 +419,10 @@ void randomVSheuristic(){
         usleep(delai);
         randomAI.play(ptr_engine);
       }
+    }
+    if(engine.getState().getGameover() == true) {
+      saveEngineRecord(ptr_engine);
+      break;
     }
   }
 }
@@ -413,6 +445,7 @@ void heuristicVSheuristic(){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       }
     }
@@ -428,6 +461,10 @@ void heuristicVSheuristic(){
         usleep(delai);
         heuristicAI1.play(ptr_engine);
       }
+    }
+    if(engine.getState().getGameover() == true) {
+      saveEngineRecord(ptr_engine);
+      break;
     }
   }
 }
@@ -468,6 +505,7 @@ void heuristicVSplayer(){
 
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {
         cout << endl << "         * Clic *" << endl;
@@ -506,15 +544,19 @@ void heuristicVSplayer(){
       heuristicAI1.play(ptr_engine);
       cout << "         * IA HeuristicAI1 turn ends  *" << endl;
     }
+    if(engine.getState().getGameover() == true) {
+      saveEngineRecord(ptr_engine);
+      break;
+    }
   }
 }
 
 void deepVSplayer(int depth_in){
   Engine engine;
   Engine* ptr_engine = &engine;
-  std::string files_order = "../res/replay.txt";
-  std::ofstream files_writte(files_order, ios::out|ios::trunc);
+
   engine.setEnableRecord(true);
+
   State& state = engine.getState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
   RenderLayer stateLayer(state, window);
@@ -551,6 +593,7 @@ void deepVSplayer(int depth_in){
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
           engine.undo();
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {
         cout << endl << "\033[1;36m         * Clic player *\033[0m" << endl;
@@ -590,25 +633,8 @@ void deepVSplayer(int depth_in){
       cout << "         * IA deepAI1 turn ends  *\n Waiting for opponent player to play..." << endl;
     }
     if(state.getGameover() == true) {
-      std::ofstream files_writte(files_order, ios::out|ios::trunc);
-        if(files_writte){
-          cout << "--> Debut de l'enregistrement dans le fichier <--" << endl;
-
-          Json::Value root = engine.getRecord();
-          cout << root << endl;
-
-          // Ecriture dans le fichier du tableau de commandes de cette partie
-          files_writte << root;
-
-          // Fermeture du fichier
-          files_writte.close();
-
-          cout << "--> Fin de l'enregistrement dans le fichier <--" << endl;
-        }
-        else{
-          cerr << "Impossible d'ouvrir le fichier des commandes enregistrées pour l'ecriture" << endl;
-        }
-        break;
+      saveEngineRecord(ptr_engine);
+      break;
     }
   }
 }
@@ -616,6 +642,8 @@ void deepVSplayer(int depth_in){
 void deepVSdeep(int depth_inJ1, int depth_inJ2){
   Engine engine;
   Engine* ptr_engine = &engine;
+
+  engine.setEnableRecord(true);
 
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
   RenderLayer stateLayer(engine.getState(), window);
@@ -632,6 +660,7 @@ void deepVSdeep(int depth_inJ1, int depth_inJ2){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       }
     }
@@ -656,6 +685,10 @@ void deepVSdeep(int depth_inJ1, int depth_inJ2){
         deepAI1.play(ptr_engine);
       }
     }
+    if(engine.getState().getGameover() == true) {
+      saveEngineRecord(ptr_engine);
+      break;
+    }
   }
 
 }
@@ -677,6 +710,7 @@ void heuristicVSdeep(int depth_in){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
+        saveEngineRecord(ptr_engine);
         window.close();
       }
     }
@@ -698,6 +732,10 @@ void heuristicVSdeep(int depth_in){
         //t2.join();
         heuristicAI.play(ptr_engine);
       }
+    }
+    if(engine.getState().getGameover() == true) {
+      saveEngineRecord(ptr_engine);
+      break;
     }
   }
 }
@@ -728,34 +766,58 @@ void replayRecord(){
       Coord Coord(0, 0);
       for (unsigned int i = 0; i < root["commands"].size(); i++)
       {
-          if (root["commands"][i]["orderID"].asUInt() == engine::MOVE)
-          {
+        if (root["commands"][i]["orderID"].asUInt() == engine::MOVE)
+        {
 
-              Coord.setX(root["commands"][i]["xDestination"].asUInt());
-              Coord.setY(root["commands"][i]["yDestination"].asUInt());
-              int id = root["commands"][i]["animalID"].asUInt();
-              bool player = root["commands"][i]["player"].asBool();
-
-              engine::Move Move(engine.getState().getAnimal(id,player),Coord,player);
-              engine::Order* ptr_move = &Move;
-              engine.addOrder(1,move(ptr_move));
-              engine.update();
-              usleep(delai);
-
-          }
-          // Cas de l'attaque
-          else if (root["commands"][i]["orderID"].asUInt() == engine::SELECT)
-          {
             Coord.setX(root["commands"][i]["xDestination"].asUInt());
             Coord.setY(root["commands"][i]["yDestination"].asUInt());
             int id = root["commands"][i]["animalID"].asUInt();
             bool player = root["commands"][i]["player"].asBool();
-            engine::Select Select(engine.getState().getAnimal(id,player),Coord,player);
-            engine::Order* ptr_slc = &Select;
-            engine.addOrder(0,move(ptr_slc));
+
+            engine::Move Move(engine.getState().getAnimal(id,player),Coord,player);
+            engine::Order* ptr_move = &Move;
+            engine.addOrder(1,move(ptr_move));
             engine.update();
             usleep(delai);
-          }
-        } break;
 
-}}}
+        }
+        // Cas de l'attaque
+        else if (root["commands"][i]["orderID"].asUInt() == engine::SELECT)
+        {
+          Coord.setX(root["commands"][i]["xDestination"].asUInt());
+          Coord.setY(root["commands"][i]["yDestination"].asUInt());
+          int id = root["commands"][i]["animalID"].asUInt();
+          bool player = root["commands"][i]["player"].asBool();
+          engine::Select Select(engine.getState().getAnimal(id,player),Coord,player);
+          engine::Order* ptr_slc = &Select;
+          engine.addOrder(0,move(ptr_slc));
+          engine.update();
+          usleep(delai);
+        }
+      }
+      break;
+    }
+  }
+}
+
+void saveEngineRecord (Engine* engine){
+  std::string files_order = "../res/replay.txt";
+  std::ofstream files_writte(files_order, ios::out|ios::trunc);
+  if(files_writte){
+    cout << "--> Debut de l'enregistrement dans le fichier <--" << endl;
+
+    Json::Value root = engine->getRecord();
+    cout << root << endl;
+
+    // Ecriture dans le fichier du tableau de commandes de cette partie
+    files_writte << root;
+
+    // Fermeture du fichier
+    files_writte.close();
+
+    cout << "--> Fin de l'enregistrement dans le fichier <--" << endl;
+  }
+  else{
+    cerr << "Impossible d'ouvrir le fichier des commandes enregistrées pour l'ecriture" << endl;
+  }
+}
