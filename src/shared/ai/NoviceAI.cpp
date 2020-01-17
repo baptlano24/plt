@@ -16,27 +16,18 @@ NoviceAI::NoviceAI(int color){
   this->color = color;
 }
 
-void NoviceAI::play(engine::Engine* engine) {
+Move NoviceAI::play(engine::Engine* engine) {
 
   bool animalSelectedIA = false;
   Coord targetCoord;
   Coord& refTargetCoord = targetCoord;
   Animal* selectedAnimal;
 
-  StateEvent animalChangedEvent(ANIMALS_CHANGED);
-  StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  StateEvent infosChangedEvent(INFOS_CHANGED);
-  StateEvent& refInfosChangedEvent = infosChangedEvent;
-
   if (animalSelectedIA == false) {
     cout << "Selection IA:" << endl;
     pair<Animal*, int> selectionIA = this->selectAnimal(engine);
     selectedAnimal = selectionIA.first;
     Select selectIA(selectedAnimal, selectedAnimal->getCoord(), this->color);
-    selectIA.execute(engine);
-    engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
     animalSelectedIA = true;
 
   }
@@ -46,13 +37,9 @@ void NoviceAI::play(engine::Engine* engine) {
     targetCoord.setX(action.first.getX());
     targetCoord.setY(action.first.getY());
     engine::Move moveIA(selectedAnimal, refTargetCoord, this->color);
-    moveIA.execute(engine);
-
-    engine->getState().notifyObservers(refAnimalChangedEvent, engine->getState());
-    engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
-    engine->getState().notifyObservers(refInfosChangedEvent, engine->getState());
     animalSelectedIA = false;
     cout << "-- End of the IA move --" << endl;
+    return moveIA;
   }
 }
 

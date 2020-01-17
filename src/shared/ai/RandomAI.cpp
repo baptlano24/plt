@@ -13,27 +13,18 @@ RandomAI::RandomAI(int color){
   this->color = color;
 }
 
-void RandomAI::play(Engine* engine) {
+Move RandomAI::play(Engine* engine) {
 
   bool animalSelectedIA = false;
   Coord targetCoord;
   Coord& refTargetCoord = targetCoord;
   Animal* selectedAnimal;
 
-  StateEvent animalChangedEvent(ANIMALS_CHANGED);
-  StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  StateEvent infosChangedEvent(INFOS_CHANGED);
-  StateEvent& refInfosChangedEvent = infosChangedEvent;
-
   if (animalSelectedIA == false) {
     cout << "Selection IA:" << endl;
     pair<Animal*, int> selectionIA = this->selectRandomAnimal(engine);
     selectedAnimal = selectionIA.first;
     Select selectIA(selectedAnimal, selectedAnimal->getCoord(), this->color);
-    selectIA.execute(engine);
-    engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
     animalSelectedIA = true;
 
   }
@@ -43,13 +34,9 @@ void RandomAI::play(Engine* engine) {
     targetCoord.setX(randAction.first.getX());
     targetCoord.setY(randAction.first.getY());
     Move moveIA(selectedAnimal, refTargetCoord, this->color);
-    moveIA.execute(engine);
-
-    engine->getState().notifyObservers(refAnimalChangedEvent, engine->getState());
-    engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
-    engine->getState().notifyObservers(refInfosChangedEvent, engine->getState());
     animalSelectedIA = false;
     cout << "-- End of the IA move --" << endl;
+    return moveIA;
   }
 }
 

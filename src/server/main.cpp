@@ -42,14 +42,15 @@ void recordheuristicVSheuristic(){
     Engine engine;
     Engine* ptr_engine = &engine;
     sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-    RenderLayer stateLayer(engine.getState(), window);
+    sf::RenderWindow* ptr_window = &window;
+    RenderLayer stateLayer(engine.getptrState(), ptr_window);
     RenderLayer* ptr_stateLayer = &stateLayer;
     HeuristicAI heuristicAI0(0);
     HeuristicAI heuristicAI1(1);
     engine.setEnableRecord(true);
     stateLayer.registerObserver(ptr_engine);
     engine.getState().registerObserver(ptr_stateLayer);
-    stateLayer.draw(window);
+    stateLayer.draw(ptr_window);
     srand (time(NULL));
 
     while (window.isOpen()){

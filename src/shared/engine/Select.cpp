@@ -21,8 +21,6 @@ Json::Value Select::serialize (){
   newCommand["animalID"] = targetAnimal->getID();
   newCommand["xDestination"] = targetCoord.getX();
   newCommand["yDestination"] = targetCoord.getY();
-
-
   return newCommand;
 }
 
@@ -43,5 +41,5 @@ void Select::execute(Engine* engine)
   }
   StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
   StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  state.notifyObservers(refHighlightsChangedEvent, state);
+  state.notifyObservers(refHighlightsChangedEvent);
 }

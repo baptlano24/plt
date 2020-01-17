@@ -18,30 +18,17 @@ HeuristicAI::HeuristicAI(int color){
   this->color = color;
 }
 
-void HeuristicAI::play(engine::Engine* engine) {
+Move HeuristicAI::play(engine::Engine* engine) {
 
   bool animalSelectedIA = false;
   Coord targetCoord;
   Coord& refTargetCoord = targetCoord;
   Animal* selectedAnimal;
 
-  StateEvent animalChangedEvent(ANIMALS_CHANGED);
-  StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  StateEvent infosChangedEvent(INFOS_CHANGED);
-  StateEvent& refInfosChangedEvent = infosChangedEvent;
-
   if (animalSelectedIA == false) {
     pair<Animal*, int> selectionIA = this->selectAnimal(engine);
     selectedAnimal = selectionIA.first;
     engine::Select selectIA(selectedAnimal, selectedAnimal->getCoord(), this->color);
-    Order* orderIA = &selectIA;
-    engine->addOrder(0,orderIA);
-    
-    //selectIA.execute(engine);
-    engine->update();
-    engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
     animalSelectedIA = true;
   }
   if (animalSelectedIA == true) {
@@ -51,17 +38,9 @@ void HeuristicAI::play(engine::Engine* engine) {
     targetCoord.setX(action.first.getX());
     targetCoord.setY(action.first.getY());
     engine::Move moveIA(selectedAnimal, refTargetCoord, this->color);
-    Order* ptr_move = &moveIA;
-    engine->addOrder(1,ptr_move);
-    engine->update();
-    //moveIA.execute(engine);
-    cout << "               [State score after  : " << calculateScoreState(engine->getState(), this->color) << " ]" << endl;
-
-    engine->getState().notifyObservers(refAnimalChangedEvent, engine->getState());
-    engine->getState().notifyObservers(refHighlightsChangedEvent, engine->getState());
-    engine->getState().notifyObservers(refInfosChangedEvent, engine->getState());
     animalSelectedIA = false;
     cout << "-- End of the IA move --" << endl;
+    return moveIA;
   }
 }
 
@@ -93,20 +72,6 @@ pair<state::Animal*, int> HeuristicAI::selectAnimal(engine::Engine* engine)
 {
   RandomAI randomAI(this->color);
   return randomAI.selectRandomAnimal(engine);
-
-  /*vector<Animal>& animalsJ2 = engine->getState().getPlayer2().getAnimals();
-  pair<Animal*, int> selection;
-
-  if (this->color == 1){
-    for (int i=0; i<8; ++i){
-      if(animalsJ2[i].getID() == ELEPHANT){
-        selection.first = &engine->getState().getPlayer2().getAnimals()[i];
-
-      }
-    }
-  }
-  selection.second = this->color;
-  return selection;*/
 }
 
 double HeuristicAI::calculateScoreState(State& state, int color){
@@ -123,9 +88,6 @@ double HeuristicAI::calculateScoreState(State& state, int color){
       score = score + calculateScore(state, &state.getPlayer2().getAnimals()[i], state.getPlayer2().getAnimals()[i].getCoord(), objectifJ1, objectifJ2);
     }
   }
-
-
-
 
   return score;
 }

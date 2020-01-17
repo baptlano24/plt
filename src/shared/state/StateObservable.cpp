@@ -8,8 +8,8 @@ void StateObservable::registerObserver (IStateObserver* observer){
 	observers.push_back(observer);
 }
 
-void StateObservable::notifyObservers (StateEvent& stateEvent, State& state){
+void StateObservable::notifyObservers (StateEvent& stateEvent){
 	for(auto observer : observers){
-		observer->stateChanged(stateEvent, state);
+		observer->stateChanged(stateEvent);
 	}
 }

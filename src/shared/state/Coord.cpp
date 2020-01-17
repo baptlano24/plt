@@ -32,6 +32,7 @@ void Coord::setX(int x)
 bool Coord::operator==(const Coord &otherCoord) {
     return ( this->x == otherCoord.x && this->y == otherCoord.y );
 }
+
 bool Coord::operator!=(const Coord &otherCoord) {
     return ( this->x != otherCoord.x || this->y != otherCoord.y );
 }

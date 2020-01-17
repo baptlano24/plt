@@ -5,6 +5,8 @@
 #include <utility>
 #include <unistd.h>
 #include <json/json.h>
+#include <thread>
+
 using namespace std;
 using namespace state;
 using namespace engine;
@@ -23,12 +25,13 @@ state::State& Engine::getState(){
   	return refEtat;
 }
 
-void Engine::setState (state::State& state){
-  this->currentState = state;
+state::State* Engine::getptrState(){
+  	state::State* ptr_state = &currentState;
+  	return ptr_state;
 }
 
-void Engine::playerRequest(RenderEvent& event){
-
+void Engine::setState (state::State& state){
+  this->currentState = state;
 }
 
 void Engine::undo (){
@@ -42,11 +45,9 @@ void Engine::undo (){
   StateEvent& refAnimalChangedEvent = animalChangedEvent;
   StateEvent infosChangedEvent(INFOS_CHANGED);
   StateEvent& refInfosChangedEvent = infosChangedEvent;
-  state.notifyObservers(refAnimalChangedEvent, state);
-  state.notifyObservers(refInfosChangedEvent, state);
-
+  state.notifyObservers(refAnimalChangedEvent);
+  state.notifyObservers(refInfosChangedEvent);
 }
-
 
 void Engine::setEnableRecord(bool enableRecord){
     this->enableRecord = enableRecord;
@@ -64,25 +65,38 @@ void Engine::addState (state::State newState){
   this->stateHistoric.push_back(newState);
 }
 
-void Engine::addOrder (int priorite, Order* ptr_cmd){
+void Engine::handleOrder (Move move){
+  cout << "ADD NEW MOVE" << endl;
+  //Add the order to the map
+  //Move newMove = new Move(move);
+	currentOrders.push_back(move);
+  //process orders (this will be different when playing online)
+  //std::thread threadEngine(&Engine::processNextOrder,this);
+  processNextOrder();
+  //Record the command for the replay
   if (enableRecord){
-		Json::Value newCmd = ptr_cmd->serialize();
-		Record["commands"][Record["length"].asUInt()] = newCmd;
-		Record["length"] = Record["length"].asUInt() + 1;
-	}
-	currentOrder[priorite] = ptr_cmd;
+    Json::Value newCmd = move.serialize();
+    Record["commands"][Record["length"].asUInt()] = newCmd;
+    Record["length"] = Record["length"].asUInt() + 1;
+  }
+
+}
+
+void Engine::processNextOrder(){
+  //sleep(5);
+  if(!currentOrders.empty()) {
+    currentOrders.begin()->execute(this);
+    currentOrders.erase(currentOrders.begin());
+  }
 }
 
 void Engine::update(){
-	map<int, Order*>::iterator it;
-  for(auto& order : currentOrder){
-			order.second->execute(this);
+  for(auto& order : currentOrders){
+			order.execute(this);
   }
-
-	for(auto it=currentOrder.begin(); it!=currentOrder.end(); it++){
-		currentOrder.erase(it);
+	for(auto it=currentOrders.begin(); it!=currentOrders.end(); it++){
+		currentOrders.erase(it);
 	}
-	this->currentOrder.clear();
 }
 
 std::vector<std::pair<state::Coord,engine::ActionID>> Engine::authorisedActions(State& state, Coord& current_square){

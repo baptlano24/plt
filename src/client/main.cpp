@@ -35,7 +35,7 @@ void heuristicVSdeep(int depth_inJ);
 void saveEngineRecord(Engine* engine);
 
 
-int delai = 30000; //temps de jeu minimum des IA en micro seconde
+int delai = 50000; //temps de jeu minimum des IA en micro seconde
 
 int main(int argc,char* argv[1]) {
   if(argc>=2 && string(argv[1])=="hello") {
@@ -99,13 +99,16 @@ void playerVSplayer(){
   cout<<"Lancement de la commande Engine."<<endl;
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   int newX = 1;
@@ -133,24 +136,21 @@ void playerVSplayer(){
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
           engine.undo();
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       }
 
       else if(event.type == Event::MouseButtonPressed) {
         cout << endl << "         * Clic *" << endl;
 
-        if (animalSelected == false && engine.getState().getGameover() != true) {
+        if (animalSelected == false && state.getGameover() != true) {
           cout << "Selection :" << endl;
           cout << "Mouse clic pixel event : " << mouseX << " , "<< mouseY << endl;
           cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl;
-          pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
+          pair<Animal*, int> selection = state.getSelection(mouseCoord);
           selectedAnimal = selection.first;
-          if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
-            Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
-            Order* ptr_move = &select1;
-            engine.addOrder(2,ptr_move);
-            engine.update();
+          if (selection.first != 0 && state.getPlaying() == selection.second){
+            Select select1(selectedAnimal, mouseCoord, state.getPlaying());
             animalSelected = true;
           }
 
@@ -161,15 +161,13 @@ void playerVSplayer(){
           newY = mouseGridY;
           targetCoord.setX(newX);
           targetCoord.setY(newY);
-          Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
-          Order* ptr_move = &move1;
-          engine.addOrder(1,ptr_move);
-          engine.update();
+          Move move1(selectedAnimal, refTargetCoord, state.getPlaying());
+          ptr_stateLayer->notifyObservers(move1);
           animalSelected = false;
           cout << "-- End of the move --" << endl;
         }
       }
-      if(engine.getState().getGameover() == true) {
+      if(state.getGameover() == true) {
         saveEngineRecord(ptr_engine);
         break;
       }
@@ -180,27 +178,30 @@ void playerVSplayer(){
 void randomVSrandom(){
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   RandomAI randomAI0(0);
   RandomAI randomAI1(1);
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   while (window.isOpen()){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       }
     }
-    if(engine.getState().getGameover() != true){
-      if(engine.getState().getPlaying() == 0) {
+    if(state.getGameover() != true){
+      if(state.getPlaying() == 0) {
         cout << endl << "         * IA0 random is playing *" << endl;
         usleep(delai);
         randomAI0.play(ptr_engine);
@@ -210,7 +211,7 @@ void randomVSrandom(){
         randomAI1.play(ptr_engine);
       }
     }
-    if(engine.getState().getGameover() == true) {
+    if(state.getGameover() == true) {
       saveEngineRecord(ptr_engine);
       break;
     }
@@ -220,27 +221,30 @@ void randomVSrandom(){
 void randomVSnovice(){
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   RandomAI randomAI(1);
   NoviceAI noviceAI(0);
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   while (window.isOpen()){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       }
     }
-    if(engine.getState().getGameover() != true){
-      if(engine.getState().getPlaying() == 0) {
+    if(state.getGameover() != true){
+      if(state.getPlaying() == 0) {
         cout << endl << "         * IA random is playing *" << endl;
         usleep(delai);
         randomAI.play(ptr_engine);
@@ -250,7 +254,7 @@ void randomVSnovice(){
         noviceAI.play(ptr_engine);
       }
    }
-   if(engine.getState().getGameover() == true) {
+   if(state.getGameover() == true) {
      saveEngineRecord(ptr_engine);
      break;
    }
@@ -260,14 +264,17 @@ void randomVSnovice(){
 void noviceVSplayer(){
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   NoviceAI noviceAI0(0);
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   int newX = 1;
@@ -295,22 +302,19 @@ void noviceVSplayer(){
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
           engine.undo();
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {
         cout << endl << "         * Clic *" << endl;
 
-        if (animalSelected == false && engine.getState().getGameover() != true && engine.getState().getPlaying() == 1) {
+        if (animalSelected == false && state.getGameover() != true && state.getPlaying() == 1) {
           cout << "Selection :" << endl;
           cout << "Mouse clic pixel event : " << mouseX << " , "<< mouseY << endl;
           cout << "Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl;
-          pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
+          pair<Animal*, int> selection = state.getSelection(mouseCoord);
           selectedAnimal = selection.first;
-          if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
-            Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
-            Order* ptr_move = &select1;
-            engine.addOrder(2,ptr_move);
-            engine.update();
+          if (selection.first != 0 && state.getPlaying() == selection.second){
+            Select select1(selectedAnimal, mouseCoord, state.getPlaying());
             animalSelected = true;
           }
 
@@ -321,22 +325,20 @@ void noviceVSplayer(){
           newY = mouseGridY;
           targetCoord.setX(newX);
           targetCoord.setY(newY);
-          Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
-          Order* ptr_move = &move1;
-          engine.addOrder(1,ptr_move);
-          engine.update();
+          Move move1(selectedAnimal, refTargetCoord, state.getPlaying());
+          ptr_stateLayer->notifyObservers(move1);
           animalSelected = false;
           cout << "-- End of the move --" << endl;
         }
       }
     }
-    if(engine.getState().getGameover() != true && engine.getState().getPlaying() == 0){
+    if(state.getGameover() != true && state.getPlaying() == 0){
       cout << endl << "         * IA noviceAI0 is playing *" << endl;
-      cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+      cout<<"Tour numéro : " << state.getTurn() << endl;
       usleep(delai);
       noviceAI0.play(ptr_engine);
     }
-    if(engine.getState().getGameover() == true) {
+    if(state.getGameover() == true) {
       saveEngineRecord(ptr_engine);
       break;
     }
@@ -346,39 +348,42 @@ void noviceVSplayer(){
 void heuristicVSnovice(){
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   HeuristicAI heuristicAI(0);
   NoviceAI noviceAI(1);
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   while (window.isOpen()){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       }
     }
-    if(engine.getState().getGameover() != true){
-      if(engine.getState().getPlaying() == 0) {
+    if(state.getGameover() != true){
+      if(state.getPlaying() == 0) {
         cout << endl << "         * IA HeuristicAI is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        cout<<"Tour numéro : " << state.getTurn() << endl;
         usleep(delai);
         heuristicAI.play(ptr_engine);
       } else {
         cout << endl << "         * IA NoviceAI is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        cout<<"Tour numéro : " << state.getTurn() << endl;
         usleep(delai);
         noviceAI.play(ptr_engine);
       }
     }
-    if(engine.getState().getGameover() == true) {
+    if(state.getGameover() == true) {
       saveEngineRecord(ptr_engine);
       break;
     }
@@ -388,39 +393,42 @@ void heuristicVSnovice(){
 void randomVSheuristic(){
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   HeuristicAI heuristicAI(0);
   RandomAI randomAI(1);
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   while (window.isOpen()){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       }
     }
-    if(engine.getState().getGameover() != true){
-      if(engine.getState().getPlaying() == 0) {
+    if(state.getGameover() != true){
+      if(state.getPlaying() == 0) {
         cout << endl << "         * IA HeuristicAI is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        cout<<"Tour numéro : " << state.getTurn() << endl;
         usleep(delai);
         heuristicAI.play(ptr_engine);
       } else {
         cout << endl << "         * IA RandomAI is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        cout<<"Tour numéro : " << state.getTurn() << endl;
         usleep(delai);
         randomAI.play(ptr_engine);
       }
     }
-    if(engine.getState().getGameover() == true) {
+    if(state.getGameover() == true) {
       saveEngineRecord(ptr_engine);
       break;
     }
@@ -430,39 +438,42 @@ void randomVSheuristic(){
 void heuristicVSheuristic(){
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   HeuristicAI heuristicAI0(0);
   HeuristicAI heuristicAI1(1);
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   while (window.isOpen()){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       }
     }
-    if(engine.getState().getGameover() != true){
-      if(engine.getState().getPlaying() == 0) {
+    if(state.getGameover() != true){
+      if(state.getPlaying() == 0) {
         cout << endl << "         * IA HeuristicAI0 is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        cout<<"Tour numéro : " << state.getTurn() << endl;
         usleep(delai);
         heuristicAI0.play(ptr_engine);
       } else {
         cout << endl << "         * IA HeuristicAI1 is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        cout<<"Tour numéro : " << state.getTurn() << endl;
         usleep(delai);
         heuristicAI1.play(ptr_engine);
       }
     }
-    if(engine.getState().getGameover() == true) {
+    if(state.getGameover() == true) {
       saveEngineRecord(ptr_engine);
       break;
     }
@@ -472,14 +483,17 @@ void heuristicVSheuristic(){
 void heuristicVSplayer(){
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   HeuristicAI heuristicAI1(1);
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   int newX = 1;
@@ -505,20 +519,17 @@ void heuristicVSplayer(){
 
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       } else if(event.type == Event::MouseButtonPressed) {
         cout << endl << "         * Clic *" << endl;
-        if (animalSelected == false && engine.getState().getGameover() != true && engine.getState().getPlaying() == 0) {
+        if (animalSelected == false && state.getGameover() != true && state.getPlaying() == 0) {
           cout << " Mouse clic pixel event : " << mouseX << " , "<< mouseY << endl;
           cout << " Mouse clic grid event : (" << mouseGridX << " , "<< mouseGridY << ")" << endl;
-          pair<Animal*, int> selection = engine.getState().getSelection(mouseCoord);
+          pair<Animal*, int> selection = state.getSelection(mouseCoord);
           selectedAnimal = selection.first;
-          if (selection.first != 0 && engine.getState().getPlaying() == selection.second){
-            Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
-            Order* ptr_move = &select1;
-            engine.addOrder(2,ptr_move);
-            engine.update();
+          if (selection.first != 0 && state.getPlaying() == selection.second){
+            Select select1(selectedAnimal, mouseCoord, state.getPlaying());
             animalSelected = true;
           }
 
@@ -528,23 +539,22 @@ void heuristicVSplayer(){
           newY = mouseGridY;
           targetCoord.setX(newX);
           targetCoord.setY(newY);
-          Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
-          Order* ptr_move = &move1;
-          engine.addOrder(1,ptr_move);
-          engine.update();
+          Move move1(selectedAnimal, refTargetCoord, state.getPlaying());
+          ptr_stateLayer->notifyObservers(move1);
           animalSelected = false;
           cout << "-- End of the move --" << endl;
         }
       }
     }
-    if(engine.getState().getGameover() != true && engine.getState().getPlaying() == 1){
+    if(state.getGameover() != true && state.getPlaying() == 1){
       cout << endl << "         * IA HeuristicAI1 is playing *" << endl;
-      cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+      cout<<"Tour numéro : " << state.getTurn() << endl;
       usleep(delai);
-      heuristicAI1.play(ptr_engine);
+      Move moveIA = heuristicAI1.play(ptr_engine);
+      ptr_stateLayer->notifyObservers(moveIA);
       cout << "         * IA HeuristicAI1 turn ends  *" << endl;
     }
-    if(engine.getState().getGameover() == true) {
+    if(state.getGameover() == true) {
       saveEngineRecord(ptr_engine);
       break;
     }
@@ -554,18 +564,18 @@ void heuristicVSplayer(){
 void deepVSplayer(int depth_in){
   Engine engine;
   Engine* ptr_engine = &engine;
-
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   engine.setEnableRecord(true);
 
-  State& state = engine.getState();
-  sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(state, window);
+  sf::RenderWindow* ptr_window = new sf::RenderWindow(sf::VideoMode(1314,949), "Jungle War");
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   DeepAI deepAI1(1, ptr_engine, depth_in);
 
   stateLayer.registerObserver(ptr_engine);
   state.registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   int newX = 1;
@@ -576,25 +586,24 @@ void deepVSplayer(int depth_in){
   int mouseGridY;
   Coord mouseCoord;
   Coord targetCoord;
-  Coord& refTargetCoord = targetCoord;
   bool animalSelected = false;
   Animal* selectedAnimal;
 
-  while (window.isOpen()){
+  while (ptr_window->isOpen()){
     Event event;
-    mouseX = Mouse::getPosition(window).x;
-    mouseY = Mouse::getPosition(window).y;
+    mouseX = Mouse::getPosition(*ptr_window).x;
+    mouseY = Mouse::getPosition(*ptr_window).y;
     mouseGridX = (mouseX-73*3)/73; //73*3 to change by gridOrigine.getX() when in the render
     mouseGridY = mouseY/73;
     mouseCoord.setX(mouseGridX);
     mouseCoord.setY(mouseGridY);
 
-    while (window.pollEvent(event)){
+    while (ptr_window->pollEvent(event)){
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
           engine.undo();
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
-        window.close();
+        state.setGameover(true);
+        ptr_window->close();
       } else if(event.type == Event::MouseButtonPressed) {
         cout << endl << "\033[1;36m         * Clic player *\033[0m" << endl;
         if (animalSelected == false && state.getGameover() != true && state.getPlaying() == 0) {
@@ -603,11 +612,9 @@ void deepVSplayer(int depth_in){
           pair<Animal*, int> selection = state.getSelection(mouseCoord);
           selectedAnimal = selection.first;
           if (selection.first != 0 && state.getPlaying() == selection.second){
-            Select select1(selectedAnimal, mouseCoord, engine.getState().getPlaying());
-            Order* ptr_move = &select1;
-            engine.addOrder(2,ptr_move);
-            engine.update();
+            Select select1(selectedAnimal, mouseCoord, state.getPlaying());
             animalSelected = true;
+            cout << "Animal selected" << endl;
           }
 
         } else if (animalSelected == true) {
@@ -616,23 +623,28 @@ void deepVSplayer(int depth_in){
           newY = mouseGridY;
           targetCoord.setX(newX);
           targetCoord.setY(newY);
-          Move move1(selectedAnimal, refTargetCoord, engine.getState().getPlaying());
-          Order* ptr_move = &move1;
-          engine.addOrder(1,ptr_move);
-          engine.update();
+          Move move1(selectedAnimal, targetCoord, state.getPlaying());
+          ptr_stateLayer->notifyObservers(move1);
           animalSelected = false;
           cout << "-- End of the move --" << endl;
         }
       }
     }
     if(state.getGameover() != true && state.getPlaying() == 1){
-      cout << endl << "\033[1;36m         * IA deepAI1 is playing *\033[0m" << endl;
-      cout<<"Tour numéro : " << state.getTurn() << endl;
-      usleep(delai);
-      deepAI1.play(ptr_engine);
-      cout << "         * IA deepAI1 turn ends  *\n Waiting for opponent player to play..." << endl;
+      if (deepAI1.isReady()){
+        cout << endl << "\033[1;36m         * IA deepAI1 is playing *\033[0m" << endl;
+        cout<<"Tour numéro : " << state.getTurn() << endl;
+        usleep(delai);
+        Move moveIA = deepAI1.getNextMove();
+        ptr_stateLayer->notifyObservers(moveIA);
+        cout << "         * IA deepAI1 turn ends  *\n Move sent to the engine. Waiting for opponent player to play..." << endl;
+      } else {
+        //Ask to the AI to play, IA says if it is working or start working
+        deepAI1.play(ptr_engine);
+      }
     }
-    if(state.getGameover() == true) {
+    if(state.getGameover() == true){
+      cout << endl << "    ///--- END OF THE GAME ---///" << endl << endl;
       saveEngineRecord(ptr_engine);
       break;
     }
@@ -642,50 +654,65 @@ void deepVSplayer(int depth_in){
 void deepVSdeep(int depth_inJ1, int depth_inJ2){
   Engine engine;
   Engine* ptr_engine = &engine;
-
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   engine.setEnableRecord(true);
 
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   DeepAI deepAI0(0, ptr_engine, depth_inJ1);
   DeepAI deepAI1(1, ptr_engine, depth_inJ2);
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   while (window.isOpen()){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       }
     }
-    if(engine.getState().getGameover() != true){
-      if(engine.getState().getPlaying() == 0) {
-        cout << endl << "         * IA DeepAI0 is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
-        if(depth_inJ1<=2){
-          usleep(delai);
+    if(state.getGameover() != true){
+      if(state.getPlaying() == 0) {
+        if (deepAI0.isReady()){
+          cout << endl << "\033[1;36m         * IA deepAI0 is playing *\033[0m" << endl;
+          cout<<"Tour numéro : " << state.getTurn() << endl;
+
+          Move moveIA = deepAI0.getNextMove();
+          ptr_stateLayer->notifyObservers(moveIA);
+          cout << "         * IA deepAI0 turn ends  *\n Move sent to the engine. Waiting for opponent player to play..." << endl;
+          if (depth_inJ1<=3) {
+            usleep(delai);
+          }
+        } else {
+          //Ask to the AI to play, IA says if it is working or start working
+          deepAI0.play(ptr_engine);
         }
-        //std::thread t1(&DeepAI::play, deepAI0, ptr_engine);
-        //t1.join();
-        deepAI0.play(ptr_engine);
       } else {
-        cout << endl << "         * IA DeepAI1 is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
-        if(depth_inJ2<=2){
-          usleep(delai);
+        if (deepAI1.isReady()){
+          cout << endl << "\033[1;36m         * IA deepAI1 is playing *\033[0m" << endl;
+          cout<<"Tour numéro : " << state.getTurn() << endl;
+
+          Move moveIA = deepAI1.getNextMove();
+          ptr_stateLayer->notifyObservers(moveIA);
+          cout << "         * IA deepAI1 turn ends  *\n Move sent to the engine. Waiting for opponent player to play..." << endl;
+          if (depth_inJ2<=3) {
+            usleep(delai);
+          }
+        } else {
+          //Ask to the AI to play, IA says if it is working or start working
+          deepAI1.play(ptr_engine);
         }
-        //std::thread t2(&DeepAI::play, deepAI1, ptr_engine);
-        //t2.join();
-        deepAI1.play(ptr_engine);
       }
     }
-    if(engine.getState().getGameover() == true) {
+    if(state.getGameover() == true) {
+      cout << endl << "    ///--- END OF THE GAME ---///" << endl << endl;
       saveEngineRecord(ptr_engine);
       break;
     }
@@ -695,29 +722,32 @@ void deepVSdeep(int depth_inJ1, int depth_inJ2){
 void heuristicVSdeep(int depth_in){
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   DeepAI deepAI(0, ptr_engine, depth_in);
   HeuristicAI heuristicAI(1);
 
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
   srand (time(NULL));
 
   while (window.isOpen()){
     Event event;
     while (window.pollEvent(event)){
       if (event.type == Event::Closed){
-        saveEngineRecord(ptr_engine);
+        state.setGameover(true);
         window.close();
       }
     }
-    if(engine.getState().getGameover() != true){
-      if(engine.getState().getPlaying() == 0) {
+    if(state.getGameover() != true){
+      if(state.getPlaying() == 0) {
         cout << endl << "         * IA DeepAI is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        cout<<"Tour numéro : " << state.getTurn() << endl;
         if(depth_in<=2){
           usleep(delai);
         }
@@ -726,14 +756,14 @@ void heuristicVSdeep(int depth_in){
         deepAI.play(ptr_engine);
       } else {
         cout << endl << "         * IA HeuristicAI is playing *" << endl;
-        cout<<"Tour numéro : " << engine.getState().getTurn() << endl;
+        cout<<"Tour numéro : " << state.getTurn() << endl;
         usleep(delai);
         //std::thread t2(&HeuristicAI::play, heuristicAI, ptr_engine);
         //t2.join();
         heuristicAI.play(ptr_engine);
       }
     }
-    if(engine.getState().getGameover() == true) {
+    if(state.getGameover() == true) {
       saveEngineRecord(ptr_engine);
       break;
     }
@@ -745,12 +775,15 @@ void replayRecord(){
   std::string commandsPath = "../res/replay.txt";
   Engine engine;
   Engine* ptr_engine = &engine;
+  State& state = engine.getState();
+  State* ptr_state = engine.getptrState();
   sf::RenderWindow window(sf::VideoMode(1314,949), "Jungle War");
-  RenderLayer stateLayer(engine.getState(), window);
+  sf::RenderWindow* ptr_window = &window;
+  RenderLayer stateLayer(ptr_state, ptr_window);
   RenderLayer* ptr_stateLayer = &stateLayer;
   stateLayer.registerObserver(ptr_engine);
-  engine.getState().registerObserver(ptr_stateLayer);
-  stateLayer.draw(window);
+  state.registerObserver(ptr_stateLayer);
+  stateLayer.draw(ptr_window);
 
   while (window.isOpen()){
     std::ifstream commandsFile(commandsPath);
@@ -774,10 +807,8 @@ void replayRecord(){
             int id = root["commands"][i]["animalID"].asUInt();
             bool player = root["commands"][i]["player"].asBool();
 
-            engine::Move Move(engine.getState().getAnimal(id,player),Coord,player);
-            engine::Order* ptr_move = &Move;
-            engine.addOrder(1,move(ptr_move));
-            engine.update();
+            engine::Move moveReplay(state.getAnimal(id,player),Coord,player);
+            ptr_stateLayer->notifyObservers(moveReplay);
             usleep(delai);
 
         }
@@ -788,10 +819,7 @@ void replayRecord(){
           Coord.setY(root["commands"][i]["yDestination"].asUInt());
           int id = root["commands"][i]["animalID"].asUInt();
           bool player = root["commands"][i]["player"].asBool();
-          engine::Select Select(engine.getState().getAnimal(id,player),Coord,player);
-          engine::Order* ptr_slc = &Select;
-          engine.addOrder(0,move(ptr_slc));
-          engine.update();
+          engine::Select selectReplay(state.getAnimal(id,player),Coord,player);
           usleep(delai);
         }
       }

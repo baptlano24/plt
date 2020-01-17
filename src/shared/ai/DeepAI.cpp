@@ -18,6 +18,8 @@ using namespace ai;
 DeepAI::DeepAI(int color, engine::Engine* engine, int depth_in){
   this->color = color;
   this->map = &engine->getState().getGrid();
+  this->ready = false;
+  this->loading = false;
   if(depth_in>=1 && depth_in<=5){
     this->depth = depth_in;
   } else {
@@ -26,29 +28,40 @@ DeepAI::DeepAI(int color, engine::Engine* engine, int depth_in){
 }
 
 void DeepAI::play(engine::Engine* engine) {
-  int depth = this->depth;
+  if(this->loading == true){
+    cout << "  >> DeepAI : I'm currently working on a new move, please wait." << endl;
+  } else {
+    cout << "  >> DeppAI : I start to calculate next move" << endl;
+    this->ready = false;
+    this->loading = true;
 
+    Move moveIA = calculateNextMove(engine);
+    this->nextMove = moveIA;
+
+    this->loading = false;
+    this->ready = true;
+  }
+}
+
+engine::Move DeepAI::calculateNextMove(engine::Engine* engine){
   State& state = engine->getState();
 
   cout << "\033[1;35m   DeepAI building the tree... \033[0m" << endl;
   Vertex parentVertex(state);
   double max = std::numeric_limits<double>::max();
   double min = -max;
-  Action bestAction = minmaxAlphabeta(&parentVertex, depth, true, depth, min, max);
-  //Action bestAction = minmax(&parentVertex, depth, true, depth);
+  Action bestAction = minmaxAlphabeta(&parentVertex, this->depth, true, this->depth, min, max);
   Animal* selectedAnimal = state.getSelection(bestAction.getAnimal().getCoord()).first;
   Coord selectedCoord = bestAction.getCoord();
-
-  cout << "\033[1;33m  DeepIA (niveau " << depth << ") : I decide to move my " << selectedAnimal->getName() << " from (" << selectedAnimal->getCoord().getX() << "," << selectedAnimal->getCoord().getY() << ") to (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << "\033[0m"<< endl;
+  cout << "\033[1;33m  DeepIA (niveau " << this->depth << ") : I decide to move my " << selectedAnimal->getName() << " from (" << selectedAnimal->getCoord().getX() << "," << selectedAnimal->getCoord().getY() << ") to (" << selectedCoord.getX() << "," << selectedCoord.getY() << ") for a score " << bestAction.getScore() << "\033[0m"<< endl;
 
   engine::Move moveIA(selectedAnimal, selectedCoord, this->color);
-  Order* ptr_move = &moveIA;
-  /*std::thread threadEngineAdd(&Engine::addOrder, engine, 1, ptr_move);
-  threadEngineAdd.join();
-  std::thread threadEngineUpt(&Engine::update, engine);
-  threadEngineUpt.join();*/
-  engine->addOrder(1,ptr_move);
-  engine->update();
+  return moveIA;
+}
+
+engine::Move DeepAI::getNextMove(){
+  this->ready = false;
+  return this->nextMove;
 }
 
 Action DeepAI::minmax (Vertex* vertex, int depth, bool maximizing, int totalDepth){
@@ -168,12 +181,10 @@ Action DeepAI::minmaxAlphabeta (Vertex* vertex, int depth, bool maximizing, int 
 }
 
 double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal, bool maximizing){
-  std::vector<state::Animal>* myAnimals;;
   std::vector<state::Animal>* hisAnimals;
   Coord myObjective;
   Coord hisObjective;
   if(maximizing){
-    myAnimals = vertex->getHisAnimals();
     hisAnimals = vertex->getMyAnimals();
     if (vertex->getPlaying()==0){
       myObjective.setX(6);
@@ -187,7 +198,6 @@ double DeepAI::calculateAnimalScore(Vertex* vertex, Animal* myAnimal, bool maxim
       hisObjective.setY(12);
     }
   } else {
-    myAnimals = vertex->getHisAnimals();
     hisAnimals = vertex->getMyAnimals();
     if (vertex->getPlaying()==0){
       myObjective.setX(5);
@@ -545,4 +555,12 @@ Action DeepAI::min(Action& action1,Action& action2){
 
 std::array<std::array<state::Square,13>,12>* DeepAI::getMap(){
    return this->map;
+}
+
+bool DeepAI::isReady(){
+  return this->ready;
+}
+
+bool DeepAI::isLoading(){
+  return this->loading;
 }

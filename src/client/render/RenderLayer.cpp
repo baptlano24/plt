@@ -8,7 +8,9 @@ using namespace sf;
 using namespace render;
 using namespace engine;
 
-RenderLayer::RenderLayer(state::State& state, RenderWindow& window): window(window){
+RenderLayer::RenderLayer(state::State* state, RenderWindow* window): window(window){
+
+  this->renderingState = state;
 
   this->gridOrigin = Coord(73*3, 0);
 
@@ -52,8 +54,7 @@ Sprite RenderLayer::getGrid() {
     return (this->spriteGrid);
 };
 
-void RenderLayer::stateChanged (state::StateEvent& event, const state::State& newState){
-  this->renderingState = newState;
+void RenderLayer::stateChanged (state::StateEvent& event){
   if (event.getID() == ALL_CHANGED){
     updateAllRender();
   } else if (event.getID() == ANIMALS_CHANGED){
@@ -63,7 +64,8 @@ void RenderLayer::stateChanged (state::StateEvent& event, const state::State& ne
   } else if (event.getID() == HIGHLIGHTS_CHANGED){
     updateHighlights();
   }
-	draw(window);
+  cout << "draw(window)" << endl;
+	draw(this->window);
 }
 
 void RenderLayer::updateAllRender() {
@@ -83,10 +85,10 @@ void RenderLayer::updateInfos(){
   for (int i = 0; i <= 1; i++) {
       this->spritesInfos[i].setPosition(this->gridOrigin.getX()-73, 0);
   }
-  if (this->renderingState.getPlaying() == 0) {
+  if (this->renderingState->getPlaying() == 0) {
     this->spritesInfos[0].setColor(Color(180, 180, 255, 255));
     this->spritesInfos[1].setColor(Color(255, 180, 180, 0));
-  } else if (this->renderingState.getPlaying() == 1) {
+  } else if (this->renderingState->getPlaying() == 1) {
     this->spritesInfos[1].setColor(Color(255, 180, 180, 255));
     this->spritesInfos[0].setColor(Color(180, 180, 255, 0));
   }
@@ -94,14 +96,14 @@ void RenderLayer::updateInfos(){
 
 void RenderLayer::updateAnimals(){
   cout << "{ Réaffichage des animaux }"<< endl;
-  this->animalsSpriteJ1 = vectToSprites(this->renderingState.getPlayer1().getAnimals(), this->renderingState.getPlayer1().getColor());
-  this->animalsSpriteJ2 = vectToSprites(this->renderingState.getPlayer2().getAnimals(), this->renderingState.getPlayer2().getColor());
+  this->animalsSpriteJ1 = vectToSprites(this->renderingState->getPlayer1().getAnimals(), this->renderingState->getPlayer1().getColor());
+  this->animalsSpriteJ2 = vectToSprites(this->renderingState->getPlayer2().getAnimals(), this->renderingState->getPlayer2().getColor());
 }
 
 void RenderLayer::updateHighlights(){
   cout << "{ Réaffichage des cases en surbrillance }"<< endl;
   this->spritesHighlights.clear();
-  std::vector<std::pair<state::Coord,engine::ActionID>> newHighlights = this->renderingState.getHighlights();
+  std::vector<std::pair<state::Coord,engine::ActionID>> newHighlights = this->renderingState->getHighlights();
   int index = 0;
   for(auto& highlight : newHighlights){
     Texture& refTexture = this->texturesInfos[2];
@@ -158,21 +160,24 @@ vector<Sprite> RenderLayer::vectToSprites(vector<state::Animal>& animalsMap, int
 return spriteAnimals;
 };
 
-void RenderLayer::draw(RenderWindow &window) {
-  window.clear();
-  if (this->renderingState.getMenu() == GAME_MENU){
-    window.draw(this->spriteGrid);
+void RenderLayer::draw(RenderWindow *window) {
+  cout << "window.clear()"<< endl;
+  window->clear();
+  cout << "window draw" << endl;
+  if (this->renderingState->getMenu() == GAME_MENU){
+    window->draw(this->spriteGrid);
     for(auto& sprite : this->spritesHighlights) {
-      window.draw(sprite);
+      window->draw(sprite);
     }
     for(int index = 0; index < 8; index++) {
-      window.draw(this->animalsSpriteJ1[index]);
-      window.draw(this->animalsSpriteJ2[index]);
+      window->draw(this->animalsSpriteJ1[index]);
+      window->draw(this->animalsSpriteJ2[index]);
     }
     for(int index = 0; index < 2; index++) {
-      window.draw(this->spritesInfos[index]);
+      window->draw(this->spritesInfos[index]);
     }
 
   }
-  window.display();
+  cout << "window display" << endl;
+  window->display();
 }

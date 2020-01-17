@@ -8,23 +8,30 @@ using namespace std;
 using namespace state;
 using namespace engine;
 
-
-
-Move::Move(state::Animal* targetAnimal, state::Coord& targetCoord, bool player): targetAnimal(targetAnimal),targetCoord(targetCoord){
+Move::Move(state::Animal* targetAnimal, state::Coord targetCoord, bool player): targetAnimal(targetAnimal),targetCoord(targetCoord){
   this->ID = MOVE;
   this->player = player;
 }
 
+Move::Move(){
+  new (this) Move(NULL, Coord(0,0), 0);
+}
+
+/*Move::Move(const engine::Move& move){
+  this->ID = move.ID;
+  this->player = move.player;
+  this->targetAnimal = move.targetAnimal;
+  targetCoord = new Coord(move.targetCoord);
+}*/
+
 Json::Value Move::serialize (){
   Json::Value newCommand;
 	/*newCommand["animal"] = (int)targetAnimal;*/
-  cout << endl << "Move" << endl;
   newCommand["player"] = player;
   newCommand["orderID"] = getOrderID();
   newCommand["animalID"] = targetAnimal->getID();
   newCommand["xDestination"] = targetCoord.getX();
   newCommand["yDestination"] = targetCoord.getY();
-
 	return newCommand;
 }
 
@@ -33,7 +40,6 @@ void engine::Move::execute(engine::Engine* engine)
   State& state = engine->getState();
   engine->addState(state);
   std::vector<std::pair<state::Coord,engine::ActionID>> noHighlights; //clean all the highlights with one NONE highlight
-  noHighlights.push_back(make_pair(Coord {0,0},ActionID{NONE}));
   noHighlights.push_back(make_pair(Coord {0,0},ActionID{NONE}));
   std::vector<std::pair<state::Coord,engine::ActionID>>& refNoHighlights = noHighlights;
   state.setHighlights(refNoHighlights);
@@ -93,19 +99,15 @@ void engine::Move::execute(engine::Engine* engine)
       state.setPlaying(0);
     }
     state.setTurn(state.getTurn()+1);
+    cout<<"Action effectuée par l'engine !"<<endl;
     cout<<"Passage au tour numéro : " << state.getTurn() << endl;
     cout<<"C'est au joueur " << state.getPlaying()+1 << " de jouer"<< endl;
   } else {
     cout<<"action non valide, c'est encore le tour numero " << state.getTurn() << endl;
   }
   cout << "\n\033[1;37m Render\033[0m" << endl;
-  StateEvent animalChangedEvent(ANIMALS_CHANGED);
-  StateEvent& refAnimalChangedEvent = animalChangedEvent;
-  StateEvent highlightsChangedEvent(HIGHLIGHTS_CHANGED);
-  StateEvent& refHighlightsChangedEvent = highlightsChangedEvent;
-  StateEvent infosChangedEvent(INFOS_CHANGED);
-  StateEvent& refInfosChangedEvent = infosChangedEvent;
-  state.notifyObservers(refAnimalChangedEvent, state);
-  state.notifyObservers(refHighlightsChangedEvent, state);
-  state.notifyObservers(refInfosChangedEvent, state);
+
+  StateEvent allChangedEvent(ALL_CHANGED);
+  StateEvent& refAllChangedEvent = allChangedEvent;
+  state.notifyObservers(refAllChangedEvent);
 }
