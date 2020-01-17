@@ -18,7 +18,6 @@ target_include_directories(${lib_server_target} PUBLIC
 target_link_libraries(${lib_server_target} PUBLIC
   ${MHD_LIBRARY}
   ${SFML_LIBRARIES}
-  $<TARGET_NAME:server_static>
   $<TARGET_NAME:client_static>
   )
 
