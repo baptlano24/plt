@@ -29,11 +29,75 @@ using namespace render;
 using namespace engine;
 using namespace ai;
 
-
-
 int delai = 300000 ;
 void recordheuristicVSheuristic();
 void listen1();
+static int handler(void *cls,
+             struct MHD_Connection *connection,
+             const char *url,
+             const char *method,
+             const char *version,
+             const char *upload_data, size_t *upload_data_size, void **ptr);
+static void request_completed(void *cls, struct MHD_Connection *connection, void **con_cls, enum MHD_RequestTerminationCode toe);
+
+int main(int argc,char* argv[1]) {
+  if(argc>=2 && string(argv[1])=="hello") {
+    cout << "Hello world !" << endl;
+  }
+  else if (argc>=2 && string(argv[1])=="record") {
+    recordheuristicVSheuristic();
+  }
+  else if (argc>=2 && string(argv[1])=="listen"){
+    try {
+        Game game;
+        ServicesManager servicesManager;
+
+        AbstractService* ptr_versionService(new VersionService());
+        servicesManager.registerService(move(ptr_versionService));
+
+        AbstractService* ptr_playerService(new PlayerService(ref(game)));
+        servicesManager.registerService(move(ptr_playerService));
+
+        AbstractService* ptr_gameService(new GameService(ref(game)));
+        servicesManager.registerService(move(ptr_gameService));
+
+        AbstractService* ptr_commandService(new CommandsService(game.getEngine()));
+        servicesManager.registerService(move(ptr_commandService));
+
+        struct MHD_Daemon *d;
+        if (argc != 2)
+        {
+            printf("%s PORT\n", argv[0]);
+            return 1;
+        }
+
+        d = MHD_start_daemon( // MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG | MHD_USE_POLL,
+            MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG,
+            // MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG | MHD_USE_POLL,
+            // MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG,
+            8080,
+            NULL, NULL,
+            &handler, (void *)&servicesManager,
+            MHD_OPTION_NOTIFY_COMPLETED, request_completed, NULL,
+            MHD_OPTION_END);
+
+        if (d == NULL)
+            return 1;
+        cout << "Server is listening in port 8080" << endl << "waiting for the client to enter 'network' to join in..."<< endl << "enter any key to stop the server" << endl;
+        (void)getc(stdin);
+        MHD_stop_daemon(d);
+    }
+    catch (exception &e)
+    {
+        cerr << "Exception: " << e.what() << endl;
+    }
+  } else {
+    cout << "Veuillez dire une commande parmis les suivantes :" << endl;
+    cout << "-->  hello  : phrase d'accueil" << endl;
+    cout << "-->  record : jouer une partie et l'enregistrer dans un fichier texte" << endl;
+    cout << "-->  listen : lance le serveur" << endl;
+  }
+}
 
 class Request
 {
@@ -145,60 +209,7 @@ static void request_completed(void *cls, struct MHD_Connection *connection, void
 }
 
 
-int main(int argc,char* argv[1]) {
-  if(argc>=2 && string(argv[1])=="hello") {
-    cout << "Hello world !" << endl;
-  }
-  else if (argc>=2 && string(argv[1])=="record") {
-    recordheuristicVSheuristic();
-  }
-  else if (argc>=2 && string(argv[1])=="listen"){
-    try {
-        Game game;
-        ServicesManager servicesManager;
 
-        AbstractService* ptr_versionService(new VersionService());
-        servicesManager.registerService(move(ptr_versionService));
-
-        AbstractService* ptr_playerService(new PlayerService(ref(game)));
-        servicesManager.registerService(move(ptr_playerService));
-
-        AbstractService* ptr_gameService(new GameService(ref(game)));
-        servicesManager.registerService(move(ptr_gameService));
-
-        AbstractService* ptr_commandService(new CommandsService(game.getEngine()));
-        servicesManager.registerService(move(ptr_commandService));
-
-        struct MHD_Daemon *d;
-        if (argc != 2)
-        {
-            printf("%s PORT\n", argv[0]);
-            return 1;
-        }
-
-        d = MHD_start_daemon( // MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG | MHD_USE_POLL,
-            MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG,
-            // MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG | MHD_USE_POLL,
-            // MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG,
-            8080,
-            NULL, NULL,
-            &handler, (void *)&servicesManager,
-            MHD_OPTION_NOTIFY_COMPLETED, request_completed, NULL,
-            MHD_OPTION_END);
-
-        if (d == NULL)
-            return 1;
-        cout << "server is listening in port 8080..." << endl << "press any button to stop the server" << endl;
-        (void)getc(stdin);
-        MHD_stop_daemon(d);
-    }
-    catch (exception &e)
-    {
-        cerr << "Exception: " << e.what() << endl;
-    }
-}
-
-  }
 
 
 void recordheuristicVSheuristic(){

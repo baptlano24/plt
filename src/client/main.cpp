@@ -98,6 +98,7 @@ int main(int argc,char* argv[1]) {
     cout << "-->  dVSd N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 5) contre ordinateur avancé" << endl;
     cout << "-->  hVSd N : jouer ordinateur avancé (MinMax) profondeur N (à remplacer avec entier entre 1 et 5) contre ordinateur heuristique" << endl;
     cout << "-->  replay : rejoue la séquence de jeu enregistrée précédement dans un fichier texte (./server record pour enregistrer une partie)" << endl;
+    cout << "-->  network: rejoint le lobby du serveur de jeu (si il reste de la place)" << endl;
   }
   return 0;
 }
@@ -936,4 +937,3 @@ void saveEngineRecord (Engine* engine){
                 cout << "Out of places: 2/2 players in the lobby." << endl;
             }
         }
-      
