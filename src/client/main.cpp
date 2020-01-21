@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
 #include <state.h>
 #include "state.h"
 #include "render.h"
@@ -13,6 +14,9 @@
 #include "engine.h"
 #include "ai.h"
 #include <thread>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <microhttpd.h>
 using namespace std;
 using namespace state;
 using namespace sf;
@@ -33,6 +37,7 @@ void deepVSplayer(int depth_in);
 void deepVSdeep(int depth_inJ1, int depth_inJ2);
 void heuristicVSdeep(int depth_inJ);
 void saveEngineRecord(Engine* engine);
+void network();
 
 
 int delai = 50000; //temps de jeu minimum des IA en micro seconde
@@ -56,7 +61,9 @@ int main(int argc,char* argv[1]) {
     heuristicVSheuristic();
   } else if (argc>=2 && string(argv[1])=="replay") {
     replayRecord();
-  } else if (argc>=2 && string(argv[1])=="hVSp") {
+  }else if(argc>=2 && string(argv[1]) == "network"){
+    network();
+  }else if (argc>=2 && string(argv[1])=="hVSp") {
     heuristicVSplayer();
   } else if (argc>=2 && (string(argv[1])=="dVSp" || string(argv[1])=="dVSd" || string(argv[1])=="hVSd")) {
             int depth_in;
@@ -74,7 +81,7 @@ int main(int argc,char* argv[1]) {
                 else if (string(argv[1])=="hVSd")
                   heuristicVSdeep(depth_in);
             } else {
-              cout << "   La profondeur doit être entre 1 et 4. Veuillez recommancer." << endl;
+              cout << "   La profondeur doit être entre 1 et 4. Veuillez recommencer." << endl;
             }
   } else {
     cout << "Veuillez dire une commande parmis les suivantes :" << endl;
@@ -849,3 +856,84 @@ void saveEngineRecord (Engine* engine){
     cerr << "Impossible d'ouvrir le fichier des commandes enregistrées pour l'ecriture" << endl;
   }
 }
+
+ void network(){
+            string name;
+            cout << "Enter your name: ";
+            cin >> name;
+            while (name.length() < 3 || name.length() > 15)
+            {
+                cout << "Invalid name. At least 3 characters and up to 15. Re-enter: ";
+                cin >> name;
+            }
+
+            sf::Http http("http://localhost/", 8080);
+
+            sf::Http::Request request1;
+            request1.setMethod(sf::Http::Request::Post);
+            request1.setUri("/player");
+            request1.setHttpVersion(1, 0);
+            string body = "{\"name\":\"" + name + "\", \"free\":true}";
+            request1.setBody(body);
+
+            sf::Http::Response response1 = http.sendRequest(request1);
+
+            Json::Reader jsonReader;
+            Json::Value rep1;
+            if (jsonReader.parse(response1.getBody(), rep1))
+            {
+                int idPlayer = rep1["id"].asInt();
+
+                // query array of players in lobby.
+                sf::Http::Request players0;
+                players0.setMethod(sf::Http::Request::Get);
+                players0.setUri("/player");
+                players0.setHttpVersion(1, 0);
+                sf::Http::Response playersResp0 = http.sendRequest(players0);
+                Json::Reader jsonReaderPlayers0;
+                Json::Value jsonPlayers0;
+                jsonReaderPlayers0.parse(playersResp0.getBody(), jsonPlayers0);
+
+                cout << "Hello " << name << "! You joined the lobby succesfully!" << endl;
+                cout << "Your ID is: " << idPlayer << endl << endl;
+                cout << "Players in the lobby: (" << jsonPlayers0["players"].size() << "/2)" << endl;
+
+                for(auto& playerInLobby : jsonPlayers0["players"]){
+                    cout << "\t-" << playerInLobby[1].asString() << " [id: " << playerInLobby[0].asString() << "]" << endl;
+                }
+
+                cout << "Press q to exit from the lobby" << endl;
+
+                while (getchar() != 'q'){/*endless retry*/}
+
+                sf::Http::Request request3;
+                request3.setMethod(sf::Http::Request::Delete);
+                string uri2 = "/player/" + to_string(idPlayer);
+                request3.setUri(uri2);
+                request3.setHttpVersion(1, 0);
+                http.sendRequest(request3);
+                cout << "Player " << idPlayer << " deleted" << endl;
+
+                // query players in lobby again
+                sf::Http::Request players;
+                players.setMethod(sf::Http::Request::Get);
+                players.setUri("/player");
+                players.setHttpVersion(1, 0);
+                sf::Http::Response playersResp = http.sendRequest(players);
+
+                Json::Reader jsonReaderPlayers;
+                Json::Value jsonPlayers;
+                jsonReaderPlayers.parse(playersResp.getBody(), jsonPlayers);
+
+                cout << "Players in the lobby: (" << jsonPlayers["players"].size() << "/2)" << endl;
+                for (auto &playerStillInLobby : jsonPlayers["players"])
+                {
+                    cout << "\t-" << playerStillInLobby[1].asString() << " [id: " << playerStillInLobby[0].asString() << "]" << endl;
+                }
+            }
+            else
+            {
+                cout << "Out of places: 2/2 players in the lobby." << endl;
+            }
+        }
+      
